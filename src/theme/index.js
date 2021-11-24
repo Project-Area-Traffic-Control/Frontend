@@ -8,7 +8,7 @@ const theme = createMuiTheme({
     background: {
       dark: '#F7F8FC',
       default: colors.common.black,
-      paper: '#212121'
+      paper: '#FFFFFF'
     },
     primary: {
       main: colors.indigo[600]

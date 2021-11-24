@@ -52,12 +52,12 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/app/reportData',
+    href: '/app/junction',
     icon: DescriptionIcon,
     title: 'ข้อมูลแยกจราจร'
   },
   {
-    href: '/app/map',
+    href: '/app/control',
     icon: SettingsApplicationsIcon,
     title: 'ตั้งค่าการทำงาน'
   },

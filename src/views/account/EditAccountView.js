@@ -17,6 +17,8 @@ import { alertDialogActions } from '../../_actions';
 import Alert from "../../components/Alert";
 import AccountInfo from './AccountView';
 import EditAccountInfo from './EditAccountInfo';
+import EditImageView from './EditImage';
+import AlertDialogSlide from './DialogImage';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -40,11 +42,18 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'flex',
     marginLeft: '13%'
+  },
+  editProfile: {
+    marginTop: theme.spacing(3),
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center'
   }
 }));
 
 const RegisterView = () => {
   const classes = useStyles();
+  const [state, setState] = useState(false)
   // const navigate = useNavigate();
   return (
     <Page
@@ -61,6 +70,16 @@ const RegisterView = () => {
             className={classes.profileImg}
           >
             <img src='/static/avatar/avatar_test.png' width='216px' height='188px' />
+            <Grid
+              className={classes.editProfile}
+            >
+              {/* <Button
+                onClick={() => { <EditImageView /> }}
+              >
+                แก้ไขข้อมูล
+              </Button> */}
+              <AlertDialogSlide />
+            </Grid>
           </Grid>
           <EditAccountInfo />
         </Grid>

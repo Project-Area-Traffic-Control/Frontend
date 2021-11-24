@@ -12,8 +12,16 @@ import DashboardView from "./views/reports/DashboardView";
 import AccountView from "./views/account";
 import EditAccount from "./views/account/EditAccountView"
 import RemoteControl from "./views/remoteControl";
-import ReportView from "./views/reportData";
+import JunctionView from "./views/Junction";
 import UserManageView from "./views/management/UserManageView";
+import { junctionService } from './services/junction.service';
+import EditJunction from './views/Junction/EditJunction';
+import ControlView from './views/control';
+// let junction = junctionService.getAllJunction()
+// let junctionID = []
+// for (let index = 0; index < junction.length; index++) {
+//   junctionID.push(junction[index].id)
+// }
 
 const routes = [
   {
@@ -26,7 +34,9 @@ const routes = [
       { path: 'dashboard', element: <DashboardView /> },
       { path: 'account', element: < AccountView /> },
       { path: 'edit_account', element: <EditAccount /> },
-      { path: 'reportData', element: < ReportView /> },
+      { path: 'junction', element: < JunctionView /> },
+      { path: `junction/:junction_id`, element: < EditJunction /> },
+      { path: 'control', element: < ControlView /> },
       { path: 'remote-control', element: < RemoteControl /> },
       { path: 'userManage', element: <UserManageView /> },
       { path: '/', element: < RemoteControl /> },
