@@ -4,7 +4,14 @@ import {
   Grid,
   IconButton,
   makeStyles,
-  styled
+  Paper,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
 } from '@material-ui/core';
 import Page from '../../components/Page';
 import Divider from '@material-ui/core/Divider';
@@ -17,6 +24,8 @@ import ReportTable from './ReportTable';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
 import { junctionService } from '../../services/junction.service';
+import { Assignment } from '@material-ui/icons';
+// import ManagementTable from '../../components/table/manageTable';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -42,9 +51,21 @@ const useStyles = makeStyles((theme) => ({
     height: '50%',
     display: 'flex',
     backgroundColor: '#000000'
+  },
+  buttonGrid: {
+    marginTop: theme.spacing(5),
+    display: 'flex',
+    justifyContent: 'end'
+  },
+  buttonCreate: {
+    display: 'flex',
+    height: '52px',
+    borderRadius: '13px',
+    justifyContent: 'center',
+    backgroundColor: '#287298',
+    color: '#ffffff'
   }
 }));
-
 const ReportData = () => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -110,17 +131,16 @@ const ReportData = () => {
       // }
     },
   });
-
   useEffect(() => {
-
-    for (let index = 0; index < junctionList.length; index++) {
-      if (junctionList[index].name == formik.values.junctionName) {
-        setPathID(junctionList[index].id)
-        console.log(junctionList[index].name)
-      }
+    junctionService.getAllJunction().then(data => {
+      setJunctionList(data)
+    })
+  }, [])
+  useEffect(() => {
+    if (pathID != null) {
+      navigate(`/app/junction/${pathID}`, { replace: true });
     }
-    console.log(pathID)
-  }, [junctionList])
+  }, [pathID])
   return (
     <Page
       className={classes.root}
@@ -129,16 +149,64 @@ const ReportData = () => {
       <Grid
         className={classes.container}
       >
-        <Grid
+        {/* <Grid
           className={classes.topGrid}
         >
           <SearchTable formik={formik} status="create" />
-        </Grid>
-        {/* <Grid
+        </Grid> */}
+        <Grid
           className={classes.bottomGrid}
         >
-          <ReportTable number_channel={formik.values.number_channel} />
-        </Grid> */}
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">ชื่อของแยกสัญญาณ</TableCell>
+                  <TableCell align="center">ชื่อของพื้นที่รับผิดชอบ</TableCell>
+                  <TableCell align="center">ละติจูด</TableCell>
+                  <TableCell align="center">ลองจิจูด</TableCell>
+                  <TableCell align="center">จำนวนของแยกสัญญาณ</TableCell>
+                  <TableCell align="center"></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {junctionList.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align='center'>
+                      {row.name}
+                    </TableCell>
+                    <TableCell align="center">{row?.area?.name}</TableCell>
+                    <TableCell align="center">{row.latitude}</TableCell>
+                    <TableCell align="center">{row.longitude}</TableCell>
+                    <TableCell align="center">{row.number_channel}</TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={() => {
+                          setPathID(row.id)
+                        }}
+                      >
+                        <Assignment />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid
+          className={classes.buttonGrid}
+        >
+          <Button
+            className={classes.buttonCreate}
+            onClick={() => { navigate('/app/create_junction', { replace: true }); }}
+          >
+            สร้างแยกสัญญาณใหม่
+          </Button>
+        </Grid>
       </Grid>
     </Page>
   );

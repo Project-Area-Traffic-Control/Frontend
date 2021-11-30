@@ -54,6 +54,11 @@ const EditJunction = () => {
     const [junction, setJunction] = useState({})
     const location = useLocation();
     useEffect(() => {
+        junctionService.getJunctionByID(pathID).then(data => {
+            setJunction(data)
+        })
+    }, [])
+    useEffect(() => {
         setPathID(location.pathname.slice(14, location.pathname.length))
     }, [location.pathname])
     useEffect(() => {

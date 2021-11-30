@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -9,7 +9,10 @@ import {
   List,
   makeStyles,
   Avatar,
-  Typography
+  Typography,
+  Collapse,
+  ListItemIcon,
+  ListItemText
 } from '@material-ui/core';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import {
@@ -34,7 +37,8 @@ import CommuteIcon from '@material-ui/icons/Commute';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import clsx from 'clsx';
 import HomeIcon from '@material-ui/icons/Home';
-import { BarChart, CallSplit, DonutLarge, Videocam } from '@material-ui/icons';
+import { BarChart, CallSplit, DonutLarge, ExpandLess, ExpandMore, StarBorder, Videocam } from '@material-ui/icons';
+import { junctionService } from '../../../services/junction.service';
 
 // import Collapse from '@material-ui/core/Collapse';
 // import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -42,27 +46,27 @@ import { BarChart, CallSplit, DonutLarge, Videocam } from '@material-ui/icons';
 // import ListItemText from '@material-ui/core/ListItemText';
 const items = [
   {
-    href: '/app/home',
-    icon: HomeIcon,
-    title: 'หน้าหลัก'
-  },
-  {
     href: '/app/dashboard',
     icon: DonutLarge,
     title: 'Dashboard'
   },
   {
-    href: '/app/junction',
-    icon: DescriptionIcon,
-    title: 'ข้อมูลแยกจราจร'
+    href: '/app',
+    icon: HomeIcon,
+    title: 'จุดควบคุมจราจร'
   },
   {
-    href: '/app/control',
+    href: '/app/junction',
+    icon: DescriptionIcon,
+    title: 'รายการจุดควบคุมการจราจร'
+  },
+  {
+    href: '/app/junction/5/create_plan',
     icon: SettingsApplicationsIcon,
     title: 'ตั้งค่าการทำงาน'
   },
   {
-    href: '/app/remote-control',
+    href: '/app/manual_control/5',
     icon: CallSplit,
     title: 'หน้าควบคุม'
   },
@@ -80,7 +84,7 @@ const items = [
     href: '/404',
     icon: ExitToAppIcon,
     title: 'Logout'
-  }
+  },
 ];
 
 const user = {
@@ -97,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
     width: 256
   },
   desktopDrawer: {
-    width: 256,
+    width: 326,
     top: 64,
     height: 'calc(100% - 64px)',
     backgroundColor: "#ffffff"
@@ -116,12 +120,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: "center"
   },
-  avatarTextPrimary:{
+  avatarTextPrimary: {
     paddingTop: theme.spacing(1)
   },
-  avatarTextSecond:{
+  avatarTextSecond: {
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1)
+  },
+  collapse: {
+    marginLeft: theme.spacing(5)
+  },
+  collapse_1: {
+    marginLeft: theme.spacing(10)
   }
 }));
 
@@ -129,10 +139,19 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
+  const [openJunction, setOpenJunction] = useState(false);
+  const [junctionList, setJunctionList] = useState([]);
   const handleClick = () => {
     setOpen(!open);
   };
-
+  const handleClickJunction = () => {
+    setOpenJunction(!openJunction);
+  };
+  useEffect(() => {
+    junctionService.getAllJunction().then(data => {
+      setJunctionList(data)
+    })
+  }, [])
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -169,20 +188,109 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       <Divider />
       <Box p={2}>
         <List>
-          {items.map(item => (
-            <div>
-              <ListItem button>
+          {/* {items.map(item => ( */}
+          <div>
+            <ListItem >
 
-                <NavItem
-                  href={item.href}
-                  key={item.title}
-                  title={item.title}
-                  icon={item.icon}
-                // onClick={handleClick}
-                />
-              </ListItem>
+              <NavItem
+                href={items[0].href}
+                key={items[0].title}
+                title={items[0].title}
+                icon={items[0].icon}
+              // onClick={handleClick}
+              />
 
-              {/* <Collapse in={open} timeout="auto" unmountOnExit>
+            </ListItem>
+            <ListItem >
+              <NavItem
+                href={items[1].href}
+                key={items[1].title}
+                title={items[1].title}
+                icon={items[1].icon}
+                onClick={handleClick}
+              />
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem sx={{ pl: 4 }}>
+                  <NavItem
+                    href={items[2].href}
+                    key={items[2].title}
+                    title={items[2].title}
+                    className={classes.collapse}
+                  // icon={items[2].icon}
+                  // onClick={handleClick}
+                  />
+                </ListItem>
+                {junctionList.map(junction => (
+                  <div>
+                    <ListItem sx={{ pl: 4 }}>
+                      <NavItem
+                        href={`/app`}
+                        key={items[2].title}
+                        title={junction.name}
+                        className={classes.collapse}
+                        // icon={items[2].icon}
+                        onClick={handleClickJunction}
+                      />
+                      {openJunction ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={openJunction} timeout="auto" unmountOnExit>
+                      <NavItem
+                        href={`/app/dashboard`}
+                        key={items[2].title}
+                        title="Dashboard"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                      <NavItem
+                        href={`/app/junction/${junction.id}`}
+                        key={items[2].title}
+                        title="ข้อมูลแยกจราจร"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                      <NavItem
+                        href={`junction/${junction.id}/create_plan`}
+                        key={items[2].title}
+                        title="ตั้งค่าการทำงาน"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                      <NavItem
+                        href={`/app/manual_control/${junction.id}`}
+                        key={items[2].title}
+                        title="หน้าควบคุม"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                      <NavItem
+                        href={`/app`}
+                        key={items[2].title}
+                        title="Camera"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                      <NavItem
+                        href={`/app`}
+                        key={items[2].title}
+                        title="ข้อมูลปริมาณการจราจร"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                    </Collapse>
+                  </div>
+                ))}
+              </List>
+            </Collapse>
+            {/* <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   <NavItem
                   href={item.href}
@@ -193,8 +301,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
              />
                 </List>
               </Collapse> */}
-            </div>
-          ))}
+          </div>
+          {/* // ))} */}
         </List>
       </Box>
       <Box flexGrow={1} />

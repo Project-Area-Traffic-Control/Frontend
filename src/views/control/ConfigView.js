@@ -4,6 +4,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
+    DialogContentText,
     DialogTitle,
     Grid,
     IconButton,
@@ -42,10 +43,11 @@ const useStyles = makeStyles((theme) => ({
     top: {
         height: '100%',
         width: '100%',
-        display: 'flex'
+        display: 'flex',
+        justifyContent: 'center'
     },
     topLeft: {
-        width: '45%',
+        width: '80%',
         backgroundColor: '#FFFFFF',
         // display: 'flex'
     },
@@ -77,7 +79,15 @@ const useStyles = makeStyles((theme) => ({
     textField_name: {
         marginLeft: theme.spacing(2),
         paddingBottom: theme.spacing(5),
-        width: '65%',
+        width: '45%',
+    },
+    buttonPattern: {
+        marginLeft: theme.spacing(2),
+        marginTop: theme.spacing(2),
+        // paddingBottom: theme.spacing(5),
+        width: '15%',
+        height: '52px',
+        fontFamily: 'Roboto'
     },
     selectField: {
         marginLeft: theme.spacing(8),
@@ -129,6 +139,27 @@ const useStyles = makeStyles((theme) => ({
         // display: 'flex',
         // justifyContent: 'center',
         // alignItems: 'center'
+    },
+    dialogTitle: {
+        marginTop: theme.spacing(5),
+        color: '#287298',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    dialogDividerGrid: {
+        marginTop: theme.spacing(1),
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    dialogDivider: {
+        backgroundColor: '#287298',
+        width: '168px',
+        height: '2px'
+    },
+    bottomImge: {
+        width: '100%',
+        display: 'flex',
     }
 }));
 const menuList = [
@@ -148,7 +179,10 @@ const menuList = [
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
+        minWidth: '985px'
+    },
+    '& .MuiDialog-paper': {
+        minWidth: '985px'
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
@@ -291,7 +325,7 @@ const ConfigView = (props) => {
                             variant='h4'
                             className={classes.titleLeft}
                         >
-                            ข้อมูลแยกจราจร
+                            ตั้งค่ารูปแบบการจัดการสัญญาณไฟ
                         </Typography>
                     </Grid>
                     <Divider className={classes.divider} />
@@ -306,7 +340,7 @@ const ConfigView = (props) => {
                                 // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
                                 // helperText={formik.touched.junctionName && formik.errors.junctionName}
                                 className={classes.textField_name}
-                                label="จุดควบคุมการจราจร"
+                                label="ชื่อรูปแบบ"
                                 variant="outlined"
                                 name="junctionName"
                                 // onBlur={formik.handleBlur}
@@ -314,7 +348,7 @@ const ConfigView = (props) => {
                                 // value={formik.values.junctionName}
                                 margin="normal"
                             />
-                            <TextField
+                            {/* <TextField
                                 className={classes.selectField}
                                 id="outlined-select-menu"
                                 select
@@ -330,92 +364,58 @@ const ConfigView = (props) => {
                                         {option.label}
                                     </MenuItem>
                                 ))}
-                            </TextField>
+                            </TextField> */}
+                            <Button
+                                className={classes.buttonPattern}
+                                onClick={() => handleClickOpen()}
+                            // type='submit'
+                            >
+                                เลือกชุดรูปแบบ
+                            </Button>
                         </Grid>
-                        <TextField
-                            // error={Boolean(formik.touched.lat && formik.errors.lat)}
-                            // helperText={formik.touched.lat && formik.errors.lat}
-                            className={classes.textField_location}
-                            label="ตำแหน่งที่ตั้ง (Lattitude)"
-                            variant="outlined"
-                            name="lat"
-                            // onBlur={formik.handleBlur}
-                            // onChange={formik.handleChange}
-                            // value={formik.values.lat}
-                            margin="normal"
-                        />
-                        <TextField
-                            // error={Boolean(formik.touched.lng && formik.errors.lng)}
-                            // helperText={formik.touched.lng && formik.errors.lng}
-                            className={classes.textField_location}
-                            label="ตำแหน่งที่ตั้ง (Longitude)"
-                            variant="outlined"
-                            name="lng"
-                            // onBlur={formik.handleBlur}
-                            // onChange={formik.handleChange}
-                            // value={formik.values.lng}
-                            margin="normal"
-                        />
-
-
-
                         {/* <LocationSearchInput /> */}
                     </Grid>
                 </Grid>
-                <Grid
-                    className={classes.topRight}
-                >
-                    <Grid
-                        className={classes.titleGrid}
-                    >
-                        <Grid
-                            className={classes.titleGrid}
-                        >
-                            <Typography
-                                variant='h4'
-                                className={classes.titleLeft}
-                            >
-                                ข้อมูลการเชื่อมต่อ
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid
-                        className={classes.textRight}
-                    >
-                        <Grid
-                            className={classes.textFieldLeft_top}
-                        >
-                            <Typography
-                                className={classes.textField_name}
-                                variant='h5'
-                            >
-                                สถานะการเชื่อมต่อกับตู้ควบคุม
-                            </Typography>
-                            <Typography
-                                className={classes.selectField}
-                            >
-                                เชื่อมต่อ
-                            </Typography>
-                        </Grid>
-                        <Grid
-                            className={classes.textFieldLeft_top}
-                        >
-                            <Typography
-                                className={classes.textField_name}
-                                variant='h5'
-                            >
-                                สถานะการเชื่อมต่อกับระบบตรวจจับยานพาหนะ
-                            </Typography>
-                            <Typography
-                                className={classes.selectField}
-                            >
-                                เชื่อมต่อ
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Grid>
             </Grid>
+            <BootstrapDialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                {/* <DialogTitle id="alert-dialog-title">
+                    {"Use Google's location service?"}
+                </DialogTitle> */}
+                <DialogContent>
+                    <Typography
+                        variant='h5'
+                        className={classes.dialogTitle}
+                    >
+                        เลือกลำดับการทำงาน
+                    </Typography>
+                    <Grid
+                        className={classes.dialogDividerGrid}
+                    >
+                        <Divider className={classes.dialogDivider} />
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid>
+                            <img src='/static/junction/3way-set-port.jpg' width='320px' height='320px' />
+                        </Grid>
+                        <Grid>
+                            <img src='/static/junction/3way-set-port.jpg' width='320px' height='320px' />
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions>
+            </BootstrapDialog>
             <Grid
                 className={classes.bottom}
             >

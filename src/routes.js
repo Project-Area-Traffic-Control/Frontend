@@ -11,12 +11,13 @@ import AddDevice from "./views/management/AddDeviceView";
 import DashboardView from "./views/reports/DashboardView";
 import AccountView from "./views/account";
 import EditAccount from "./views/account/EditAccountView"
-import RemoteControl from "./views/remoteControl";
+import ManualControl from "./views/manualControl";
 import JunctionView from "./views/Junction";
 import UserManageView from "./views/management/UserManageView";
 import { junctionService } from './services/junction.service';
 import EditJunction from './views/Junction/EditJunction';
 import ControlView from './views/control';
+import CreateJunction from './views/Junction/CreateJunction';
 // let junction = junctionService.getAllJunction()
 // let junctionID = []
 // for (let index = 0; index < junction.length; index++) {
@@ -36,10 +37,11 @@ const routes = [
       { path: 'edit_account', element: <EditAccount /> },
       { path: 'junction', element: < JunctionView /> },
       { path: `junction/:junction_id`, element: < EditJunction /> },
-      { path: 'control', element: < ControlView /> },
-      { path: 'remote-control', element: < RemoteControl /> },
+      { path: 'junction/:junction_id/create_plan', element: < ControlView /> },
+      { path: 'manual_control/:junction_id', element: < ManualControl /> },
+      { path: 'create_junction', element: < CreateJunction /> },
       { path: 'userManage', element: <UserManageView /> },
-      { path: '/', element: < RemoteControl /> },
+      { path: '/', element: < ManualControl /> },
 
 
       ,

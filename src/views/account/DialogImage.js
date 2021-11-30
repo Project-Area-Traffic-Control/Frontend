@@ -67,7 +67,7 @@ class AlertDialogSlide extends PureComponent {
         crop: {
             unit: "%",
             width: 30,
-            aspect: 16 / 9
+            aspect: 16 / 16
         }
     };
     handleClickOpen = () => {
@@ -84,6 +84,7 @@ class AlertDialogSlide extends PureComponent {
                 this.setState({ src: reader.result })
             );
             reader.readAsDataURL(e.target.files[0]);
+            // reader.readAsBinaryString(e.target.files[0]);
         }
     };
 
@@ -110,6 +111,7 @@ class AlertDialogSlide extends PureComponent {
                 "newFile.jpeg"
             );
             this.setState({ croppedImageUrl });
+            
         }
     }
 
@@ -202,7 +204,9 @@ class AlertDialogSlide extends PureComponent {
                             {src === null ? "อัพโหลดรูปภาพ" : "เปลี่ยนรูปภาพ"}
                         </Button>
                         {src !== null ? (
-                            <Button onClick={() => console.log("Save Click handler")}>
+                            <Button onClick={() => console.log("Save Click handler"),
+                                console.log(this.fileUrl)
+                            }>
                                 Save Photo
                             </Button>
                         ) : null}

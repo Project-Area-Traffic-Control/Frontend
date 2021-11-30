@@ -4,20 +4,28 @@ import {
     Grid,
     IconButton,
     makeStyles,
-    styled
+    Paper,
+    styled,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@material-ui/core';
 import Page from '../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate, useLocation } from 'react-router-dom';
-// import ReportView from './ReportTable';
-// import SearchTable from './SearchTable';
-// import ReportTable from './ReportTable';
+import { useNavigate } from 'react-router-dom';
+import ReportView from './ReportTable';
+import SearchTable from './SearchTable';
+import ReportTable from './ReportTable';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
 import { junctionService } from '../../services/junction.service';
-import ConfigView from './ConfigView';
+import { Assignment } from '@material-ui/icons';
+// import ManagementTable from '../../components/table/manageTable';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
@@ -45,16 +53,12 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#000000'
     }
 }));
-
-const ControlView = () => {
+const CreateJunction = () => {
     const classes = useStyles();
     const navigate = useNavigate();
     const [number_lane, setNumber_lane] = useState(3)
     const [pathID, setPathID] = useState()
     const [junctionList, setJunctionList] = useState([])
-    const location = useLocation();
-
-
     const formik = useFormik({
         initialValues: {
             junctionName: '',
@@ -114,17 +118,16 @@ const ControlView = () => {
             // }
         },
     });
-
-    useEffect(() => {
-
-        for (let index = 0; index < junctionList.length; index++) {
-            if (junctionList[index].name == formik.values.junctionName) {
-                setPathID(junctionList[index].id)
-                console.log(junctionList[index].name)
-            }
-        }
-        console.log(pathID)
-    }, [junctionList])
+    // useEffect(() => {
+    //     junctionService.getAllJunction().then(data => {
+    //         setJunctionList(data)
+    //     })
+    // }, [])
+    // useEffect(() => {
+    //     if (pathID != null) {
+    //         navigate(`/app/junction/${pathID}`, { replace: true });
+    //     }
+    // }, [pathID])
     return (
         <Page
             className={classes.root}
@@ -136,17 +139,11 @@ const ControlView = () => {
                 <Grid
                     className={classes.topGrid}
                 >
-                    {/* test */}
-                    <ConfigView />
+                    <SearchTable formik={formik} status="create" />
                 </Grid>
-                {/* <Grid
-          className={classes.bottomGrid}
-        >
-          <ReportTable number_channel={formik.values.number_channel} />
-        </Grid> */}
             </Grid>
         </Page>
     );
 };
 
-export default ControlView;
+export default CreateJunction;

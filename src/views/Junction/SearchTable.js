@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
     top: {
         height: '100%',
         width: '100%',
-        display: 'flex'
+        display: 'flex',
+        justifyContent: 'center'
     },
     topLeft: {
         width: '45%',
@@ -362,59 +363,60 @@ const SearchTable = (props) => {
                             {/* <LocationSearchInput /> */}
                         </Grid>
                     </Grid>
-                    <Grid
-                        className={classes.topRight}
-                    >
+                    {props.status == 'edit' &&
                         <Grid
-                            className={classes.titleGrid}
+                            className={classes.topRight}
                         >
                             <Grid
                                 className={classes.titleGrid}
                             >
-                                <Typography
-                                    variant='h4'
-                                    className={classes.titleLeft}
+                                <Grid
+                                    className={classes.titleGrid}
                                 >
-                                    ข้อมูลการเชื่อมต่อ
-                                </Typography>
+                                    <Typography
+                                        variant='h4'
+                                        className={classes.titleLeft}
+                                    >
+                                        ข้อมูลการเชื่อมต่อ
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <Divider className={classes.divider} />
-                        <Grid
-                            className={classes.textRight}
-                        >
+                            <Divider className={classes.divider} />
                             <Grid
-                                className={classes.textFieldLeft_top}
+                                className={classes.textRight}
                             >
-                                <Typography
-                                    className={classes.textField_name}
-                                    variant='h5'
+                                <Grid
+                                    className={classes.textFieldLeft_top}
                                 >
-                                    สถานะการเชื่อมต่อกับตู้ควบคุม
-                                </Typography>
-                                <Typography
-                                    className={classes.selectField}
+                                    <Typography
+                                        className={classes.textField_name}
+                                        variant='h5'
+                                    >
+                                        สถานะการเชื่อมต่อกับตู้ควบคุม
+                                    </Typography>
+                                    <Typography
+                                        className={classes.selectField}
+                                    >
+                                        เชื่อมต่อ
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    className={classes.textFieldLeft_top}
                                 >
-                                    เชื่อมต่อ
-                                </Typography>
+                                    <Typography
+                                        className={classes.textField_name}
+                                        variant='h5'
+                                    >
+                                        สถานะการเชื่อมต่อกับระบบตรวจจับยานพาหนะ
+                                    </Typography>
+                                    <Typography
+                                        className={classes.selectField}
+                                    >
+                                        เชื่อมต่อ
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <Grid
-                                className={classes.textFieldLeft_top}
-                            >
-                                <Typography
-                                    className={classes.textField_name}
-                                    variant='h5'
-                                >
-                                    สถานะการเชื่อมต่อกับระบบตรวจจับยานพาหนะ
-                                </Typography>
-                                <Typography
-                                    className={classes.selectField}
-                                >
-                                    เชื่อมต่อ
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                        </Grid>}
                 </Grid>
                 <Grid
                     className={classes.bottom}

@@ -356,14 +356,14 @@ const ReportTable = (props) => {
       setStatus(props.channel.length)
       channel_Formik.setValues({
         name_1: props.channel[0]?.name,
-        number_lane_1: props.channel[0]?.name,
-        order_1: props.channel[0]?.name,
+        number_lane_1: props.channel[0]?.nunmber_lane,
+        order_1: props.channel[0]?.order,
         name_2: props.channel[1]?.name,
-        number_lane_2: props.channel[1]?.name,
-        order_2: props.channel[1]?.name,
+        number_lane_2: props.channel[1]?.nunmber_lane,
+        order_2: props.channel[1]?.order,
         name_3: props.channel[2]?.name,
-        number_lane_3: props.channel[2]?.name,
-        order_3: props.channel[2]?.name,
+        number_lane_3: props.channel[2]?.nunmber_lane,
+        order_3: props.channel[2]?.order,
         junction_id: props.pathID
       })
     }
