@@ -246,7 +246,7 @@ const ManualControl = () => {
               {...longPressEvent}
               onClick={() => {
                 setToggle(3)
-                handleSetPhase(1)
+                handleSetPhase(5)
               }}
             >
               เลือก
@@ -262,7 +262,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(4)
-                handleSetPhase(2)
+                handleSetPhase(6)
               }}
             >
               เลือก
@@ -278,7 +278,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(5)
-                handleSetPhase(3)
+                handleSetPhase(7)
               }}
             >
               เลือก
@@ -294,7 +294,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(6)
-                handleSetPhase(4)
+                handleSetPhase(8)
               }}
             >
               เลือก
