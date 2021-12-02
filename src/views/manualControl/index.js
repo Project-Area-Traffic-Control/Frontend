@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
   Container,
   Grid,
-  makeStyles
+  makeStyles,
+  MenuItem,
+  TextField
 } from '@material-ui/core';
 import Page from '../../components/Page';
 import RemoteControlView from './RemoteControlView';
@@ -16,6 +18,7 @@ import CountUp from 'react-countup';
 import Timer from './Timer';
 import useLongPress from './useLongPress';
 import { setLocale } from 'yup';
+import { manualControlService } from '../../services/manualControl.service';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   topGrid: {
     width: '100%',
-    height: '55%',
+    height: '45%',
     backgroundColor: '#ffffff',
   },
   imgTimer: {
@@ -46,11 +49,13 @@ const useStyles = makeStyles((theme) => ({
   titleText: {
     marginTop: theme.spacing(8),
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: '40%',
+    marginLeft: '30%',
   },
   bottomGrid: {
     width: '100%',
-    height: '45%',
+    height: '55%',
     backgroundColor: '#ffffff',
     display: 'flex',
     justifyContent: 'center'
@@ -81,6 +86,7 @@ const ManualControl = () => {
   const [path, setPath] = useState("")
   const [junction, setJunction] = useState({})
   const [number, setNumber] = useState(0)
+  const [menu, setMenu] = useState("")
   const location = useLocation();
   useEffect(() => {
     // console.log(location.pathname)
@@ -115,6 +121,8 @@ const ManualControl = () => {
   const [button, setButton] = useState([]);
   const [toggle, setToggle] = useState()
   const [longpress, setlongPress] = useState(false)
+  const [dataPhase, setDataPhase] = useState({ "phase": 0 })
+  const [dataMode, setDataMode] = useState({ "mode": 0 })
   const onLongPress = () => {
     console.log('longpress is triggered');
     setlongPress(true)
@@ -126,6 +134,12 @@ const ManualControl = () => {
     // setClickCount(clickCount + 1)
   }
 
+  const handleSetPhase = (data) => {
+    setDataPhase({
+      "phase": data
+    })
+    manualControlService.setPhase(dataPhase, path).then()
+  }
   const defaultOptions = {
     shouldPreventDefault: true,
     delay: 500,
@@ -151,6 +165,14 @@ const ManualControl = () => {
       setCountup(<Timer status='toggle' />)
     }
   }, [countup])
+  useEffect(() => {
+    if (menu != "") {
+      setDataMode({
+        "mode": menu
+      })
+      manualControlService.setMode(dataMode, path).then()
+    }
+  }, [menu])
   const checkChannel = (checkNumber) => {
     if (checkNumber == 3) {
       return (
@@ -167,6 +189,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(0)
+                handleSetPhase(1)
               }}
             >
               เลือก
@@ -182,6 +205,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(1)
+                handleSetPhase(2)
               }}
             >
               เลือก
@@ -197,6 +221,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(2)
+                handleSetPhase(3)
               }}
             >
               เลือก
@@ -221,6 +246,7 @@ const ManualControl = () => {
               {...longPressEvent}
               onClick={() => {
                 setToggle(3)
+                handleSetPhase(1)
               }}
             >
               เลือก
@@ -236,6 +262,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(4)
+                handleSetPhase(2)
               }}
             >
               เลือก
@@ -251,6 +278,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(5)
+                handleSetPhase(3)
               }}
             >
               เลือก
@@ -266,6 +294,7 @@ const ManualControl = () => {
               className={classes.buttonPattern}
               onClick={() => {
                 setToggle(6)
+                handleSetPhase(4)
               }}
             >
               เลือก
@@ -275,6 +304,9 @@ const ManualControl = () => {
       );
     }
   }
+  const handleChangeManu = (event) => {
+    setMenu(event.target.value);
+  };
   // console.log(number)
   return (
     <Page
@@ -298,11 +330,25 @@ const ManualControl = () => {
           <Grid
             className={classes.titleText}
           >
-            <Typography
-              variant='h3'
+            <TextField
+              className={classes.selectField}
+              id="outlined-select-menu"
+              select
+              name="number_channel"
+              label="โหมดการทำงาน"
+              value={menu}
+              onChange={handleChangeManu}
+              variant="outlined"
+              margin="normal"
+              fullWidth
             >
-              โหมดการทำงาน : Manual Control Mode
-            </Typography>
+              <MenuItem value="1" className={classes.menuList}>
+                Fixed Tome Mode
+              </MenuItem>
+              <MenuItem value="0" className={classes.menuList}>
+                Manual Control Mode
+              </MenuItem>
+            </TextField>
           </Grid>
         </Grid>
         <Grid
