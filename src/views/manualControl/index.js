@@ -19,7 +19,6 @@ import Timer from './Timer';
 import useLongPress from './useLongPress';
 import { setLocale } from 'yup';
 import { manualControlService } from '../../services/manualControl.service';
-import ImagePattern from './ImagePattern';
 
 
 const useStyles = makeStyles((theme) => ({
