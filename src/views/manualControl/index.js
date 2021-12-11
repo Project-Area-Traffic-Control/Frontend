@@ -19,6 +19,7 @@ import Timer from './Timer';
 import useLongPress from './useLongPress';
 import { setLocale } from 'yup';
 import { manualControlService } from '../../services/manualControl.service';
+import ImagePattern from './ImagePattern';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -68,8 +69,8 @@ const useStyles = makeStyles((theme) => ({
     // display: 'flex',
     // justifyContent: 'center'
     marginLeft: theme.spacing(8),
-    borderColor: '#FF0000',
-    borderWidth: '2px'
+    // borderColor: '#FF0000',
+    // borderWidth: '2px'
   },
   buttonPattern: {
     marginTop: theme.spacing(2),
@@ -77,6 +78,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     fontSize: '20px'
+  },
+  selectBorder: {
+    // border: '5px',
+    borderColor: '#F00000',
+    borderStyle: 'solid'
   }
 }));
 
@@ -86,6 +92,7 @@ const ManualControl = () => {
   const [path, setPath] = useState("")
   const [junction, setJunction] = useState({})
   const [number, setNumber] = useState(0)
+  const [imgList, setImgList] = useState([])
   const [menu, setMenu] = useState("")
   const location = useLocation();
   useEffect(() => {
@@ -117,12 +124,142 @@ const ManualControl = () => {
     }
     setNumber(junction.number_channel)
   }, [junction])
+  useEffect(() => {
+    if (number == 3) {
+      setContent(<Grid
+        className={classes.contentGrid}
+      >
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid>
+            <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            onClick={() => {
+              setToggle(0)
+              handleSetPhase(1)
+            }}
+          >
+            Phase ที่ 1
+          </Button>
+        </Grid>
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid>
+            <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            onClick={() => {
+              setToggle(1)
+              handleSetPhase(2)
+            }}
+          >
+            Phase ที่ 2
+          </Button>
+        </Grid>
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid>
+            <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            onClick={() => {
+              setToggle(2)
+              handleSetPhase(3)
+            }}
+          >
+             Phase ที่ 3
+          </Button>
+        </Grid>
+      </Grid>)
+    }
+    else if (number == 4) {
+      setContent(<Grid
+        className={classes.contentGrid}
+      >
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid
+
+          >
+            <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            {...longPressEvent}
+            onClick={() => {
+              setToggle(3)
+              handleSetPhase(5)
+            }}
+          >
+             Phase ที่ 5
+          </Button>
+        </Grid>
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid>
+            <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            onClick={() => {
+              setToggle(4)
+              handleSetPhase(6)
+            }}
+          >
+             Phase ที่ 6
+          </Button>
+        </Grid>
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid>
+            <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            onClick={() => {
+              setToggle(5)
+              handleSetPhase(7)
+            }}
+          >
+             Phase ที่ 7
+          </Button>
+        </Grid>
+        <Grid
+          className={classes.imgPattern}
+        >
+          <Grid>
+            <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+          </Grid>
+          <Button
+            className={classes.buttonPattern}
+            onClick={() => {
+              setToggle(6)
+              handleSetPhase(8)
+            }}
+          >
+             Phase ที่ 8
+          </Button>
+        </Grid>
+      </Grid>)
+    }
+  }, [number])
   const [countup, setCountup] = useState(<Timer />)
   const [button, setButton] = useState([]);
   const [toggle, setToggle] = useState()
   const [longpress, setlongPress] = useState(false)
   const [dataPhase, setDataPhase] = useState({ "phase": 0 })
   const [dataMode, setDataMode] = useState({ "mode": 0 })
+  const [content, setContent] = useState()
   const onLongPress = () => {
     console.log('longpress is triggered');
     setlongPress(true)
@@ -156,6 +293,7 @@ const ManualControl = () => {
       }
     }
     setButton(temp)
+    setContent(null)
   }, [toggle])
   useEffect(() => {
     setCountup(null)
@@ -166,79 +304,17 @@ const ManualControl = () => {
     }
   }, [countup])
   useEffect(() => {
-    if (menu != "") {
-      setDataMode({
-        "mode": menu
-      })
-      manualControlService.setMode(dataMode, path).then()
-    }
-  }, [menu])
-  const checkChannel = (checkNumber) => {
-    if (checkNumber == 3) {
-      return (
-        <Grid
+    if (content == null) {
+      if (toggle == 3) {
+        setContent(<Grid
           className={classes.contentGrid}
         >
           <Grid
             className={classes.imgPattern}
           >
-            <Grid>
-              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(0)
-                handleSetPhase(1)
-              }}
+            <Grid
+              className={classes.selectBorder}
             >
-              เลือก
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(1)
-                handleSetPhase(2)
-              }}
-            >
-              เลือก
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(2)
-                handleSetPhase(3)
-              }}
-            >
-              เลือก
-            </Button>
-          </Grid>
-        </Grid>
-      );
-    }
-    else if (checkNumber == 4) {
-      return (
-        <Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
               <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
             </Grid>
             <Button
@@ -249,7 +325,7 @@ const ManualControl = () => {
                 handleSetPhase(5)
               }}
             >
-              เลือก
+              Phase ที่ 5
             </Button>
           </Grid>
           <Grid
@@ -265,7 +341,7 @@ const ManualControl = () => {
                 handleSetPhase(6)
               }}
             >
-              เลือก
+              Phase ที่ 6
             </Button>
           </Grid>
           <Grid
@@ -281,7 +357,7 @@ const ManualControl = () => {
                 handleSetPhase(7)
               }}
             >
-              เลือก
+              Phase ที่ 7
             </Button>
           </Grid>
           <Grid
@@ -297,13 +373,252 @@ const ManualControl = () => {
                 handleSetPhase(8)
               }}
             >
-              เลือก
+              Phase ที่ 8
             </Button>
           </Grid>
-        </Grid>
-      );
+        </Grid>)
+      }
+      if (toggle == 4) {
+        setContent(<Grid
+          className={classes.contentGrid}
+        >
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+            >
+              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              {...longPressEvent}
+              onClick={() => {
+                setToggle(3)
+                handleSetPhase(5)
+              }}
+            >
+              Phase ที่ 5
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+              className={classes.selectBorder}
+            >
+              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(4)
+                handleSetPhase(6)
+              }}
+            >
+              Phase ที่ 6
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(5)
+                handleSetPhase(7)
+              }}
+            >
+              Phase ที่ 7
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(6)
+                handleSetPhase(8)
+              }}
+            >
+              Phase ที่ 8
+            </Button>
+          </Grid>
+        </Grid>)
+      }
+      if (toggle == 5) {
+        setContent(<Grid
+          className={classes.contentGrid}
+        >
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+            >
+              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              {...longPressEvent}
+              onClick={() => {
+                setToggle(3)
+                handleSetPhase(5)
+              }}
+            >
+              Phase ที่ 5
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+
+            >
+              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(4)
+                handleSetPhase(6)
+              }}
+            >
+              Phase ที่ 6
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+              className={classes.selectBorder}
+            >
+              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(5)
+                handleSetPhase(7)
+              }}
+            >
+              Phase ที่ 7
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+
+            >
+              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(6)
+                handleSetPhase(8)
+              }}
+            >
+              Phase ที่ 8
+            </Button>
+          </Grid>
+        </Grid>)
+      }
+      if (toggle == 6) {
+        setContent(<Grid
+          className={classes.contentGrid}
+        >
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+            >
+              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              // {...longPressEvent}
+              onClick={() => {
+                setToggle(3)
+                handleSetPhase(5)
+              }}
+            >
+              Phase ที่ 5
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+
+            >
+              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(4)
+                handleSetPhase(6)
+              }}
+            >
+              Phase ที่ 6
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+
+            >
+              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(5)
+                handleSetPhase(7)
+              }}
+            >
+              Phase ที่ 7
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+              className={classes.selectBorder}
+            >
+              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(6)
+                handleSetPhase(8)
+              }}
+            >
+              Phase ที่ 8
+            </Button>
+          </Grid>
+        </Grid>)
+      }
+
     }
-  }
+  }, [content])
+  useEffect(() => {
+    if (menu != "") {
+      setDataMode({
+        "mode": menu
+      })
+      manualControlService.setMode(dataMode, path).then()
+    }
+  }, [menu])
   const handleChangeManu = (event) => {
     setMenu(event.target.value);
   };
@@ -354,7 +669,8 @@ const ManualControl = () => {
         <Grid
           className={classes.bottomGrid}
         >
-          {checkChannel(number)}
+          {/* {checkChannel(number)} */}
+          {content}
         </Grid>
       </Grid>
     </Page>

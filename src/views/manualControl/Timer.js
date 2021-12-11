@@ -35,7 +35,7 @@ const Timer = (props) => {
         <div>
             {minutes === 0 && seconds === 0
                 ? null
-                : <h1> {minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}</h1>
+                : <h1> เวลา {minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}</h1>
             }
         </div>
     )
