@@ -43,26 +43,26 @@ const useStyles = makeStyles(() => ({
   },
   table: {
     overflow: 'visible',
-    
+
   },
 }));
 const StyledTableCell = withStyles((theme) => ({
   head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
-      
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+
   },
   body: {
-      fontSize: 14,
-      color: "#000000",
+    fontSize: 14,
+    color: "#000000",
   },
 }))(TableCell);
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-      '&:nth-of-type(odd)': {
+    '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
-      },
+    },
   },
 }))(TableRow);
 
@@ -80,8 +80,6 @@ const rows = [
   createData('Eclair8', 262, 16.0),
   createData('Cupcake8', 305, 3.7),
   createData('Gingerbread2', 356, 16.0),
-  
-  
 ];
 
 const Location = ({ className, ...rest }) => {
@@ -91,34 +89,34 @@ const Location = ({ className, ...rest }) => {
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardHeader title="Example Table" className={classes.cardHeader} />
       {/* <Divider /> */}
-      <TableContainer  className = {classes.tableCon}>
-            <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                <TableRow>
-                    <StyledTableCell align="center" width = "10%"></StyledTableCell>
-                    <StyledTableCell align="center" width = "30%">Username</StyledTableCell>
-                    <StyledTableCell align="center" width = "30%">ชื่อ</StyledTableCell>
-                    <StyledTableCell align="center" width = "30%">นามสกุล</StyledTableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {rows.map((row) => (
-                    <StyledTableRow key={row.name}>
-                    <StyledTableCell align="center">
-                        <IconButton>
-                            <AssignmentIcon />
-                        </IconButton>
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                        {row.userName}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">{row.name}</StyledTableCell>
-                    <StyledTableCell align="center">{row.surName}</StyledTableCell>
-                   
-                    </StyledTableRow>
-                ))}
-                </TableBody>
-            </Table>
+      <TableContainer className={classes.tableCon}>
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell align="center" width="10%"></StyledTableCell>
+              <StyledTableCell align="center" width="30%">Username</StyledTableCell>
+              <StyledTableCell align="center" width="30%">ชื่อ</StyledTableCell>
+              <StyledTableCell align="center" width="30%">นามสกุล</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <StyledTableRow key={row.name}>
+                <StyledTableCell align="center">
+                  <IconButton>
+                    <AssignmentIcon />
+                  </IconButton>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.userName}
+                </StyledTableCell>
+                <StyledTableCell align="center">{row.name}</StyledTableCell>
+                <StyledTableCell align="center">{row.surName}</StyledTableCell>
+
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
       </TableContainer>
     </Card>
   );

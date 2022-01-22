@@ -41,7 +41,7 @@ const routes = [
       { path: 'manual_control/:junction_id', element: < ManualControl /> },
       { path: 'create_junction', element: < CreateJunction /> },
       { path: 'userManage', element: <UserManageView /> },
-      { path: '/', element: < ManualControl /> },
+      { path: '/', element: <DashboardView /> },
 
 
       ,

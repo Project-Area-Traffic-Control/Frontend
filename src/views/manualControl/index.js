@@ -306,6 +306,177 @@ const ManualControl = () => {
   }, [countup])
   useEffect(() => {
     if (content == null) {
+      if (toggle == 0) {
+        setContent(<Grid
+          className={classes.contentGrid}
+        >
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+              className={classes.selectBorder}
+            >
+              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              {...longPressEvent}
+              onClick={() => {
+                setToggle(0)
+                handleSetPhase(5)
+              }}
+            >
+              Phase ที่ 1
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(1)
+                handleSetPhase(6)
+              }}
+            >
+              Phase ที่ 2
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(2)
+                handleSetPhase(7)
+              }}
+            >
+              Phase ที่ 3
+            </Button>
+          </Grid>
+        </Grid>)
+      }
+      if (toggle == 1) {
+        setContent(<Grid
+          className={classes.contentGrid}
+        >
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              {...longPressEvent}
+              onClick={() => {
+                setToggle(0)
+                handleSetPhase(5)
+              }}
+            >
+              Phase ที่ 1
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+              className={classes.selectBorder}
+            >
+              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(1)
+                handleSetPhase(6)
+              }}
+            >
+              Phase ที่ 2
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(2)
+                handleSetPhase(7)
+              }}
+            >
+              Phase ที่ 3
+            </Button>
+          </Grid>
+        </Grid>)
+      }
+      if (toggle == 2) {
+        setContent(<Grid
+          className={classes.contentGrid}
+        >
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              {...longPressEvent}
+              onClick={() => {
+                setToggle(0)
+                handleSetPhase(5)
+              }}
+            >
+              Phase ที่ 1
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid>
+              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(1)
+                handleSetPhase(6)
+              }}
+            >
+              Phase ที่ 2
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgPattern}
+          >
+            <Grid
+              className={classes.selectBorder}
+            >
+              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+            </Grid>
+            <Button
+              className={classes.buttonPattern}
+              onClick={() => {
+                setToggle(2)
+                handleSetPhase(7)
+              }}
+            >
+              Phase ที่ 3
+            </Button>
+          </Grid>
+        </Grid>)
+      }
       if (toggle == 3) {
         setContent(<Grid
           className={classes.contentGrid}

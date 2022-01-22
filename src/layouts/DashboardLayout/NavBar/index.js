@@ -139,19 +139,34 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
-  const [openJunction, setOpenJunction] = useState(false);
+  const [openJunction, setOpenJunction] = useState([]);
   const [junctionList, setJunctionList] = useState([]);
   const handleClick = () => {
     setOpen(!open);
   };
-  const handleClickJunction = () => {
-    setOpenJunction(!openJunction);
+  const handleClickJunction = (ind) => {
+    var temp = openJunction
+    for (let index = 0; index < temp.length; index++) {
+      if (ind == index) {
+        temp[ind] = !temp[ind]
+      }
+    }
+    setOpenJunction(temp);
   };
   useEffect(() => {
     junctionService.getAllJunction().then(data => {
       setJunctionList(data)
     })
   }, [])
+  useEffect(() => {
+    if (junctionList.length > 0) {
+      var temp = []
+      for (let index = 0; index < junctionList.length; index++) {
+        temp[index] = false
+      }
+      setOpenJunction(temp)
+    }
+  }, [junctionList])
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -223,7 +238,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                   // onClick={handleClick}
                   />
                 </ListItem>
-                {junctionList.map(junction => (
+                {junctionList.map((junction, index) => (
                   <div>
                     <ListItem sx={{ pl: 4 }}>
                       <NavItem
@@ -232,11 +247,11 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                         title={junction.name}
                         className={classes.collapse}
                         // icon={items[2].icon}
-                        onClick={handleClickJunction}
+                        onClick={() => { handleClickJunction(index) }}
                       />
-                      {openJunction ? <ExpandLess /> : <ExpandMore />}
+                      {openJunction[index] ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <Collapse in={openJunction} timeout="auto" unmountOnExit>
+                    <Collapse in={openJunction[index]} timeout="auto" unmountOnExit>
                       <NavItem
                         href={`/app/dashboard`}
                         key={items[2].title}
