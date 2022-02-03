@@ -18,6 +18,7 @@ import { junctionService } from './services/junction.service';
 import EditJunction from './views/Junction/EditJunction';
 import ControlView from './views/control';
 import CreateJunction from './views/Junction/CreateJunction';
+import Flashing from './views/flashing';
 // let junction = junctionService.getAllJunction()
 // let junctionID = []
 // for (let index = 0; index < junction.length; index++) {
@@ -38,6 +39,7 @@ const routes = [
       { path: 'junction', element: < JunctionView /> },
       { path: `junction/:junction_id`, element: < EditJunction /> },
       { path: 'junction/:junction_id/create_plan', element: < ControlView /> },
+      { path: 'junction/:junction_id/flashing_plan', element: < Flashing /> },
       { path: 'manual_control/:junction_id', element: < ManualControl /> },
       { path: 'create_junction', element: < CreateJunction /> },
       { path: 'userManage', element: <UserManageView /> },

@@ -12,7 +12,8 @@ import {
   Typography,
   Collapse,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Button
 } from '@material-ui/core';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import {
@@ -39,6 +40,7 @@ import clsx from 'clsx';
 import HomeIcon from '@material-ui/icons/Home';
 import { BarChart, CallSplit, DonutLarge, ExpandLess, ExpandMore, StarBorder, Videocam } from '@material-ui/icons';
 import { junctionService } from '../../../services/junction.service';
+import { control } from 'leaflet';
 
 // import Collapse from '@material-ui/core/Collapse';
 // import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -132,6 +134,9 @@ const useStyles = makeStyles((theme) => ({
   },
   collapse_1: {
     marginLeft: theme.spacing(10)
+  },
+  collapse_2: {
+    marginLeft: theme.spacing(15)
   }
 }));
 
@@ -140,18 +145,42 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
   const [openJunction, setOpenJunction] = useState([]);
+  const [openControl, setOpenControl] = useState([]);
   const [junctionList, setJunctionList] = useState([]);
   const handleClick = () => {
     setOpen(!open);
   };
-  const handleClickJunction = (ind) => {
+  const handleClickJunction = (ind, type) => {
     var temp = openJunction
+    if (type == 0) {
+      var reset
+      for (let index = 0; index < temp.length; index++) {
+        if (ind == index) {
+          temp[ind].junction = !temp[ind].junction
+          reset = temp[ind].junction
+        }
+      }
+      if (reset == false) {
+        temp[ind].control = false
+      }
+    }
+    else if (type == 1) {
+      for (let index = 0; index < temp.length; index++) {
+        if (ind == index) {
+          temp[ind].control = !temp[ind].control
+        }
+      }
+    }
+    setOpenJunction(temp);
+  };
+  const handleClickControl = (ind) => {
+    var temp = openControl
     for (let index = 0; index < temp.length; index++) {
       if (ind == index) {
         temp[ind] = !temp[ind]
       }
     }
-    setOpenJunction(temp);
+    setOpenControl(temp);
   };
   useEffect(() => {
     junctionService.getAllJunction().then(data => {
@@ -162,9 +191,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     if (junctionList.length > 0) {
       var temp = []
       for (let index = 0; index < junctionList.length; index++) {
-        temp[index] = false
+        temp[index] = {
+          junction: false,
+          control: false
+        }
       }
       setOpenJunction(temp)
+      console.log(openJunction)
+      // setOpenControl(temp)
     }
   }, [junctionList])
   useEffect(() => {
@@ -238,20 +272,21 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                   // onClick={handleClick}
                   />
                 </ListItem>
+
                 {junctionList.map((junction, index) => (
                   <div>
                     <ListItem sx={{ pl: 4 }}>
                       <NavItem
-                        href={`/app`}
+                        href={location.pathname}
                         key={items[2].title}
                         title={junction.name}
                         className={classes.collapse}
                         // icon={items[2].icon}
-                        onClick={() => { handleClickJunction(index) }}
+                        onClick={() => { handleClickJunction(index, 0) }}
                       />
-                      {openJunction[index] ? <ExpandLess /> : <ExpandMore />}
+                      {openJunction[index].junction ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <Collapse in={openJunction[index]} timeout="auto" unmountOnExit>
+                    <Collapse in={openJunction[index].junction} timeout="auto" unmountOnExit>
                       <NavItem
                         href={`/app/dashboard`}
                         key={items[2].title}
@@ -269,13 +304,31 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       // onClick={handleClick}
                       />
                       <NavItem
-                        href={`junction/${junction.id}/create_plan`}
+                        href={location.pathname}
                         key={items[2].title}
                         title="ตั้งค่าการทำงาน"
                         className={classes.collapse_1}
-                      // icon={items[2].icon}
-                      // onClick={handleClick}
+                        // icon={items[2].icon}
+                        onClick={() => { handleClickJunction(index, 1) }}
                       />
+                      <Collapse in={openJunction[index].control} timeout="auto" unmountOnExit>
+                        <NavItem
+                          href={`junction/${junction.id}/flashing_plan`}
+                          key={items[2].title}
+                          title="ตั้งค่ารูปแบบการจัดการสัญญาณไฟจราจร"
+                          className={classes.collapse_2}
+                        // icon={items[2].icon}
+                        // onClick={handleClick}
+                        />
+                        <NavItem
+                          href={`junction/${junction.id}/create_plan`}
+                          key={items[2].title}
+                          title="ตั้งค่าโหมดการทำงาน"
+                          className={classes.collapse_2}
+                        // icon={items[2].icon}
+                        // onClick={handleClick}
+                        />
+                      </Collapse>
                       <NavItem
                         href={`/app/manual_control/${junction.id}`}
                         key={items[2].title}
