@@ -6,7 +6,7 @@ import {
     makeStyles,
     styled
 } from '@material-ui/core';
-import Page from '../../components/Page';
+import Page from '../../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -16,7 +16,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 // import ReportTable from './ReportTable';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
-import { junctionService } from '../../services/junction.service';
+import { junctionService } from '../../../services/junction.service';
+// import ConfigView from './ConfigView';
+import ConfigMode from './ConfigMode';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
@@ -136,7 +138,7 @@ const ControlView = () => {
                 >
                     {/* test */}
                     {/* <ConfigView /> */}
-                    {/* <ConfigMode /> */}
+                    <ConfigMode />
                 </Grid>
                 {/* <Grid
           className={classes.bottomGrid}

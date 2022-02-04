@@ -4,9 +4,10 @@ import {
     Grid,
     IconButton,
     makeStyles,
-    styled
+    styled,
+    TextField
 } from '@material-ui/core';
-import Page from '../../components/Page';
+import Page from '../../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -16,7 +17,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 // import ReportTable from './ReportTable';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
-import { junctionService } from '../../services/junction.service';
+import { junctionService } from '../../../services/junction.service';
+// import ConfigView from './ConfigView';
+import ConfigPlan from './ConfigPlan';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
@@ -136,13 +139,79 @@ const ControlView = () => {
                 >
                     {/* test */}
                     {/* <ConfigView /> */}
-                    {/* <ConfigMode /> */}
-                </Grid>
-                {/* <Grid
+                    {/* <ConfigPlan /> */}
+                    <Grid
+                        className={classes.top}
+                    >
+                        <Grid
+                            className={classes.topLeft}
+                        >
+                            <Grid
+                                className={classes.titleGrid}
+                            >
+                                <Typography
+                                    variant='h4'
+                                    className={classes.titleLeft}
+                                >
+                                    ตั้งค่ารูปแบบการจัดการสัญญาณไฟ
+                                </Typography>
+                            </Grid>
+                            <Divider className={classes.divider} />
+                            <Grid
+                                className={classes.textFieldLeft}
+                            >
+
+                                <Grid
+                                    className={classes.textFieldLeft_top}
+                                >
+                                    <TextField
+                                        // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                        // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                        className={classes.textField_name}
+                                        label="ชื่อรูปแบบ"
+                                        variant="outlined"
+                                        name="junctionName"
+                                        // onBlur={formik.handleBlur}
+                                        // onChange={formik.handleChange}
+                                        // value={formik.values.junctionName}
+                                        margin="normal"
+                                    />
+                                    {/* <TextField
+                                className={classes.selectField}
+                                id="outlined-select-menu"
+                                select
+                                name="number_channel"
+                                label="จำนวนแยก"
+                                // value={formik.values.number_channel}
+                                // onChange={handleChangeManu}
+                                variant="outlined"
+                                margin="normal"
+                            >
+                                {menuList.map((option) => (
+                                    <MenuItem key={option.id} value={option.value} className={classes.menuList}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField> */}
+                                    <Button
+                                        className={classes.buttonPattern}
+                                    // onClick={() => handleClickOpen()}
+                                    // type='submit'
+                                    >
+                                        เลือกชุดรูปแบบ
+                                    </Button>
+                                </Grid>
+
+                                {/* <LocationSearchInput /> */}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    {/* <Grid
           className={classes.bottomGrid}
         >
           <ReportTable number_channel={formik.values.number_channel} />
         </Grid> */}
+                </Grid>
             </Grid>
         </Page>
     );

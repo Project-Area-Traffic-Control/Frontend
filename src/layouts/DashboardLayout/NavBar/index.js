@@ -173,15 +173,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     }
     setOpenJunction(temp);
   };
-  const handleClickControl = (ind) => {
-    var temp = openControl
-    for (let index = 0; index < temp.length; index++) {
-      if (ind == index) {
-        temp[ind] = !temp[ind]
-      }
-    }
-    setOpenControl(temp);
-  };
   useEffect(() => {
     junctionService.getAllJunction().then(data => {
       setJunctionList(data)
@@ -197,7 +188,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         }
       }
       setOpenJunction(temp)
-      console.log(openJunction)
+      // console.log(openJunction)
       // setOpenControl(temp)
     }
   }, [junctionList])
@@ -284,9 +275,9 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                         // icon={items[2].icon}
                         onClick={() => { handleClickJunction(index, 0) }}
                       />
-                      {openJunction[index].junction ? <ExpandLess /> : <ExpandMore />}
+                      {openJunction.length > 0 && openJunction[index].junction ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <Collapse in={openJunction[index].junction} timeout="auto" unmountOnExit>
+                    {openJunction.length > 0 && <Collapse in={openJunction[index].junction} timeout="auto" unmountOnExit>
                       <NavItem
                         href={`/app/dashboard`}
                         key={items[2].title}
@@ -313,7 +304,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       />
                       <Collapse in={openJunction[index].control} timeout="auto" unmountOnExit>
                         <NavItem
-                          href={`junction/${junction.id}/flashing_plan`}
+                          href={`junction/${junction.id}/config_plan`}
                           key={items[2].title}
                           title="ตั้งค่ารูปแบบการจัดการสัญญาณไฟจราจร"
                           className={classes.collapse_2}
@@ -321,7 +312,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                         // onClick={handleClick}
                         />
                         <NavItem
-                          href={`junction/${junction.id}/create_plan`}
+                          href={`junction/${junction.id}/config_mode`}
                           key={items[2].title}
                           title="ตั้งค่าโหมดการทำงาน"
                           className={classes.collapse_2}
@@ -353,7 +344,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       // icon={items[2].icon}
                       // onClick={handleClick}
                       />
-                    </Collapse>
+                    </Collapse>}
                   </div>
                 ))}
               </List>

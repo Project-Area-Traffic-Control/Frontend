@@ -20,7 +20,7 @@ import {
     TableHead,
     TableBody
 } from '@material-ui/core';
-import Page from '../../components/Page';
+import Page from '../../../components/Page';
 // import VIsView from './VideoHistoryPage';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
@@ -36,12 +36,12 @@ import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
 import { Assignment, Close, ExpandLess, ExpandMore, KeyboardArrowLeft, KeyboardArrowRight, RemoveFromQueueTwoTone, RotateRight } from '@material-ui/icons';
 // import ReportTable from './ReportTable';
-import { channelService } from '../../services/channel.service';
+import { channelService } from '../../../services/channel.service';
 import { Slide } from 'react-slideshow-image';
 import SimpleImageSlider from "react-simple-image-slider";
 import Slider from 'react-slick';
-import ImageSlide from './ImageSlide';
-import theme from '../../theme';
+import ImageSlide from '../ImageSlide';
+import theme from '../../../theme';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -292,7 +292,7 @@ const BootstrapDialogTitle = (props) => {
 };
 
 
-const ConfigView = (props) => {
+const ConfigPlan = (props) => {
     const classes = useStyles();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -414,36 +414,6 @@ const ConfigView = (props) => {
         }
         setData(temp)
     }
-
-    // const createFormik = () => {
-    //     let temp = []
-    //     for (let index = 0; index < number_channel; index++) {
-    //         temp[index].push(formik_channel[index])
-    //     }
-    //     console.log(temp)
-    //     setFormikChannel(temp)
-    // }
-
-    // React.useEffect(()=>{
-    // recordservice.getAllrecord(search).then((data)=>{
-    // console.log(data)
-    // setOrders(data.data)
-
-    // }).catch((e)=>{
-    // console.log(e)
-    // })
-    // },[])
-
-    // function onsubmit() {
-    //     recordservice.getAllrecord(search).then((data)=>{
-    //     console.log(data)
-    //     setOrders(data.data)
-
-    //     }).catch((e)=>{
-    //     console.log(e)
-    //     })
-
-    // }
     const addRow = () => {
         var temp = {
             // number: data.length + 1,
@@ -1394,4 +1364,4 @@ const ConfigView = (props) => {
     );
 };
 
-export default ConfigView;
+export default ConfigPlan;
