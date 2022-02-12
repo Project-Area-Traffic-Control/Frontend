@@ -3,7 +3,8 @@ import axios from "axios"
 export const planService = {
     // createChannel,
     // updateChannel
-    getAllPlan
+    getAllPlan,
+    getPlanByID
 };
 
 async function getAllPlan() {
@@ -14,6 +15,27 @@ async function getAllPlan() {
         .then(plan => {
             // console.log(junction.data)
             return plan.data;
+        })
+        .catch((e) => {
+            if (e.response.status === 400) {
+                e.message = e.response.data
+                return Promise.reject(e);
+            }
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function getPlanByID(id) {
+    return axios.get(`${apiConstants.uri}/plans/${id}`,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    )
+        .then(plan => {
+            // console.log(junction.data)
+            return plan;
         })
         .catch((e) => {
             if (e.response.status === 400) {

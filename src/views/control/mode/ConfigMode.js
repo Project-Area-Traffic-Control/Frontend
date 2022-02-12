@@ -321,6 +321,7 @@ const ConfigMode = (props) => {
     const number_channel = props.number_channel
     const [check, setCheck] = useState("")
     const [content, setContent] = useState(<></>)
+    const [editAble, setEditAble] = useState([]);
     const [current, setCurrent] = useState("")
     const [overview, setOverView] = useState([]);
     const [menu, setMenu] = useState(0)
@@ -352,6 +353,27 @@ const ConfigMode = (props) => {
     const [pattern, setPattern] = useState(0)
     const handleChangeManu = (event) => {
         setMenu(event.target.value);
+        console.log(index)
+    };
+    const handleChangeData = (event, ind, type) => {
+        var temp = editAble
+        for (let index = 0; index < temp.length; index++) {
+            if (ind == index) {
+                if (type == 0) {
+                    temp[ind].start = event.target.value
+                }
+                else if (type == 1) {
+                    temp[ind].end = event.target.value
+                }
+                else if (type == 2) {
+                    planService.getPlanByID(event.target.value).then((data) => {
+                        let plan = data.data
+                        temp[ind].plan = plan
+                    })
+                }
+            }
+        }
+        setEditAble(temp)
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -379,15 +401,15 @@ const ConfigMode = (props) => {
             end: "00:00",
             plan: ""
         }
-        setEditAble([...data, temp])
-        setContent(content)
-        console.log(data)
+        setEditAble([...editAble, temp])
+        setContent(null)
     }
 
     const removeRow = (index) => {
-        const temp = [...data]
+        const temp = [...editAble]
         temp.splice(index, 1)
-        setData(temp)
+        setEditAble(temp)
+        setContent(null)
     }
     const changePattern = (index, phase) => {
         var temp = [...data]
@@ -405,7 +427,16 @@ const ConfigMode = (props) => {
 
     const [fixtimeList, setFixtimeList] = useState([])
     const [data, setData] = useState([])
-    const [editAble, setEditAble] = useState([])
+
+    const formik = useFormik({
+        initialValues: editAble,
+        validationSchema: Yup.object({
+            // areaID: Yup.string()
+        }),
+        onSubmit: async (values) => {
+            console.log(values)
+        },
+    });
     useEffect(() => {
         controlService.getAllFixtime().then((data) => {
             setFixtimeList(data)
@@ -414,7 +445,6 @@ const ConfigMode = (props) => {
             setPlanList(data)
         })
     }, [])
-
     useEffect(() => {
         if (menu == 1) {
             setContent(<Grid
@@ -483,117 +513,135 @@ const ConfigMode = (props) => {
             setContent(<></>)
         }
         else if (menu > 0 && menu % 2 == 1) {
-            setContent(<Grid
-                className={classes.bottom}
-            >
-                <Grid
-                    className={classes.bottomLeft}
-                >
+            setContent(
+                <form onSubmit={formik.handleSubmit}>
                     <Grid
-                        className={classes.titleGrid}
+                        className={classes.bottom}
                     >
-                        <Typography
-                            variant='h4'
-                            className={classes.titleLeft}
+                        <Grid
+                            className={classes.bottomLeft}
                         >
-                            ตารางการทำงาน
-                        </Typography>
+                            <Grid
+                                className={classes.titleGrid}
+                            >
+                                <Typography
+                                    variant='h4'
+                                    className={classes.titleLeft}
+                                >
+                                    ตารางการทำงาน
+                                </Typography>
+                            </Grid>
+                            <Divider className={classes.divider} />
+                            <Grid
+                                className={classes.textFieldLeft}
+                            >
+                                {/* {table} */}
+                                <TableContainer className={classes.tableCon}>
+                                    <Table className={classes.table} aria-label="customized table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <StyledTableCell align="center" width="25%">เวลาเริ่มต้น</StyledTableCell>
+                                                <StyledTableCell align="center" width="25%">เวลาสิ้นสุด</StyledTableCell>
+                                                <StyledTableCell align="center" width="40%">รูปแบบการจัดการสัญญาณไฟ</StyledTableCell>
+                                                <StyledTableCell align="center" width="10%">ลบ</StyledTableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {editAble.map((row, index) => (
+                                                <StyledTableRow key={row.number}>
+                                                    <StyledTableCell align="center">
+                                                        <TextField
+                                                            // className={classes.textField_name}
+                                                            variant="outlined"
+                                                            name="start"
+                                                            // onBlur={formik.handleBlur}
+                                                            onChange={(event) => { handleChangeData(event, index, 0) }}
+                                                            // value={formik.values.junctionName}
+                                                            // select
+                                                            margin="normal"
+                                                            defaultValue={row.start}
+                                                        />
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <TextField
+                                                            // className={classes.textField_name}
+                                                            variant="outlined"
+                                                            name="end"
+                                                            // onBlur={formik.handleBlur}
+                                                            onChange={(event) => { handleChangeData(event, index, 1) }}
+                                                            // value={formik.values.junctionName}
+                                                            // select
+                                                            margin="normal"
+                                                            defaultValue={row.end}
+                                                        />
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <TextField
+                                                            // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                                            // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                                            className={classes.textField_plan}
+                                                            label="เลือก Plan"
+                                                            variant="outlined"
+                                                            name="planID"
+                                                            // onBlur={formik.handleBlur}
+                                                            onChange={(event) => { handleChangeData(event, index, 2) }}
+                                                            defaultValue={row.plan.id}
+                                                            select
+                                                            margin="normal"
+                                                            fullWidth
+                                                        >
+                                                            {planList.map((option) => (
+                                                                <MenuItem key={option.id} value={option.id} className={classes.menuList}>
+                                                                    {option.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <IconButton
+                                                            onClick={() => {
+                                                                removeRow(index)
+                                                                //  goToPrevPicture()
+                                                            }}
+                                                        >
+                                                            <Close />
+                                                        </IconButton>
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
+                            <Grid
+                                className={classes.top_icon}
+                            >
+                                <Button
+                                    // className={classes.buttonGrid}
+                                    onClick={addRow}
+                                // type='submit'
+                                >
+                                    เพิ่มรูปแบบ
+                                </Button>
+                            </Grid>
+                            <Grid
+                                className={classes.bottom_icon}
+                            >
+                                <Button
+                                    className={classes.buttonGrid}
+                                    onClick={() => {
+                                        setMenu(1)
+                                        setData(editAble)
+                                        formik.setValues(editAble)
+                                    }}
+                                    type='submit'
+                                >
+                                    บันทึกข้อมูล
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid
-                        className={classes.textFieldLeft}
-                    >
-                        {/* {table} */}
-                        <TableContainer className={classes.tableCon}>
-                            <Table className={classes.table} aria-label="customized table">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell align="center" width="20%">เวลาเริ่มต้น</StyledTableCell>
-                                        <StyledTableCell align="center" width="20%">เวลาสิ้นสุด</StyledTableCell>
-                                        <StyledTableCell align="center" width="60%">รูปแบบการจัดการสัญญาณไฟ</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {data.map((row, index) => (
-                                        <StyledTableRow key={row.number}>
-                                            <StyledTableCell align="center">
-                                                <TextField
-                                                    // className={classes.textField_name}
-                                                    variant="outlined"
-                                                    name="start"
-                                                    // onBlur={formik.handleBlur}
-                                                    // onChange={handleChangeManu}
-                                                    // value={formik.values.junctionName}
-                                                    // select
-                                                    margin="normal"
-                                                    defaultValue={row.start}
-                                                />
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                <TextField
-                                                    // className={classes.textField_name}
-                                                    variant="outlined"
-                                                    name="end"
-                                                    // onBlur={formik.handleBlur}
-                                                    // onChange={handleChangeManu}
-                                                    // value={formik.values.junctionName}
-                                                    // select
-                                                    margin="normal"
-                                                    defaultValue={row.end}
-                                                />
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                <TextField
-                                                    // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
-                                                    // helperText={formik.touched.junctionName && formik.errors.junctionName}
-                                                    className={classes.textField_plan}
-                                                    label="เลือก Plan"
-                                                    variant="outlined"
-                                                    name="planID"
-                                                    // onBlur={formik.handleBlur}
-                                                    // onChange={handleChangeManu}
-                                                    defaultValue={row.plan.id}
-                                                    select
-                                                    margin="normal"
-                                                    fullWidth
-                                                >
-                                                    {planList.map((option) => (
-                                                        <MenuItem key={option.id} value={option.id} className={classes.menuList}>
-                                                            {option.name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </StyledTableCell>
-                                        </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-                    <Grid
-                        className={classes.top_icon}
-                    >
-                        <Button
-                            // className={classes.buttonGrid}
-                            onClick={addRow}
-                        // type='submit'
-                        >
-                            เพิ่มรูปแบบ
-                        </Button>
-                    </Grid>
-                    <Grid
-                        className={classes.bottom_icon}
-                    >
-                        <Button
-                            className={classes.buttonGrid}
-                            onClick={() => { setMenu(menu + 2) }}
-                            type='submit'
-                        >
-                            บันทึกข้อมูล
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Grid>
+                </form>
             )
         }
     }, [menu])
@@ -628,10 +676,140 @@ const ConfigMode = (props) => {
             setEditAble(temp)
         }
     }, [fixtimeList])
-    const formik = props.formik;
-    const channel_Formik = props.channel_Formik
-    const channel = props.channel;
-    const [formikChannel, setFormikChannel] = useState([]);
+
+    useEffect(() => {
+        if (content == null) {
+            setContent(
+                <form onSubmit={formik.handleSubmit}>
+                    <Grid
+                        className={classes.bottom}
+                    >
+                        <Grid
+                            className={classes.bottomLeft}
+                        >
+                            <Grid
+                                className={classes.titleGrid}
+                            >
+                                <Typography
+                                    variant='h4'
+                                    className={classes.titleLeft}
+                                >
+                                    ตารางการทำงาน
+                                </Typography>
+                            </Grid>
+                            <Divider className={classes.divider} />
+                            <Grid
+                                className={classes.textFieldLeft}
+                            >
+                                {/* {table} */}
+                                <TableContainer className={classes.tableCon}>
+                                    <Table className={classes.table} aria-label="customized table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <StyledTableCell align="center" width="25%">เวลาเริ่มต้น</StyledTableCell>
+                                                <StyledTableCell align="center" width="25%">เวลาสิ้นสุด</StyledTableCell>
+                                                <StyledTableCell align="center" width="40%">รูปแบบการจัดการสัญญาณไฟ</StyledTableCell>
+                                                <StyledTableCell align="center" width="10%">ลบ</StyledTableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {editAble.map((row, index) => (
+                                                <StyledTableRow key={row.number}>
+                                                    <StyledTableCell align="center">
+                                                        <TextField
+                                                            // className={classes.textField_name}
+                                                            variant="outlined"
+                                                            name="start"
+                                                            // onBlur={formik.handleBlur}
+                                                            onChange={(event) => { handleChangeData(event, index, 0) }}
+                                                            // value={formik.values.junctionName}
+                                                            // select
+                                                            margin="normal"
+                                                            defaultValue={row.start}
+                                                        />
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <TextField
+                                                            // className={classes.textField_name}
+                                                            variant="outlined"
+                                                            name="end"
+                                                            // onBlur={formik.handleBlur}
+                                                            onChange={(event) => { handleChangeData(event, index, 1) }}
+                                                            // value={formik.values.junctionName}
+                                                            // select
+                                                            margin="normal"
+                                                            defaultValue={row.end}
+                                                        />
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <TextField
+                                                            // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                                            // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                                            className={classes.textField_plan}
+                                                            label="เลือก Plan"
+                                                            variant="outlined"
+                                                            name="planID"
+                                                            // onBlur={formik.handleBlur}
+                                                            onChange={(event) => { handleChangeData(event, index, 2) }}
+                                                            defaultValue={row.plan.id}
+                                                            select
+                                                            margin="normal"
+                                                            fullWidth
+                                                        >
+                                                            {planList.map((option) => (
+                                                                <MenuItem key={option.id} value={option.id} className={classes.menuList}>
+                                                                    {option.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <IconButton
+                                                            onClick={() => {
+                                                                removeRow(index)
+                                                            }}
+                                                        >
+                                                            <Close />
+                                                        </IconButton>
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
+                            <Grid
+                                className={classes.top_icon}
+                            >
+                                <Button
+                                    // className={classes.buttonGrid}
+                                    onClick={addRow}
+                                // type='submit'
+                                >
+                                    เพิ่มรูปแบบ
+                                </Button>
+                            </Grid>
+                            <Grid
+                                className={classes.bottom_icon}
+                            >
+                                <Button
+                                    className={classes.buttonGrid}
+                                    onClick={() => {
+                                        setMenu(1)
+                                        setData(editAble)
+                                        formik.setValues(editAble)
+                                    }}
+                                    type='submit'
+                                >
+                                    บันทึกข้อมูล
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </form>
+            )
+        }
+    }, [content])
     const [index, setActiveStep] = React.useState(0);
     const images_pattern1 = [
         { url: "/static/Mock-up_3way1.png" },
@@ -707,7 +885,7 @@ const ConfigMode = (props) => {
                                 variant="outlined"
                                 name="junctionName"
                                 // onBlur={formik.handleBlur}
-                                onChange={handleChangeManu}
+                                onChange={(event) => { handleChangeManu(event) }}
                                 // value={formik.values.junctionName}
                                 select
                                 margin="normal"

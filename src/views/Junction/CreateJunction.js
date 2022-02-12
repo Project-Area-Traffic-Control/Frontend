@@ -90,32 +90,6 @@ const CreateJunction = () => {
             await junctionService.getAllJunction().then(data => {
                 setJunctionList(data)
             })
-
-
-
-
-            // if (addDrawerState) {
-            //     var res = await addLocation(values)
-            //     if (res.status === 200) {
-            //         let tempData = locations.copyWithin();
-            //         tempData.push(res.data)
-            //         setLocations([])
-            //         setLocations(tempData)
-            //         setAddDrawerState(false)
-            //     }
-            //     else if (res.status == 400) {
-            //         if (res.data.errno == 1062) {
-            //             alert("Duplicate entry")
-            //         }
-            //     }
-            // }
-
-            // if (editDrawerState) {
-            //     // alert("Edit")
-            //     console.info(values)
-            //     editLocation(values)
-
-            // }
         },
     });
     // useEffect(() => {

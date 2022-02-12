@@ -243,7 +243,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
             </ListItem>
             <ListItem >
               <NavItem
-                href={items[1].href}
+                href={location.pathname}
                 key={items[1].title}
                 title={items[1].title}
                 icon={items[1].icon}

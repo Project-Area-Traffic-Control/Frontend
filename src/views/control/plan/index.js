@@ -20,31 +20,204 @@ import { Form, useFormik } from 'formik';
 import { junctionService } from '../../../services/junction.service';
 // import ConfigView from './ConfigView';
 import ConfigPlan from './ConfigPlan';
+import { planService } from '../../../services/plan.service';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
         paddingTop: theme.spacing(5),
-        width: '100%'
-    },
-    container: {
         width: '100%',
-        height: '100%',
-        // display: 'flex',
-        paddingLeft: theme.spacing(10),
-        paddingRight: theme.spacing(10)
+        height: '100%'
     },
-    topGrid: {
-        width: '100%',
+    top: {
         height: '100%',
-        // backgroundColor: '#000000',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    topLeft: {
+        width: '80%',
+        backgroundColor: '#FFFFFF',
         // display: 'flex'
     },
-    bottomGrid: {
-        marginTop: theme.spacing(5),
+    titleGrid: {
+        height: '80px',
         width: '100%',
-        height: '50%',
+        display: 'flex-direction',
+        justifyContent: 'center'
+    },
+    titleLeft: {
+        color: '#17395C',
+        paddingTop: theme.spacing(3),
+        paddingLeft: theme.spacing(2)
+    },
+    divider: {
+        backgroundColor: '#287298',
+        height: '2px'
+    },
+    textFieldLeft: {
+        paddingTop: theme.spacing(3),
+        width: '80%',
+        
+    },
+    textFieldLeft_top: {
+        // paddingTop: theme.spacing(3),
+        width: '100%',
+        display: 'flex'
+    },
+    textFieldLeft_bot: {
+        // paddingTop: theme.spacing(3),
+        width: '100%',
+        display: 'flex'
+    },
+    textField_name: {
+        marginLeft: theme.spacing(2),
+        paddingBottom: theme.spacing(5),
+        width: '45%',
+    },
+    textField_delay: {
+        marginLeft: theme.spacing(2),
+        marginTop: theme.spacing(3),
+        width: '25%',
+    },
+    selectPattern_name: {
+        marginLeft: theme.spacing(2),
+        paddingBottom: theme.spacing(5),
+        width: '45%',
+    },
+    buttonPattern: {
+        marginLeft: theme.spacing(2),
+        marginTop: theme.spacing(2),
+        // paddingBottom: theme.spacing(5),
+        width: '15%',
+        height: '52px',
+        fontFamily: 'Roboto'
+    },
+    selectField: {
+        marginLeft: theme.spacing(8),
+        marginBottom: theme.spacing(5),
+        width: '16%',
+        backgroundColor: '#FFFFFF'
+    },
+    menuList: {
+        backgroundColor: '#FFFFFF'
+    },
+    textField_location: {
+        marginLeft: theme.spacing(2),
+        paddingBottom: theme.spacing(5),
+        width: '45%',
+    },
+    topRight: {
+        width: '45%',
+        backgroundColor: '#FFFFFF',
+        marginLeft: theme.spacing(12)
+        // display: 'flex'
+    },
+    textRight: {
+        paddingTop: theme.spacing(5),
+        width: '100%',
+        // display: 'flex'
+    },
+    buttonGrid: {
+        marginTop: theme.spacing(5),
         display: 'flex',
-        backgroundColor: '#000000'
+        width: '15%',
+        height: '52px',
+        borderRadius: '13px',
+        justifyContent: 'center',
+        backgroundColor: '#287298',
+        marginLeft: '40%',
+        color: '#FFFFFF',
+        fontSize: '18px'
+    },
+    top_icon: {
+        width: '52%',
+        display: 'flex',
+        justifyContent: 'end',
+        // backgroundColor: '#000000'
+        // marginRight: '10%'
+    },
+    bottom: {
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: theme.spacing(10),
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center'
+    },
+    dialogTitle: {
+        marginTop: theme.spacing(5),
+        color: '#287298',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    dialogDividerGrid: {
+        marginTop: theme.spacing(1),
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    dialogDivider: {
+        backgroundColor: '#287298',
+        width: '168px',
+        height: '2px'
+    },
+    bottomImge: {
+        marginTop: theme.spacing(5),
+        // width: '320px',
+        // height: '320px',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    pattern: {
+        display: 'flex-end',
+        // position: 'relative'
+    },
+    select_pattern: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    box: {
+        // position: 'relative',
+        // minWidth: '100%'
+    },
+    text_1: {
+        position: 'absolute'
+    },
+    clickPattern: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    selectBorder: {
+        // border: '5px',
+        borderColor: '#F00000',
+        borderStyle: 'solid'
+    },
+    overview: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    buttom: {
+        display: 'flex',
+        width: '100%'
+    },
+    leftBut: {
+        display: 'flex',
+        width: '50%',
+        justifyContent: 'flex-start',
+        // float: 'left'
+    },
+    rightBut: {
+        display: 'flex',
+        width: '50%',
+        justifyContent: 'flex-end',
+        // float: 'right'
+    },
+    listGrid: {
+        display: 'flex',
+        justifyContent: 'center',
+        width: '80%'
     }
 }));
 
@@ -55,7 +228,7 @@ const ControlView = () => {
     const [pathID, setPathID] = useState()
     const [junctionList, setJunctionList] = useState([])
     const location = useLocation();
-
+    const [planList, setPlanList] = useState([])
 
     const formik = useFormik({
         initialValues: {
@@ -126,6 +299,12 @@ const ControlView = () => {
         }
         console.log(pathID)
     }, [junctionList])
+
+    useEffect(() => {
+        planService.getAllPlan().then((data) => {
+            setPlanList(data)
+        })
+    }, [])
     return (
         <Page
             className={classes.root}
@@ -139,8 +318,8 @@ const ControlView = () => {
                 >
                     {/* test */}
                     {/* <ConfigView /> */}
-                    {/* <ConfigPlan /> */}
-                    <Grid
+                    <ConfigPlan />
+                    {/* <Grid
                         className={classes.top}
                     >
                         <Grid
@@ -153,64 +332,31 @@ const ControlView = () => {
                                     variant='h4'
                                     className={classes.titleLeft}
                                 >
-                                    ตั้งค่ารูปแบบการจัดการสัญญาณไฟ
+                                    รูปแบบการจัดการสัญญาณไฟ
                                 </Typography>
                             </Grid>
                             <Divider className={classes.divider} />
                             <Grid
-                                className={classes.textFieldLeft}
+                                className={classes.listGrid}
                             >
-
-                                <Grid
-                                    className={classes.textFieldLeft_top}
-                                >
-                                    <TextField
-                                        // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
-                                        // helperText={formik.touched.junctionName && formik.errors.junctionName}
-                                        className={classes.textField_name}
-                                        label="ชื่อรูปแบบ"
-                                        variant="outlined"
-                                        name="junctionName"
-                                        // onBlur={formik.handleBlur}
-                                        // onChange={formik.handleChange}
-                                        // value={formik.values.junctionName}
-                                        margin="normal"
-                                    />
-                                    {/* <TextField
-                                className={classes.selectField}
-                                id="outlined-select-menu"
-                                select
-                                name="number_channel"
-                                label="จำนวนแยก"
-                                // value={formik.values.number_channel}
-                                // onChange={handleChangeManu}
-                                variant="outlined"
-                                margin="normal"
-                            >
-                                {menuList.map((option) => (
-                                    <MenuItem key={option.id} value={option.value} className={classes.menuList}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField> */}
-                                    <Button
-                                        className={classes.buttonPattern}
-                                    // onClick={() => handleClickOpen()}
-                                    // type='submit'
+                                {planList.map((plan, index) => (
+                                    <Grid
+                                        className={classes.textFieldLeft}
                                     >
-                                        เลือกชุดรูปแบบ
-                                    </Button>
-                                </Grid>
 
-                                {/* <LocationSearchInput /> */}
+                                        <Grid
+                                            className={classes.textFieldLeft_top}
+                                        >
+                                            <Button>
+                                                {plan.name}
+                                            </Button>
+                                        </Grid>
+                                        <Divider className={classes.divider} />
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Grid>
-                    </Grid>
-                    {/* <Grid
-          className={classes.bottomGrid}
-        >
-          <ReportTable number_channel={formik.values.number_channel} />
-        </Grid> */}
+                    </Grid> */}
                 </Grid>
             </Grid>
         </Page>
