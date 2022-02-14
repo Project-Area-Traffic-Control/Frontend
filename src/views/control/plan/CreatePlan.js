@@ -46,11 +46,11 @@ import theme from '../../../theme';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
-        height: '100%',
+        // height: '100%',
         width: '100%',
         // display: 'flex'
         // paddingBottom: theme.spacing(3),
-        // paddingTop: theme.spacing(3)
+        paddingTop: theme.spacing(3)
     },
     top: {
         height: '100%',
@@ -292,7 +292,7 @@ const BootstrapDialogTitle = (props) => {
 };
 
 
-const ConfigPlan = (props) => {
+const CreatePlan = (props) => {
     const classes = useStyles();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -1364,4 +1364,4 @@ const ConfigPlan = (props) => {
     );
 };
 
-export default ConfigPlan;
+export default CreatePlan;

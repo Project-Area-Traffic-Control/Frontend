@@ -19,8 +19,9 @@ import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
 import { junctionService } from '../../../services/junction.service';
 // import ConfigView from './ConfigView';
-import ConfigPlan from './ConfigPlan';
 import { planService } from '../../../services/plan.service';
+import CreatePlan from './CreatePlan';
+import ShowPlan from './ShowPlan';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     textFieldLeft: {
         paddingTop: theme.spacing(3),
         width: '80%',
-        
+
     },
     textFieldLeft_top: {
         // paddingTop: theme.spacing(3),
@@ -318,7 +319,7 @@ const ControlView = () => {
                 >
                     {/* test */}
                     {/* <ConfigView /> */}
-                    <ConfigPlan />
+                    <ShowPlan />
                     {/* <Grid
                         className={classes.top}
                     >

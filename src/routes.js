@@ -19,8 +19,10 @@ import EditJunction from './views/Junction/EditJunction';
 import ControlView from './views/control';
 import CreateJunction from './views/Junction/CreateJunction';
 import Flashing from './views/flashing';
-import ConfigPlan from './views/control/plan';
+import Plan from './views/control/plan';
 import ConfigMode from './views/control/mode';
+import CreatePlan from './views/control/plan/CreatePlan';
+import EditPlan from './views/control/plan/EditPlan';
 // let junction = junctionService.getAllJunction()
 // let junctionID = []
 // for (let index = 0; index < junction.length; index++) {
@@ -40,7 +42,9 @@ const routes = [
       { path: 'edit_account', element: <EditAccount /> },
       { path: 'junction', element: < JunctionView /> },
       { path: `junction/:junction_id`, element: < EditJunction /> },
-      { path: 'junction/:junction_id/config_plan', element: < ConfigPlan /> },
+      { path: 'junction/:junction_id/plans', element: < Plan /> },
+      { path: 'junction/:junction_id/create_plan', element: < CreatePlan /> },
+      { path: 'plan/:plan_id/edit_plan', element: < EditPlan /> },
       { path: 'junction/:junction_id/flashing_plan', element: < Flashing /> },
       { path: 'junction/:junction_id/config_mode', element: < ConfigMode /> },
       { path: 'manual_control/:junction_id', element: < ManualControl /> },

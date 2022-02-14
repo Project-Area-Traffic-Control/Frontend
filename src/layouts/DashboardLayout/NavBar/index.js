@@ -304,7 +304,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       />
                       <Collapse in={openJunction[index].control} timeout="auto" unmountOnExit>
                         <NavItem
-                          href={`junction/${junction.id}/config_plan`}
+                          href={`junction/${junction.id}/plans`}
                           key={items[2].title}
                           title="ตั้งค่ารูปแบบการจัดการสัญญาณไฟจราจร"
                           className={classes.collapse_2}

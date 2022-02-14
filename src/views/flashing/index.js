@@ -8,18 +8,19 @@ import Page from '../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GroupAdd, SportsRugbySharp } from '@material-ui/icons';
 import { Form, useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import { junctionService } from '../../services/junction.service';
 // import AccountInfo from './AccountView'
 
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
-        height: '100%',
+        // height: '100%',
         width: '100%',
         paddingBottom: theme.spacing(3),
         paddingTop: theme.spacing(3),
@@ -130,7 +131,22 @@ const flashList = [
 const Flashing = (props) => {
     const classes = useStyles();
     const navigate = useNavigate();
-
+    const location = useLocation();
+    const [juncID, setJuncID] = useState(null)
+    const [channelList, setChannelList] = useState([])
+    const [def, setDefult] = useState("")
+    useEffect(() => {
+        setJuncID(location.pathname.slice(14, location.pathname.length - 14))
+        setDefult(location.pathname.slice(16, location.pathname.length - 5).toUpperCase())
+    }, [])
+    useEffect(() => {
+        if (juncID != null) {
+            junctionService.getJunctionByID(juncID).then((data) => {
+                setChannelList(data.channel)
+            })
+            // console.log(def)
+        }
+    }, [juncID])
     return (
         <Page
             className={classes.root}
@@ -177,7 +193,7 @@ const Flashing = (props) => {
                             <TextField
                                 className={classes.textField_name}
                                 label="ชื่อรูปแบบ"
-                                value="Flashing"
+                                value={def}
                                 variant="outlined"
                                 name="patternName"
                                 margin="normal"
@@ -186,7 +202,7 @@ const Flashing = (props) => {
                                 }}
                             />
                         </Grid>
-                        {dataList.map((items) => (
+                        {channelList.map((items) => (
                             <>
                                 <TextField
                                     className={classes.selectField}
@@ -195,10 +211,11 @@ const Flashing = (props) => {
                                     label="ช่องทางเดินรถ"
                                     variant="outlined"
                                     margin="normal"
-                                    value={items.value}
+                                    value={items.name}
                                     InputProps={{
                                         readOnly: true,
                                     }}
+
                                 />
                                 <TextField
                                     className={classes.selectField}
