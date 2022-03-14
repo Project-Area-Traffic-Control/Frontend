@@ -4,7 +4,8 @@ export const planService = {
     // createChannel,
     // updateChannel
     getAllPlan,
-    getPlanByID
+    getPlanByID,
+    createPlan
 };
 
 async function getAllPlan() {
@@ -35,6 +36,28 @@ async function getPlanByID(id) {
     )
         .then(plan => {
             // console.log(junction.data)
+            return plan;
+        })
+        .catch((e) => {
+            if (e.response.status === 400) {
+                e.message = e.response.data
+                return Promise.reject(e);
+            }
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function createPlan(data) {
+    return axios.post(`${apiConstants.uri}/plans`, data,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    )
+        .then(plan => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            console.log(plan.data)
             return plan;
         })
         .catch((e) => {

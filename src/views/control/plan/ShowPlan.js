@@ -195,6 +195,9 @@ const ShowPlan = (props) => {
         if (planList[index].name == "FLASHING") {
             navigate(`/app/junction/${juncID}/flashing_plan`, { replace: true });
         }
+        else if (planList[index].name == "ALLRED") {
+            navigate(`/app/junction/${juncID}/allred_plan`, { replace: true });
+        }
         else {
             navigate(`/app/plan/${planList[index].id}/edit_plan`, { replace: true });
         }

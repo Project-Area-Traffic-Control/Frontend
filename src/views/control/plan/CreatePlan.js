@@ -25,7 +25,7 @@ import Page from '../../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
@@ -42,6 +42,8 @@ import SimpleImageSlider from "react-simple-image-slider";
 import Slider from 'react-slick';
 import ImageSlide from '../ImageSlide';
 import theme from '../../../theme';
+import { planService } from '../../../services/plan.service';
+import { patternService } from '../../../services/pattern.service';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -295,23 +297,19 @@ const BootstrapDialogTitle = (props) => {
 const CreatePlan = (props) => {
     const classes = useStyles();
     const navigate = useNavigate();
+    const location = useLocation();
     const [open, setOpen] = useState(false);
     const [patternOpen, setPatternOpen] = useState(false);
     const [menu, setManu] = React.useState('mobileUsername');
-    const [orders, setOrders] = React.useState({});
-    const [channelList, setChannelList] = useState([]);
-    const [degree, setDegree] = useState(0);
     const [data, setData] = useState(null);
     const [toggleContent, setToggleContent] = useState([]);
-    const [table, setTable] = useState(<></>)
-    const number_channel = props.number_channel
     const [check, setCheck] = useState("")
     const [content, setContent] = useState(<></>)
     const [current, setCurrent] = useState("")
     const [overview, setOverView] = useState([]);
-    const [imgRotate, setImgRotate] = useState(<img src={`/static/junction/${number_channel}way${degree}degree.jpg`} width='818px' height='660px' />)
+    const [juncID, setJuncID] = useState(null)
+    const [plan, setPlan] = useState(null)
     const [search, setSearch] = React.useState({
-
         search: "",
         options: "mobileUsername",
         page: 10,
@@ -355,7 +353,23 @@ const CreatePlan = (props) => {
         setPatternOpen(false);
         setCheck("")
     };
-    const formik = props.formik;
+    const formik = useFormik({
+        initialValues: {
+            planName: "",
+            yellow_time: 5,
+            delay_red_time: 3,
+            junction_id: "",
+        },
+        validationSchema: Yup.object({
+            planName: Yup.string().required(),
+            yellow_time: Yup.string().required(),
+            delay_red_time: Yup.string().required(),
+            junction_id: Yup.string().required(),
+        }),
+        onSubmit: async (values) => {
+            // console.log(values)
+        },
+    });
     const handleChangeManu = (event) => {
         setSearch({
             ...search,
@@ -369,9 +383,7 @@ const CreatePlan = (props) => {
     const goToPrevPicture = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
-    const channel_Formik = props.channel_Formik
-    const channel = props.channel;
-    const [formikChannel, setFormikChannel] = useState([]);
+
     const [index, setActiveStep] = React.useState(0);
     const images_pattern1 = [
         { url: "/static/Mock-up_3way1.png" },
@@ -414,6 +426,16 @@ const CreatePlan = (props) => {
         }
         setData(temp)
     }
+
+    const handleChangeDuration = (event, ind) => {
+        var temp = data
+        for (let index = 0; index < temp.length; index++) {
+            if (ind == index) {
+                temp[ind].time = event.target.value
+            }
+        }
+        setData(temp)
+    };
     const addRow = () => {
         var temp = {
             // number: data.length + 1,
@@ -429,6 +451,48 @@ const CreatePlan = (props) => {
         temp.splice(index, 1)
         setData(temp)
     }
+
+    const submitPlan = () => {
+        var temp = formik.values
+        temp.junction_id = parseInt(juncID)
+        formik.setValues(temp)
+        planService.createPlan({
+            name: formik.values.planName,
+            yellow_time: formik.values.yellow_time,
+            delay_red_time: formik.values.delay_red_time,
+            junction_id: formik.values.junction_id
+        }).then((data) => {
+            setPlan(data.data.id)
+            // submitPattern()
+        })
+
+    }
+
+    const submitPattern = () => {
+        for (let index = 0; index < data.length; index++) {
+            var temp = {
+                pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_3_WAYS`,
+                order: index + 1,
+                duration: data[index].time,
+                plan_id: plan
+            }
+            patternService.createPattern({
+                pattern: temp.pattern,
+                order: temp.order,
+                duration: temp.duration,
+                plan_id: plan
+            }).then((data) => {
+            })
+        }
+    }
+    useEffect(() => {
+        if (plan != null) {
+            submitPattern()
+        }
+        // submitPattern()
+
+    }, [plan])
+
     useEffect(() => {
         if (pattern == 1) {
             setData([{
@@ -829,538 +893,374 @@ const CreatePlan = (props) => {
             setContent(<></>)
         }
     }, [patternOpen])
-    // useEffect(() => {
-    //     var list = []
-    //     if (data != null) {
-    //         for (let index = 0; index < data.length; index++) {
-    //             if (data[index].toggle == true) {
-    //                 list.push(<ExpandLess />)
-    //             }
-    //             else {
-    //                 list.push(<ExpandMore />)
-    //             }
-    //         }
-    //     }
-    //     // setToggleContent(null)
-    //     if (toggleContent == 0) {
-    //         setToggleContent(list)
-    //     }
-    // }, [toggleContent])
-    // console.log("data: ", data)
+
+    useEffect(() => {
+        setJuncID(location.pathname.slice(14, location.pathname.length - 12))
+        // console.log(juncID)
+    }, [])
+
     return (
-        <Grid
-            className={classes.root}
-        >
-            {/* <form onSubmit={formik.handleSubmit}> */}
+        <form onSubmit={formik.handleSubmit}>
             <Grid
-                className={classes.top}
+                className={classes.root}
             >
                 <Grid
-                    className={classes.topLeft}
+                    className={classes.top}
                 >
                     <Grid
-                        className={classes.titleGrid}
+                        className={classes.topLeft}
                     >
-                        <Typography
-                            variant='h4'
-                            className={classes.titleLeft}
-                        >
-                            ตั้งค่ารูปแบบการจัดการสัญญาณไฟ
-                        </Typography>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid
-                        className={classes.textFieldLeft}
-                    >
-
                         <Grid
-                            className={classes.textFieldLeft_top}
+                            className={classes.titleGrid}
                         >
-                            <TextField
-                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
-                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
-                                className={classes.textField_name}
-                                label="ชื่อรูปแบบ"
-                                variant="outlined"
-                                name="junctionName"
-                                // onBlur={formik.handleBlur}
-                                // onChange={formik.handleChange}
-                                // value={formik.values.junctionName}
-                                margin="normal"
-                            />
-                            {/* <TextField
-                                className={classes.selectField}
-                                id="outlined-select-menu"
-                                select
-                                name="number_channel"
-                                label="จำนวนแยก"
-                                // value={formik.values.number_channel}
-                                // onChange={handleChangeManu}
-                                variant="outlined"
-                                margin="normal"
+                            <Typography
+                                variant='h4'
+                                className={classes.titleLeft}
                             >
-                                {menuList.map((option) => (
-                                    <MenuItem key={option.id} value={option.value} className={classes.menuList}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField> */}
-                            <Button
-                                className={classes.buttonPattern}
-                                onClick={() => handleClickOpen()}
-                            // type='submit'
-                            >
-                                เลือกชุดรูปแบบ
-                            </Button>
+                                ตั้งค่ารูปแบบการจัดการสัญญาณไฟ
+                            </Typography>
                         </Grid>
-                        {pattern != 0 && <Grid
-                            className={classes.textFieldLeft_bot}
+                        <Divider className={classes.divider} />
+                        <Grid
+                            className={classes.textFieldLeft}
                         >
-                            <Grid
-                                className={classes.selectPattern_name}
-                            >
-                                <Typography>
-                                    รูปแบบที่เลือก : {pattern}
-                                </Typography>
-                            </Grid>
-                        </Grid>}
-                        {/* <LocationSearchInput /> */}
-                    </Grid>
-                </Grid>
-            </Grid>
-            {data != null && <Grid
-                className={classes.bottom}
-            >
-                <Grid
-                    className={classes.topLeft}
-                >
-                    <Grid
-                        className={classes.titleGrid}
-                    >
-                        <Typography
-                            variant='h4'
-                            className={classes.titleLeft}
-                        >
-                            ตารางการทำงาน
-                        </Typography>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid
-                        className={classes.textFieldLeft}
-                    >
-                        {/* {table} */}
-                        <TableContainer className={classes.tableCon}>
-                            <Table className={classes.table} aria-label="customized table">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell align="center" width="10%"></StyledTableCell>
-                                        <StyledTableCell align="center" width="20%">ลำดับที่</StyledTableCell>
-                                        <StyledTableCell align="center" width="30%">รูปแบบการปล่อยรถ</StyledTableCell>
-                                        <StyledTableCell align="center" width="30%">ระยะเวลาสัญญาณไฟเขียว</StyledTableCell>
-                                        <StyledTableCell align="center" width="10%">ลบ</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {data.map((row, index) => (
-                                        <StyledTableRow key={row.number}>
-                                            <StyledTableCell align="center">
-                                                <IconButton
-                                                    onClick={() => {
-                                                        handleToggle(row.number - 1)
-                                                    }}
-                                                >
-                                                    {row.toggle ? <ExpandMore /> : <ExpandLess />}
-                                                </IconButton>
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                {index + 1}
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                <Button
-                                                    onClick={() => {
-                                                        handleClickOpenPattern(row.phase, index)
-                                                    }}
-                                                >
-                                                    {row.phase}
-                                                </Button>
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                <TextField
-                                                    defaultValue={row.time}
-                                                    variant="outlined"
-                                                >
 
-                                                </TextField>
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                <IconButton
-                                                    onClick={() => {
-                                                        removeRow(index)
-                                                        goToPrevPicture()
-                                                    }}
-                                                >
-                                                    <Close />
-                                                </IconButton>
-                                            </StyledTableCell>
-                                        </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
                             <Grid
-                                className={classes.top_icon}
+                                className={classes.textFieldLeft_top}
                             >
+                                <TextField
+                                    error={Boolean(formik.touched.planName && formik.errors.planName)}
+                                    helperText={formik.touched.planName && formik.errors.planName}
+                                    className={classes.textField_name}
+                                    label="ชื่อรูปแบบ"
+                                    variant="outlined"
+                                    name="planName"
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.planName}
+                                    margin="normal"
+                                />
                                 <Button
-                                    // className={classes.buttonGrid}
-                                    onClick={addRow}
+                                    className={classes.buttonPattern}
+                                    onClick={() => handleClickOpen()}
                                 // type='submit'
                                 >
-                                    เพิ่มรูปแบบ
+                                    เลือกชุดรูปแบบ
                                 </Button>
                             </Grid>
-                        </TableContainer>
-                        <Grid>
-                            <TextField
-                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
-                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
-                                className={classes.textField_delay}
-                                label="ระยะเวลาสัญญาณไฟเหลือง"
-                                variant="outlined"
-                                name="amber"
-                                // onBlur={formik.handleBlur}
-                                // onChange={formik.handleChange}
-                                // value={formik.values.junctionName}
-                                defaultValue='5'
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid>
-                            <TextField
-                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
-                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
-                                className={classes.textField_delay}
-                                label="ระยะเวลาหน่วงสัญญาณไฟแดง"
-                                variant="outlined"
-                                name="delay"
-                                // onBlur={formik.handleBlur}
-                                // onChange={formik.handleChange}
-                                // value={formik.values.junctionName}
-                                defaultValue='3'
-                                margin="normal"
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>}
-            {data != null && <Grid
-                className={classes.bottom}
-            >
-                <Grid
-                    className={classes.topLeft}
-                >
-                    <Grid
-                        className={classes.titleGrid}
-                    >
-                        <Typography
-                            variant='h4'
-                            className={classes.titleLeft}
-                        >
-                            ลักษณะการทำงาน
-                        </Typography>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid
-                        className={classes.pattern}
-                    >
-                        {/* <Typography
-                                variant='h6'
-                                className={classes.text_1}
+                            {pattern != 0 && <Grid
+                                className={classes.textFieldLeft_bot}
                             >
-                                ไป ARL ลาดกระบัง
-                            </Typography> */}
-                        <Grid
-                            className={classes.overview}
-                        >
-                            {/* {overview.length > 0 && <SimpleImageSlider
-                                width='500px'
-                                height='500px'
-                                images={overview}
-                                // showBullets={true}
-                                showNavs={true}
-                                style={}
-                            />} */}
-                            {overview.length != 0 && <div
-                                style={{
-                                    marginTop: theme.spacing(5),
-                                    maxWidth: 600,
-                                    flexGrow: 1,
-                                }}
-                            >
-                                {overview[index] != null && <img
-                                    src={overview[index].url}
-                                    style={{
-                                        height: 440,
-                                        width: "100%",
-                                        maxWidth: 600,
-                                        display: "block",
-                                        overflow: "hidden",
-                                    }}
-                                />}
                                 <Grid
-                                    className={classes.buttom}
+                                    className={classes.selectPattern_name}
                                 >
-                                    <Grid
-                                        className={classes.leftBut}
-                                    >
-                                        <Button
-                                            size="small"
-                                            onClick={goToPrevPicture}
-                                            disabled={index === 0}
-                                        >
-                                            <KeyboardArrowLeft />Previous
-                                        </Button>
-                                    </Grid>
-                                    <Grid
-                                        className={classes.rightBut}
-                                    >
-                                        <Button
-                                            size="small"
-                                            onClick={goToNextPicture}
-                                            disabled={index === overview.length - 1}
-                                        >
-                                            Next<KeyboardArrowRight />
-                                        </Button>
-                                    </Grid>
+                                    <Typography>
+                                        รูปแบบที่เลือก : {pattern}
+                                    </Typography>
                                 </Grid>
-                            </div>}
+                            </Grid>}
+                            {/* <LocationSearchInput /> */}
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>}
-            <BootstrapDialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                {/* <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
-                </DialogTitle> */}
-                <DialogContent>
-                    <Typography
-                        variant='h5'
-                        className={classes.dialogTitle}
-                    >
-                        เลือกลำดับการทำงาน
-                    </Typography>
-                    <Grid
-                        className={classes.dialogDividerGrid}
-                    >
-                        <Divider className={classes.dialogDivider} />
-                    </Grid>
-                    <Grid
-                        className={classes.bottomImge}
-                    >
-                        {/* <Grid>
-                            <img src='/static/junction/3way-set-port.jpg' width='320px' height='320px' />
-                        </Grid>
-                        <Grid>
-                            <img src='/static/junction/3way-set-port.jpg' width='320px' height='320px' />
-                        </Grid> */}
-                        <Grid
-                            className={classes.pattern}
-                        >
-                            {/* <Typography
-                                variant='h6'
-                                className={classes.text_1}
-                            >
-                                ไป ARL ลาดกระบัง
-                            </Typography> */}
-
-                            <SimpleImageSlider
-                                width='320px'
-                                height='320px'
-                                images={images_pattern1}
-                                // showBullets={true}
-                                showNavs={true}
-                            />
-
-                            <Grid
-                                className={classes.select_pattern}
-                            >
-                                <Button
-                                    onClick={() => {
-                                        setPattern(1)
-                                        handleClose()
-                                    }}
-                                >
-                                    รูปแบบที่ 1 (ตามเข็ม)
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            className={classes.pattern}
-                        >
-                            <SimpleImageSlider
-                                width='320px'
-                                height='320px'
-                                images={images_pattern2}
-                                // showBullets={true}
-                                showNavs={true}
-                            />
-                            <Grid
-                                className={classes.select_pattern}
-                            >
-                                <Button
-                                    onClick={() => {
-                                        setPattern(2)
-                                        handleClose()
-                                    }}
-                                >
-                                    รูปแบบที่ 2 (ทวนเข็ม)
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        {/* <Grid
-                            className={classes.pattern}
-                        >
-                            <SimpleImageSlider
-                                width='320px'
-                                height='320px'
-                                images={images_pattern2}
-                                // showBullets={true}
-                                showNavs={true}
-                            />
-                            <Grid
-                                className={classes.select_pattern}
-                            >
-                                <Button>
-                                    รูปแบบที่ 3 (ทวนเข็ม)
-                                </Button>
-                            </Grid>
-                        </Grid> */}
-                        {/* <Grid>
-                            <SimpleImageSlider
-                                width='320px'
-                                height='320px'
-                                images={images_pattern2}
-                                // showBullets={true}
-                                showNavs={true}
-                            />
-                        </Grid> */}
-                        {/* <Grid>
-                            <SimpleImageSlider
-                                width='320px'
-                                height='320px'
-                                images={images}
-                                // showBullets={true}
-                                showNavs={true}
-                            />
-                        </Grid> */}
-                    </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
-                    </Button>
-                </DialogActions>
-            </BootstrapDialog>
-            {/* <BootstrapDialog
-                open={patternOpen}
-                onClose={handleClosePattern}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            > */}
-            {/* <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
-                </DialogTitle> */}
-            {/* <DialogContent>
-                    <Typography
-                        variant='h5'
-                        className={classes.dialogTitle}
-                    >
-                        เลือกรูปแบบการปล่อยรถ
-                    </Typography>
-                    <Grid
-                        className={classes.dialogDividerGrid}
-                    >
-                        <Divider className={classes.dialogDivider} />
-                    </Grid>
-                    <Grid
-                        className={classes.bottomImge}
-                    >
-                        <Grid
-                            className={classes.pattern}
-                        >
-                            <img src='/static/Mock-up_3way1.png' width='320px' height='280px' />
-                            <Grid
-                                className={classes.clickPattern}
-                            >
-                                <Button>
-                                    รูปแบบที่ 1
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            className={classes.pattern}
-                        >
-                            <img src='/static/Mock-up_3way2.png' width='320px' height='280px' />
-                            <Grid
-                                className={classes.clickPattern}
-                            >
-                                <Button>
-                                    รูปแบบที่ 2
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            className={classes.pattern}
-                        >
-                            <img src='/static/Mock-up_3way3.png' width='320px' height='280px' />
-                            <Grid
-                                className={classes.clickPattern}
-                            >
-                                <Button>
-                                    รูปแบบที่ 3
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </DialogContent> */}
-            {/* <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
-                    </Button>
-                </DialogActions> */}
-            {/* </BootstrapDialog> */}
-            {content}
-            {/* <Grid
-                className={classes.bottom}
-            > */}
-            {/* {overview.length != 0 &&
-                    <SimpleImageSlider
-                        width='320px'
-                        height='320px'
-                        images={overview}
-                        // showBullets={true}
-                        showNavs={true}
-                    />} */}
-            {/* {props.status == "edit" && <ReportTable number_channel={formik.values.number_channel} channel={props.channel} pathID={props.pathID} status={props.status} formik={formik} />} */}
-            {/* </Grid> */}
-            <Grid
-                className={classes.top_icon}
-            >
-                <Button
-                    className={classes.buttonGrid}
-                    // onClick={() => formik.handleSubmit}
-                    type='submit'
+                {data != null && <Grid
+                    className={classes.bottom}
                 >
-                    บันทึกข้อมูล
-                </Button>
+                    <Grid
+                        className={classes.topLeft}
+                    >
+                        <Grid
+                            className={classes.titleGrid}
+                        >
+                            <Typography
+                                variant='h4'
+                                className={classes.titleLeft}
+                            >
+                                ตารางการทำงาน
+                            </Typography>
+                        </Grid>
+                        <Divider className={classes.divider} />
+                        <Grid
+                            className={classes.textFieldLeft}
+                        >
+                            {/* {table} */}
+                            <TableContainer className={classes.tableCon}>
+                                <Table className={classes.table} aria-label="customized table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell align="center" width="10%"></StyledTableCell>
+                                            <StyledTableCell align="center" width="20%">ลำดับที่</StyledTableCell>
+                                            <StyledTableCell align="center" width="30%">รูปแบบการปล่อยรถ</StyledTableCell>
+                                            <StyledTableCell align="center" width="30%">ระยะเวลาสัญญาณไฟเขียว</StyledTableCell>
+                                            <StyledTableCell align="center" width="10%">ลบ</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {data.map((row, index) => (
+                                            <StyledTableRow key={row.number}>
+                                                <StyledTableCell align="center">
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            handleToggle(row.number - 1)
+                                                        }}
+                                                    >
+                                                        {row.toggle ? <ExpandMore /> : <ExpandLess />}
+                                                    </IconButton>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    {index + 1}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    <Button
+                                                        onClick={() => {
+                                                            handleClickOpenPattern(row.phase, index)
+                                                        }}
+                                                    >
+                                                        {row.phase}
+                                                    </Button>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    <TextField
+                                                        // error={Boolean(formik.touched.yellow_time && formik.errors.yellow_time)}
+                                                        // helperText={formik.touched.yellow_time && formik.errors.yellow_time}
+                                                        // className={classes.textField_delay}
+                                                        // label="ระยะเวลาสัญญาณไฟเหลือง"
+                                                        variant="outlined"
+                                                        name="time_duration"
+                                                        // onBlur={formik.handleBlur}
+                                                        onChange={(event) => { handleChangeDuration(event, index) }}
+                                                        defaultValue={row.time}
+                                                        // defaultValue='5'
+                                                        margin="normal"
+
+                                                    >
+
+                                                    </TextField>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            removeRow(index)
+                                                            goToPrevPicture()
+                                                        }}
+                                                    >
+                                                        <Close />
+                                                    </IconButton>
+                                                </StyledTableCell>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                <Grid
+                                    className={classes.top_icon}
+                                >
+                                    <Button
+                                        // className={classes.buttonGrid}
+                                        onClick={addRow}
+                                    // type='submit'
+                                    >
+                                        เพิ่มรูปแบบ
+                                    </Button>
+                                </Grid>
+                            </TableContainer>
+                            <Grid>
+                                <TextField
+                                    error={Boolean(formik.touched.yellow_time && formik.errors.yellow_time)}
+                                    helperText={formik.touched.yellow_time && formik.errors.yellow_time}
+                                    className={classes.textField_delay}
+                                    label="ระยะเวลาสัญญาณไฟเหลือง"
+                                    variant="outlined"
+                                    name="yellow_time"
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.yellow_time}
+                                    // defaultValue='5'
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid>
+                                <TextField
+                                    error={Boolean(formik.touched.delay_red_time && formik.errors.delay_red_time)}
+                                    helperText={formik.touched.delay_red_time && formik.errors.delay_red_time}
+                                    className={classes.textField_delay}
+                                    label="ระยะเวลาหน่วงสัญญาณไฟแดง"
+                                    variant="outlined"
+                                    name="delay_red_time"
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.delay_red_time}
+                                    // defaultValue='3'
+                                    margin="normal"
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>}
+                {data != null && <Grid
+                    className={classes.bottom}
+                >
+                    <Grid
+                        className={classes.topLeft}
+                    >
+                        <Grid
+                            className={classes.titleGrid}
+                        >
+                            <Typography
+                                variant='h4'
+                                className={classes.titleLeft}
+                            >
+                                ลักษณะการทำงาน
+                            </Typography>
+                        </Grid>
+                        <Divider className={classes.divider} />
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            <Grid
+                                className={classes.overview}
+                            >
+                                {overview.length != 0 && <div
+                                    style={{
+                                        marginTop: theme.spacing(5),
+                                        maxWidth: 600,
+                                        flexGrow: 1,
+                                    }}
+                                >
+                                    {overview[index] != null && <img
+                                        src={overview[index].url}
+                                        style={{
+                                            height: 440,
+                                            width: "100%",
+                                            maxWidth: 600,
+                                            display: "block",
+                                            overflow: "hidden",
+                                        }}
+                                    />}
+                                    <Grid
+                                        className={classes.buttom}
+                                    >
+                                        <Grid
+                                            className={classes.leftBut}
+                                        >
+                                            <Button
+                                                size="small"
+                                                onClick={goToPrevPicture}
+                                                disabled={index === 0}
+                                            >
+                                                <KeyboardArrowLeft />Previous
+                                            </Button>
+                                        </Grid>
+                                        <Grid
+                                            className={classes.rightBut}
+                                        >
+                                            <Button
+                                                size="small"
+                                                onClick={goToNextPicture}
+                                                disabled={index === overview.length - 1}
+                                            >
+                                                Next<KeyboardArrowRight />
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </div>}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>}
+                <BootstrapDialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกลำดับการทำงาน
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <SimpleImageSlider
+                                    width='320px'
+                                    height='320px'
+                                    images={images_pattern1}
+                                    // showBullets={true}
+                                    showNavs={true}
+                                />
+
+                                <Grid
+                                    className={classes.select_pattern}
+                                >
+                                    <Button
+                                        onClick={() => {
+                                            setPattern(1)
+                                            handleClose()
+                                        }}
+                                    >
+                                        รูปแบบที่ 1 (ตามเข็ม)
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <SimpleImageSlider
+                                    width='320px'
+                                    height='320px'
+                                    images={images_pattern2}
+                                    // showBullets={true}
+                                    showNavs={true}
+                                />
+                                <Grid
+                                    className={classes.select_pattern}
+                                >
+                                    <Button
+                                        onClick={() => {
+                                            setPattern(2)
+                                            handleClose()
+                                        }}
+                                    >
+                                        รูปแบบที่ 2 (ทวนเข็ม)
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions>
+                </BootstrapDialog>
+                {content}
+                <Grid
+                    className={classes.top_icon}
+                >
+                    <Button
+                        className={classes.buttonGrid}
+                        onClick={() => {
+                            submitPlan()
+                        }}
+                        type='submit'
+                    >
+                        บันทึกข้อมูล
+                    </Button>
+                </Grid>
+                {/* </form> */}
             </Grid>
-            {/* </form> */}
-        </Grid>
+        </form>
     );
 };
 

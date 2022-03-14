@@ -25,7 +25,7 @@ import Page from '../../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
@@ -34,7 +34,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 //import LocationSearchInput from './LocationSearch';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
-import { Assignment, Close, ExpandLess, ExpandMore, KeyboardArrowLeft, KeyboardArrowRight, RemoveFromQueueTwoTone, RotateRight } from '@material-ui/icons';
+import { Assignment, Close, ExpandLess, ExpandMore, KeyboardArrowLeft, KeyboardArrowRight, RemoveFromQueueTwoTone, RotateRight, SaveAltOutlined } from '@material-ui/icons';
 // import ReportTable from './ReportTable';
 import { channelService } from '../../../services/channel.service';
 import { Slide } from 'react-slideshow-image';
@@ -44,6 +44,7 @@ import ImageSlide from '../ImageSlide';
 import theme from '../../../theme';
 import { controlService } from '../../../services/control.service';
 import { planService } from '../../../services/plan.service';
+import { junctionService } from '../../../services/junction.service';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,6 +69,20 @@ const useStyles = makeStyles((theme) => ({
     bottomLeft: {
         width: '80%',
         backgroundColor: '#FFFFFF',
+        // marginLeft: '10%'
+        // display: 'flex'
+    },
+    bottomLeft_2: {
+        width: '80%',
+        backgroundColor: '#FFFFFF',
+        marginLeft: '10%'
+        // display: 'flex'
+    },
+    bottomLeft_3: {
+        marginTop: theme.spacing(8),
+        width: '80%',
+        backgroundColor: '#FFFFFF',
+        marginLeft: '10%'
         // display: 'flex'
     },
     titleGrid: {
@@ -79,7 +94,8 @@ const useStyles = makeStyles((theme) => ({
     titleLeft: {
         color: '#17395C',
         paddingTop: theme.spacing(3),
-        paddingLeft: theme.spacing(2)
+        paddingLeft: theme.spacing(2),
+        width: '100%'
     },
     divider: {
         backgroundColor: '#287298',
@@ -189,6 +205,52 @@ const useStyles = makeStyles((theme) => ({
         // display: 'flex',
         // justifyContent: 'center',
         // alignItems: 'center'
+    },
+    bottom_content2: {
+        height: '100%',
+        width: '100%',
+        // display: 'flex',
+        justifyContent: 'center',
+        marginTop: theme.spacing(10),
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center'
+    },
+    textFieldLeft_content2: {
+        paddingTop: theme.spacing(3),
+        width: '100%',
+        display: 'flex'
+    },
+    content2: {
+        width: '100%',
+        display: 'flex',
+        marginTop: theme.spacing(5),
+    },
+    content2_img: {
+        width: '100%',
+        display: 'flex',
+        marginLeft: '25%',
+        marginTop: theme.spacing(5),
+        backgroundColor: '#000000',
+        justifyContent: 'center'
+    },
+    content2_title: {
+        width: '15%',
+        display: 'flex',
+        alignItems: 'center',
+        height: '52px',
+        paddingLeft: theme.spacing(2)
+    },
+    content2_select: {
+        width: '75%',
+        display: 'flex',
+        alignItems: 'center',
+        height: '52px',
+        marginLeft: '10%'
+        // paddingLeft: theme.spacing(2)
+    },
+    textField_Junction: {
+        width: '30%'
     },
     dialogTitle: {
         marginTop: theme.spacing(5),
@@ -311,6 +373,7 @@ const BootstrapDialogTitle = (props) => {
 const ConfigMode = (props) => {
     const classes = useStyles();
     const navigate = useNavigate();
+    const location = useLocation();
     const [open, setOpen] = useState(false);
     const [patternOpen, setPatternOpen] = useState(false);
     const [orders, setOrders] = React.useState({});
@@ -323,7 +386,7 @@ const ConfigMode = (props) => {
     const [content, setContent] = useState(<></>)
     const [editAble, setEditAble] = useState([]);
     const [current, setCurrent] = useState("")
-    const [overview, setOverView] = useState([]);
+    const [junctionData, setJunctionData] = useState(null);
     const [menu, setMenu] = useState(0)
     const [planList, setPlanList] = useState([])
     const [imgRotate, setImgRotate] = useState(<img src={`/static/junction/${number_channel}way${degree}degree.jpg`} width='818px' height='660px' />)
@@ -444,7 +507,12 @@ const ConfigMode = (props) => {
         planService.getAllPlan().then((data) => {
             setPlanList(data)
         })
+        junctionService.getJunctionByID(location.pathname.slice(14, location.pathname.length - 12)).then((data) => {
+            setJunctionData(data)
+            setChannelList(data.channel)
+        })
     }, [])
+
     useEffect(() => {
         if (menu == 1) {
             setContent(<Grid
@@ -487,7 +555,7 @@ const ConfigMode = (props) => {
                                                 {row.end}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                {row.plan.name}
+                                                {row.plan?.name}
                                             </StyledTableCell>
                                         </StyledTableRow>
                                     ))}
@@ -510,7 +578,142 @@ const ConfigMode = (props) => {
             </Grid>)
         }
         else if (menu == 2) {
-            setContent(<></>)
+            setContent(<Grid
+                className={classes.bottom_content2}
+            >
+                <Grid
+                    className={classes.bottomLeft_2}
+                >
+                    <Grid
+                        className={classes.titleGrid}
+                    >
+                        {junctionData != null && <Typography
+                            variant='h4'
+                            className={classes.titleLeft}
+                        >
+                            ตั้งค่าการเชื่อมต่อ ณ {junctionData.name}
+                        </Typography>}
+                    </Grid>
+                    <Divider className={classes.divider} />
+                    <Grid
+                        className={classes.textFieldLeft}
+                    >
+                        <Grid
+                            className={classes.content2}
+                        >
+                            <Grid
+                                className={classes.content2_title}
+                            >
+                                <Typography
+                                    variant='h5'
+                                >
+                                    ช่องทางเดินรถ
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                className={classes.content2_select}
+                            >
+                                {channelList.length != 0 && <TextField
+                                    // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                    // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                    className={classes.textField_Junction}
+                                    variant="outlined"
+                                    name="junctionName"
+                                    // onBlur={formik.handleBlur}
+                                    // onChange={(event) => { handleChangeManu(event) }}
+                                    // value={formik.values.junctionName}
+                                    select
+                                    margin="normal"
+                                >
+                                    {channelList.map((option, index) => (
+                                        <MenuItem key={option.id} value={option.id} className={classes.menuList}>
+                                            {option.name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>}
+                            </Grid>
+
+                        </Grid>
+                        {/* <img src='/static/Mock-up_3way1.png' /> */}
+                        <Grid
+                            classes={classes.content2_img}
+                        >
+                            <img src='/static/Mock-up_3way1.png' />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid
+                    className={classes.bottomLeft_3}
+                >
+                    <Grid
+                        className={classes.titleGrid}
+                    >
+                        {junctionData != null && <Typography
+                            variant='h4'
+                            className={classes.titleLeft}
+                        >
+                            ตั้งค่าการเชื่อมต่อกับจุดควบคุมการจราจรใกล้เคียง
+                        </Typography>}
+                    </Grid>
+                    <Divider className={classes.divider} />
+                    <Grid
+                        className={classes.top}
+                    >
+                        <Grid
+                            className={classes.topLeft}
+                        >
+
+                            <Grid
+                                className={classes.textFieldLeft}
+                            >
+                                <Grid
+                                    className={classes.textFieldLeft_top}
+                                >
+                                    <TextField
+                                        className={classes.textField_name}
+                                        id="outlined-select-menu"
+                                        select
+                                        name="channelName"
+                                        label="จุดควบคุมการจราจร"
+                                        variant="outlined"
+                                        margin="normal"
+                                    >
+
+                                    </TextField>
+                                </Grid>
+                                <Grid
+                                    className={classes.textFieldLeft_top}
+                                >
+                                    <TextField
+                                        className={classes.selectField}
+                                        id="outlined-select-menu"
+                                        select
+                                        name="channelName"
+                                        label="ช่องทางเดินรถ"
+                                        variant="outlined"
+                                        margin="normal"
+                                    >
+
+                                    </TextField>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.top_icon}
+                    >
+                        <Button
+                            className={classes.buttonGrid}
+
+                            startIcon={<SaveAltOutlined />}
+                            // onClick={() => formik.handleSubmit}
+                            type='submit'
+                        >
+                            บันทึก
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Grid>)
         }
         else if (menu > 0 && menu % 2 == 1) {
             setContent(
@@ -585,7 +788,7 @@ const ConfigMode = (props) => {
                                                             name="planID"
                                                             // onBlur={formik.handleBlur}
                                                             onChange={(event) => { handleChangeData(event, index, 2) }}
-                                                            defaultValue={row.plan.id}
+                                                            defaultValue={row.plan?.id}
                                                             select
                                                             margin="normal"
                                                             fullWidth
@@ -896,23 +1099,6 @@ const ConfigMode = (props) => {
                                     </MenuItem>
                                 ))}
                             </TextField>
-                            {/* <TextField
-                                className={classes.selectField}
-                                id="outlined-select-menu"
-                                select
-                                name="number_channel"
-                                label="จำนวนแยก"
-                                // value={formik.values.number_channel}
-                                // onChange={handleChangeManu}
-                                variant="outlined"
-                                margin="normal"
-                            >
-                                {menuList.map((option) => (
-                                    <MenuItem key={option.id} value={option.value} className={classes.menuList}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField> */}
                         </Grid>
                     </Grid>
                 </Grid>

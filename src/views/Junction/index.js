@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Collapse,
   Container,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   makeStyles,
   Paper,
   styled,
@@ -24,54 +29,153 @@ import ReportTable from './ReportTable';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
 import { junctionService } from '../../services/junction.service';
-import { Assignment } from '@material-ui/icons';
+import { Assignment, BarChart, CallSplit, Description, DonutLarge, Edit, ExitToApp, ExpandLess, ExpandMore, Home, LocationCity, Settings, VideoCall, EditOutlined } from '@material-ui/icons';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import Map from './map';
+import NavItem from '../../layouts/DashboardLayout/NavBar/NavItem';
 // import ManagementTable from '../../components/table/manageTable';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     paddingTop: theme.spacing(5),
-    width: '100%'
-  },
-  container: {
     width: '100%',
+    display: 'flex'
+  },
+  container_1: {
+    width: '80%',
     height: '100%',
     // display: 'flex',
-    paddingLeft: theme.spacing(10),
-    paddingRight: theme.spacing(10)
+    paddingLeft: theme.spacing(15),
   },
-  topGrid: {
+  container_2: {
+    width: '18%',
+    height: '1000px',
+    // display: 'flex',
+    backgroundColor: '#FFFFFF',
+    paddingRight: theme.spacing(5),
+  },
+  titleGrid: {
     width: '100%',
-    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(3)
     // backgroundColor: '#000000',
     // display: 'flex'
   },
-  bottomGrid: {
-    marginTop: theme.spacing(5),
+  content: {
     width: '100%',
-    height: '50%',
+    // display: 'flex',
+    // marginLeft: '10%',
+    // marginTop: theme.spacing(5)
+  },
+  button: {
+    width: '100%',
     display: 'flex',
-    backgroundColor: '#000000'
+    // marginLeft: '10%',
+    // marginTop: theme.spacing(5)
+  },
+  detail: {
+    width: '100%',
+    paddingLeft: theme.spacing(6),
+    marginTop: theme.spacing(2)
+  },
+  editButton: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  button: {
+    marginTop: theme.spacing(5),
+    display: 'flex',
+    borderRadius: '13px',
+    justifyContent: 'center',
+    backgroundColor: '#287298',
+    color: '#FFFFFF',
   },
   buttonGrid: {
     marginTop: theme.spacing(5),
     display: 'flex',
-    justifyContent: 'end'
-  },
-  buttonCreate: {
-    display: 'flex',
+    width: '50%',
     height: '52px',
     borderRadius: '13px',
     justifyContent: 'center',
     backgroundColor: '#287298',
-    color: '#ffffff'
-  }
+    marginLeft: '40%',
+    color: '#FFFFFF',
+    fontSize: '12px'
+  },
+  top_icon: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'end',
+    // backgroundColor: '#000000'
+    // marginRight: '10%'
+  },
 }));
+const items = [
+  {
+    href: '/app/dashboard',
+    icon: DonutLarge,
+    title: 'Dashboard'
+  },
+  {
+    href: '/app',
+    icon: Home,
+    title: 'จุดควบคุมจราจร'
+  },
+  {
+    href: '/app/junction',
+    icon: Description,
+    title: 'รายการจุดควบคุมการจราจร'
+  },
+  {
+    href: '/app/junction/5/create_plan',
+    icon: Settings,
+    title: 'ตั้งค่าการทำงาน'
+  },
+  {
+    href: '/app/manual_control/5',
+    icon: CallSplit,
+    title: 'หน้าควบคุม'
+  },
+  {
+    href: '/app/management',
+    icon: VideoCall,
+    title: 'Monitor'
+  },
+  {
+    href: '/app/video-record',
+    icon: BarChart,
+    title: 'ข้อมูลปริมาณการจราจร'
+  },
+  {
+    href: '/404',
+    icon: ExitToApp,
+    title: 'Logout'
+  },
+];
 const ReportData = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [number_lane, setNumber_lane] = useState(3)
   const [pathID, setPathID] = useState()
+  const [map, setMap] = useState(null);
+  const [open, setOpen] = useState([])
   const [junctionList, setJunctionList] = useState([])
+  const [position, setPosition] = useState({
+    lat: 13.722524,
+    lng: 100.739945,
+    toggle: false
+  })
+  const toggleDetail = (ind) => {
+    var temp = open
+    for (let index = 0; index < temp.length; index++) {
+      if (ind == index) {
+        temp[ind] = !temp[ind]
+      }
+      setOpen(temp)
+    }
+  }
   const formik = useFormik({
     initialValues: {
       junctionName: '',
@@ -80,7 +184,6 @@ const ReportData = () => {
       number_channel: 3,
       areaID: 5,
       // ipAddress: '',
-
     },
     validationSchema: Yup.object({
       junctionName: Yup.string().max(100).required('กรุณากรอกชื่อของแยกสัญญาณ'),
@@ -141,23 +244,36 @@ const ReportData = () => {
       navigate(`/app/junction/${pathID}`, { replace: true });
     }
   }, [pathID])
+  useEffect(() => {
+    if (junctionList != []) {
+      var temp = []
+      for (let index = 0; index < junctionList.length; index++) {
+        temp.push(false)
+      }
+      setOpen(temp)
+    }
+  }, [junctionList])
+  useEffect(async () => {
+    // console.log(position)
+    if (map != null && position.toggle == true) map.flyTo([parseFloat(position.lat), parseFloat(position.lng)], 15)
+  }, [position])
   return (
     <Page
       className={classes.root}
       title="Junction_Detail"
     >
       <Grid
-        className={classes.container}
+        className={classes.container_1}
       >
         {/* <Grid
           className={classes.topGrid}
         >
           <SearchTable formik={formik} status="create" />
         </Grid> */}
-        <Grid
+        {/* <Grid
           className={classes.bottomGrid}
-        >
-          <TableContainer component={Paper}>
+        > */}
+        {/* <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
@@ -195,19 +311,89 @@ const ReportData = () => {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
-        </Grid>
+          </TableContainer> */}
+
+        {/* </Grid> */}
+        {junctionList.length > 0 && <Map setMap={setMap} junctionList={junctionList} />}
+      </Grid>
+      <Grid
+        className={classes.container_2}
+      >
         <Grid
-          className={classes.buttonGrid}
+          className={classes.titleGrid}
+        >
+          <Typography>
+            รายชื่อแยกสัญญาณ
+          </Typography>
+        </Grid>
+        <List>
+          {junctionList.map((row, index) => (
+            <Grid
+              className={classes.content}
+            >
+              <ListItem >
+                {open[index] ? <ExpandLess /> : <ExpandMore />}
+                <NavItem
+                  href=""
+                  key={items[1].title}
+                  title={row.name}
+                  icon=""
+                  onClick={() => {
+                    toggleDetail(index)
+                    setPosition({
+                      lat: row.latitude,
+                      lng: row.longitude,
+                      toggle: open[index]
+                    })
+                  }}
+                />
+              </ListItem>
+              <Collapse in={open[index]} timeout="auto" unmountOnExit>
+                <Grid
+                  className={classes.detail}
+                >
+                  รายละเอียดแยกสัญญาณ
+                </Grid>
+                <Grid
+                  className={classes.detail}
+                >
+                  พื้นที่: {row?.area?.name}
+                </Grid>
+                <Grid
+                  className={classes.detail}
+                >
+                  จำนวนแยก: {row.number_channel}
+                </Grid>
+                <Grid
+                  className={classes.editButton}
+                >
+                  <Button
+                    className={classes.button}
+                    onClick={() => {
+                      navigate(`/app/junction/${row.id}`, { replace: true });
+                    }}
+                  >
+                    <EditOutlined />
+                    แก้ไข
+                  </Button>
+                </Grid>
+              </Collapse>
+            </Grid>
+          ))}
+        </List>
+        <Grid
+          className={classes.top_icon}
         >
           <Button
-            className={classes.buttonCreate}
+            className={classes.buttonGrid}
             onClick={() => { navigate('/app/create_junction', { replace: true }); }}
           >
-            สร้างแยกสัญญาณใหม่
+            Create Junction
           </Button>
         </Grid>
+        {/* <Divider /> */}
       </Grid>
+
     </Page>
   );
 };

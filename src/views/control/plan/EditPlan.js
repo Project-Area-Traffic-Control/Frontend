@@ -852,7 +852,7 @@ const EditPlan = (props) => {
             var temp = []
             for (let index = 0; index < patternList.length; index++) {
                 temp.push({
-                    phase: `รูปแบบที่ ${patternList[index].pattern.slice(8, patternList.length - 10)}`,
+                    phase: `รูปแบบที่ ${patternList[index].pattern.slice(8, patternList.length - 11)}`,
                     time: patternList[index].duration,
                     toggle: false
                 })

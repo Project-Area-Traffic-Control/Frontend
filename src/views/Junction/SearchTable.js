@@ -29,6 +29,8 @@ import { Form, useFormik } from 'formik';
 import { RotateRight } from '@material-ui/icons';
 import ReportTable from './ReportTable';
 import { channelService } from '../../services/channel.service';
+import MyMap from './LocationSearch';
+
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -187,6 +189,7 @@ const SearchTable = (props) => {
     const [open, setOpen] = useState(false);
     const [menu, setManu] = React.useState('mobileUsername');
     const [orders, setOrders] = React.useState({});
+    const [content, setContent] = useState(<></>);
     const [channelList, setChannelList] = useState([]);
     const [degree, setDegree] = useState(0)
     const number_channel = props.number_channel
@@ -249,19 +252,19 @@ const SearchTable = (props) => {
     // }
     useEffect(() => {
         // props.setNumber_lane(menu)
-        // console.log("test")
-        let temp = {
-            junctionName: formik.values.junctionName,
-            lat: formik.values.lat,
-            lng: formik.values.lng
-        }
-        formik.setValues({
-            number_channel: menu,
-            areaID: 5,
-            junctionName: temp.junctionName,
-            lat: temp.lat,
-            lng: temp.lng
-        })
+        console.log("test")
+        // let temp = {
+        //     junctionName: formik.values.junctionName,
+        //     lat: formik.values.lat,
+        //     lng: formik.values.lng
+        // }
+        // formik.setValues({
+        //     number_channel: menu,
+        //     areaID: 5,
+        //     junctionName: temp.junctionName,
+        //     lat: temp.lat,
+        //     lng: temp.lng
+        // })
         // let temp2
         // for (let index = 0; index < number_channel; index++) {
         //     temp2[index].push(formik_channel)
@@ -271,9 +274,107 @@ const SearchTable = (props) => {
         // console.log(formik)
     }, [menu])
 
-    // useEffect(() => {
-    //     console.log(formik_channel)
-    // }, [formik_channel])
+    useEffect(() => {
+        if (props.status == 'create') {
+            setContent(<form onSubmit={formik.handleSubmit}>
+                <Grid
+                    className={classes.top}
+                >
+                    <Grid
+                        className={classes.topLeft}
+                    >
+                        <Grid
+                            className={classes.titleGrid}
+                        >
+                            <Typography
+                                variant='h4'
+                                className={classes.titleLeft}
+                            >
+                                ข้อมูลแยกจราจร
+                            </Typography>
+                        </Grid>
+                        <Divider className={classes.divider} />
+                        <Grid
+                            className={classes.textFieldLeft}
+                        >
+                            <Grid
+                                className={classes.textFieldLeft_top}
+                            >
+                                <TextField
+                                    error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                    helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                    className={classes.textField_name}
+                                    label="จุดควบคุมการจราจร"
+                                    variant="outlined"
+                                    name="junctionName"
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.junctionName}
+                                    margin="normal"
+                                />
+                                <TextField
+                                    className={classes.selectField}
+                                    id="outlined-select-menu"
+                                    select
+                                    name="number_channel"
+                                    label="จำนวนแยก"
+                                    value={formik.values.number_channel}
+                                    onChange={handleChangeManu}
+                                    variant="outlined"
+                                    margin="normal"
+                                >
+                                    {menuList.map((option) => (
+                                        <MenuItem key={option.id} value={option.value} className={classes.menuList}>
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                            <TextField
+                                error={Boolean(formik.touched.lat && formik.errors.lat)}
+                                helperText={formik.touched.lat && formik.errors.lat}
+                                className={classes.textField_location}
+                                label="ตำแหน่งที่ตั้ง (Lattitude)"
+                                variant="outlined"
+                                name="lat"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.lat}
+                                margin="normal"
+                            />
+                            <TextField
+                                error={Boolean(formik.touched.lng && formik.errors.lng)}
+                                helperText={formik.touched.lng && formik.errors.lng}
+                                className={classes.textField_location}
+                                label="ตำแหน่งที่ตั้ง (Longitude)"
+                                variant="outlined"
+                                name="lng"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.lng}
+                                margin="normal"
+                            />
+
+                            <MyMap regionCoord={[48.864716, 2.349014]} regionName="Paris" />
+
+                            {/* <MyMap /> */}
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid
+                    className={classes.top_icon}
+                >
+                    <Button
+                        className={classes.buttonGrid}
+                        // onClick={() => formik.handleSubmit}
+                        type='submit'
+                    >
+                        บันทึกข้อมูล
+                    </Button>
+                </Grid>
+            </form>)
+        }
+    }, [])
     return (
         <Grid
             className={classes.root}
@@ -358,9 +459,9 @@ const SearchTable = (props) => {
                                 margin="normal"
                             />
 
+                            {props.status == 'create' && <MyMap regionCoord={[48.864716, 2.349014]} regionName="Paris" />}
 
-
-                            {/* <LocationSearchInput /> */}
+                            {/* <MyMap /> */}
                         </Grid>
                     </Grid>
                     {props.status == 'edit' &&
