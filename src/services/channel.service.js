@@ -2,7 +2,8 @@ import { apiConstants } from '../_constants'
 import axios from "axios"
 export const channelService = {
     createChannel,
-    updateChannel
+    updateChannel,
+    deleteChannel
 };
 
 async function createChannel(data) {
@@ -43,6 +44,24 @@ async function updateChannel(data, id) {
             }
             if (e.response.status === 401) {
                 window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function deleteChannel(id) {
+    // console.log("data delete id: ", id)
+    return axios.delete(`${apiConstants.uri}/channels/${id}`,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    ).then(() => true)
+        .catch((e) => {
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            else if (e.response.status > 300) {
+                e.message = e.response.data
+                return Promise.reject(e);
             }
             // window.location.reload(true)
         })
