@@ -265,7 +265,8 @@ const CreateJunction = () => {
                 "latitude": parseFloat(values.lat),
                 "longitude": parseFloat(values.lng),
                 "number_channel": values.number_channel,
-                "area_id": values.areaID
+                "area_id": values.areaID,
+                "rotate": degree
             })
             // console.log(channel)
             if (values.number_channel == 3 && channel != 0) {
@@ -346,7 +347,7 @@ const CreateJunction = () => {
                     "junction_id": res.id
                 })
             }
-
+            navigate(`/app/junction`, { replace: true });
         },
     });
 
@@ -400,6 +401,7 @@ const CreateJunction = () => {
             temp.order_5 = 5
             // console.log(temp)
             setChannel(temp)
+            handleClose()
             // setChannel(values)
             // if (status == 0) {
             //     await channelService.createChannel({
@@ -532,6 +534,13 @@ const CreateJunction = () => {
             setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
             setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
         }
+        else if (menu == 4) {
+            setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
+        }
     }, [degree])
 
     useEffect(() => {
@@ -589,10 +598,10 @@ const CreateJunction = () => {
             // })
         }
         else if (menu == 4) {
-            setImgPath_1(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-            setImgPath_2(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-            setImgPath_3(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-            setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
+            setImgPath_1(<img src='/static/Mock-up_4way0.png' width={imgWid} height={imgHei} />)
+            setImgPath_2(<img src='/static/Mock-up_4way90.png' width={imgWid} height={imgHei} />)
+            setImgPath_3(<img src='/static/Mock-up_4way180.png' width={imgWid} height={imgHei} />)
+            setImgPath_4(<img src='/static/Mock-up_4way270.png' width={imgWid} height={imgHei} />)
             setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
             //     let temp = {
             //         name_5: "empty",
@@ -762,11 +771,11 @@ const CreateJunction = () => {
                                             margin="normal"
                                         />
                                         <Button
-                                            className={classes.buttonGrid}
+                                            className={classes.buttonConfig}
                                             onClick={() => setOpen(true)}
                                         // type='submit'
                                         >
-                                            แก้ไข
+                                            ตั้งค่าช่องสัญญาณ
                                         </Button>
                                         {/* <ReportTable number_channel={formik.values.number_channel} channel={props.channel} pathID={props.pathID} status={props.status} formik={formik} /> */}
                                         <Grid
@@ -978,7 +987,7 @@ const CreateJunction = () => {
                                                 }
                                             </DialogContent>
                                             <DialogActions>
-                                                <Button autoFocus className={classes.buttonGrid} type='submit' onClick={() => { }}>
+                                                <Button autoFocus className={classes.buttonGrid} type='submit'>
                                                     บันทึก
                                                 </Button>
                                             </DialogActions>

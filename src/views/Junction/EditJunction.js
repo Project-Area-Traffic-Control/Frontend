@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
     top_icon: {
         width: '100%',
         display: 'flex',
-        // justifyContent: 'end',
+        justifyContent: 'end',
         // backgroundColor: '#000000'
         // marginLeft: '10%'
     },
@@ -284,6 +284,7 @@ const EditJunction = () => {
                 number_channel: junction.number_channel,
                 areaID: 5,
             })
+            setDegree(parseInt(junction.rotate))
             setChannel(junction.channel)
             setGlobalPosition([junction.latitude, junction.longitude])
             setStatus(junction.channel.length)
@@ -359,10 +360,10 @@ const EditJunction = () => {
             setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
         }
         else if (formik.values.number_channel == 4) {
-            setImgPath_1(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-            setImgPath_2(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-            setImgPath_3(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-            setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
+            setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width={imgWid} height={imgHei} />)
+            setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width={imgWid} height={imgHei} />)
             setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
         }
     }, [degree])
@@ -372,7 +373,7 @@ const EditJunction = () => {
             let temp = {
                 junctionName: formik.values.junctionName,
                 lat: formik.values.lat,
-                lng: formik.values.lng
+                lng: formik.values.lng,
             }
             formik.setValues({
                 number_channel: menu,
@@ -390,9 +391,9 @@ const EditJunction = () => {
             console.log(temp_2)
             setConfig(temp_2)
             if (menu == 3) {
-                setImgPath_1(<img src='/static/Mock-up_3way1_0degree.png' width={imgWid} height={imgHei} />)
-                setImgPath_2(<img src='/static/Mock-up_3way2_0degree.png' width={imgWid} height={imgHei} />)
-                setImgPath_3(<img src='/static/Mock-up_3way3_0degree.png' width={imgWid} height={imgHei} />)
+                setImgPath_1(<img src={`/static/Mock-up_3way1_${degree}degree.png`} width={imgWid} height={imgHei} />)
+                setImgPath_2(<img src={`/static/Mock-up_3way2_${degree}degree.png`} width={imgWid} height={imgHei} />)
+                setImgPath_3(<img src={`/static/Mock-up_3way3_${degree}degree.png`} width={imgWid} height={imgHei} />)
                 setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
                 setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
                 //     let temp = {
@@ -422,10 +423,10 @@ const EditJunction = () => {
                 // })
             }
             else if (menu == 4) {
-                setImgPath_1(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-                setImgPath_2(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-                setImgPath_3(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-                setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
+                setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width={imgWid} height={imgHei} />)
+                setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width={imgWid} height={imgHei} />)
+                setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width={imgWid} height={imgHei} />)
+                setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width={imgWid} height={imgHei} />)
                 setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
                 //     let temp = {
                 //         name_5: "empty",
@@ -540,7 +541,8 @@ const EditJunction = () => {
                 "latitude": parseFloat(values.lat),
                 "longitude": parseFloat(values.lng),
                 "number_channel": values.number_channel,
-                "area_id": values.areaID
+                "area_id": values.areaID,
+                "rotate": degree
             }, pathID)
 
             if (status == 0) {
@@ -1079,6 +1081,7 @@ const EditJunction = () => {
                 }
             }
             // window.location.reload(false)
+            navigate(`/app/junction`, { replace: true });
         },
     });
 

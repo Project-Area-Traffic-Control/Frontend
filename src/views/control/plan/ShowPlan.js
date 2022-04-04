@@ -43,6 +43,7 @@ import Slider from 'react-slick';
 import ImageSlide from '../ImageSlide';
 import theme from '../../../theme';
 import { planService } from '../../../services/plan.service';
+import { junctionService } from '../../../services/junction.service';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -180,17 +181,26 @@ const ShowPlan = (props) => {
     const [planList, setPlanList] = useState([])
     const [juncID, setJuncID] = useState(null)
     const initialLength = 21
+    const location = useLocation();
     useEffect(() => {
-        planService.getAllPlan().then((data) => {
-            setPlanList(data)
-        })
+        // planService.getAllPlan().then((data) => {
+        //     setPlanList(data)
+        // })
         setJuncID(location.pathname.slice(14, 15 + (location.pathname.length - initialLength)))
         // else{
 
         // }
-    }, [])
+    }, [location.pathname])
+
+    useEffect(() => {
+        if (juncID != null) {
+            junctionService.getJunctionByID(juncID).then((data) => {
+                setPlanList(data.plan)
+            })
+            console.log(juncID)
+        }
+    }, [juncID])
     const navigate = useNavigate();
-    const location = useLocation();
     const checkPlan = (index) => {
         if (planList[index].name == "FLASHING") {
             navigate(`/app/junction/${juncID}/flashing_plan`, { replace: true });

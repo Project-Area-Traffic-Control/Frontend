@@ -44,6 +44,7 @@ import ImageSlide from '../ImageSlide';
 import theme from '../../../theme';
 import { planService } from '../../../services/plan.service';
 import { patternService } from '../../../services/pattern.service';
+import { junctionService } from '../../../services/junction.service';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -239,6 +240,10 @@ const useStyles = makeStyles((theme) => ({
         width: '50%',
         justifyContent: 'flex-end',
         // float: 'right'
+    },
+    channelText: {
+        position: 'absolute',
+        marginBottom: '30%'
     }
 }));
 const menuList = [
@@ -258,10 +263,10 @@ const menuList = [
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
-        minWidth: '985px'
+        minWidth: '1000px'
     },
     '& .MuiDialog-paper': {
-        minWidth: '985px',
+        minWidth: '1000px',
         minHeight: '550px'
     },
     '& .MuiDialogActions-root': {
@@ -301,6 +306,7 @@ const CreatePlan = (props) => {
     const [open, setOpen] = useState(false);
     const [patternOpen, setPatternOpen] = useState(false);
     const [menu, setManu] = React.useState('mobileUsername');
+    const [channelContent, setChannelContent] = useState(null)
     const [data, setData] = useState(null);
     const [toggleContent, setToggleContent] = useState([]);
     const [check, setCheck] = useState("")
@@ -308,7 +314,13 @@ const CreatePlan = (props) => {
     const [current, setCurrent] = useState("")
     const [overview, setOverView] = useState([]);
     const [juncID, setJuncID] = useState(null)
+    const [junction, setJunction] = useState([])
+    const [degree, setDegree] = useState(null)
     const [plan, setPlan] = useState(null)
+    const [imgSlide1, setImgSlide1] = useState(null)
+    const [imgSlide2, setImgSlide2] = useState(null)
+    var initHei = '440px'
+    var initWid = '600px'
     const [search, setSearch] = React.useState({
         search: "",
         options: "mobileUsername",
@@ -317,20 +329,6 @@ const CreatePlan = (props) => {
         timeRangeBegin: "",
         timeRangeEnd: ""
     })
-    const slideImages = [
-        {
-            url: '/static/Mock-up_3way1.png',
-            caption: 'Slide 1'
-        },
-        {
-            url: '/static/Mock-up_3way2.png',
-            caption: 'Slide 2'
-        },
-        {
-            url: '/static/Mock-up_3way3.png',
-            caption: 'Slide 3'
-        },
-    ];
     const [pattern, setPattern] = useState(0)
     const handleClickOpen = () => {
         setOpen(true);
@@ -386,15 +384,27 @@ const CreatePlan = (props) => {
 
     const [index, setActiveStep] = React.useState(0);
     const images_pattern1 = [
-        { url: "/static/Mock-up_3way1.png" },
-        { url: "/static/Mock-up_3way2.png" },
-        { url: "/static/Mock-up_3way3.png" },
+        { url: `/static/Mock-up_3way1_${degree}degree.png` },
+        { url: `/static/Mock-up_3way2_${degree}degree.png` },
+        { url: `/static/Mock-up_3way3_${degree}degree.png` },
     ];
     const images_pattern2 = [
-        { url: "/static/Mock-up_3way1.png" },
-        { url: "/static/Mock-up_3way3.png" },
-        { url: "/static/Mock-up_3way2.png" },
+        { url: `/static/Mock-up_3way1_${degree}degree.png` },
+        { url: `/static/Mock-up_3way3_${degree}degree.png` },
+        { url: `/static/Mock-up_3way2_${degree}degree.png` },
     ];
+    const images_pattern3 = [
+        { url: `/static/Mock-up_4way${degree}.png` },
+        { url: `/static/Mock-up_4way${(degree + 90) % 360}.png` },
+        { url: `/static/Mock-up_4way${(degree + 180) % 360}.png` },
+        { url: `/static/Mock-up_4way${(degree + 270) % 360}.png` },
+    ]
+    const images_pattern4 = [
+        { url: `/static/Mock-up_4way${degree}.png` },
+        { url: `/static/Mock-up_4way${(degree + 270) % 360}.png` },
+        { url: `/static/Mock-up_4way${(degree + 180) % 360}.png` },
+        { url: `/static/Mock-up_4way${(degree + 90) % 360}.png` },
+    ]
     const StyledTableCell = withStyles((theme) => ({
         head: {
             backgroundColor: '#287298',
@@ -450,13 +460,20 @@ const CreatePlan = (props) => {
         const temp = [...data]
         temp.splice(index, 1)
         setData(temp)
+        // if (index == 0) {
+        //     goToNextPicture()
+        // }
+        // else {
+        //     goToPrevPicture()
+        // }
+        setActiveStep(0)
     }
 
-    const submitPlan = () => {
+    async function submitPlan() {
         var temp = formik.values
         temp.junction_id = parseInt(juncID)
         formik.setValues(temp)
-        planService.createPlan({
+        await planService.createPlan({
             name: formik.values.planName,
             yellow_time: formik.values.yellow_time,
             delay_red_time: formik.values.delay_red_time,
@@ -471,7 +488,7 @@ const CreatePlan = (props) => {
     const submitPattern = () => {
         for (let index = 0; index < data.length; index++) {
             var temp = {
-                pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_3_WAYS`,
+                pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_${junction.number_channel}_WAYS`,
                 order: index + 1,
                 duration: data[index].time,
                 plan_id: plan
@@ -495,44 +512,101 @@ const CreatePlan = (props) => {
 
     useEffect(() => {
         if (pattern == 1) {
-            setData([{
-                //number: 1,
-                phase: 'รูปแบบที่ 1',
-                time: 120,
-                toggle: false
-            },
-            {
-                //number: 2,
-                phase: 'รูปแบบที่ 2',
-                time: 60,
-                toggle: false
-            },
-            {
-                //number: 3,
-                phase: 'รูปแบบที่ 3',
-                time: 120,
-                toggle: false
-            }])
+            if (junction.number_channel == 3) {
+                setData([{
+                    //number: 1,
+                    phase: 'รูปแบบที่ 1',
+                    time: 120,
+                    toggle: false
+                },
+                {
+                    //number: 2,
+                    phase: 'รูปแบบที่ 2',
+                    time: 60,
+                    toggle: false
+                },
+                {
+                    //number: 3,
+                    phase: 'รูปแบบที่ 3',
+                    time: 120,
+                    toggle: false
+                }])
+            }
+            else if (junction.number_channel == 4) {
+                setData([{
+                    //number: 1,
+                    phase: 'รูปแบบที่ 1',
+                    time: 120,
+                    toggle: false
+                },
+                {
+                    //number: 2,
+                    phase: 'รูปแบบที่ 2',
+                    time: 60,
+                    toggle: false
+                },
+                {
+                    //number: 3,
+                    phase: 'รูปแบบที่ 3',
+                    time: 60,
+                    toggle: false
+                },
+                {
+                    //number: 3,
+                    phase: 'รูปแบบที่ 4',
+                    time: 60,
+                    toggle: false
+                }])
+            }
+
         }
         if (pattern == 2) {
-            setData([{
-                //number: 1,
-                phase: 'รูปแบบที่ 1',
-                time: 120,
-                toggle: false
-            },
-            {
-                //number: 2,
-                phase: 'รูปแบบที่ 3',
-                time: 120,
-                toggle: false
-            },
-            {
-                //number: 3,
-                phase: 'รูปแบบที่ 2',
-                time: 60,
-                toggle: false
-            }])
+            if (junction.number_channel == 3) {
+                setData([{
+                    //number: 1,
+                    phase: 'รูปแบบที่ 1',
+                    time: 120,
+                    toggle: false
+                },
+                {
+                    //number: 2,
+                    phase: 'รูปแบบที่ 3',
+                    time: 60,
+                    toggle: false
+                },
+                {
+                    //number: 3,
+                    phase: 'รูปแบบที่ 2',
+                    time: 120,
+                    toggle: false
+                }])
+            }
+            else if (junction.number_channel == 4) {
+                setData([{
+                    //number: 1,
+                    phase: 'รูปแบบที่ 1',
+                    time: 120,
+                    toggle: false
+                },
+                {
+                    //number: 2,
+                    phase: 'รูปแบบที่ 4',
+                    time: 60,
+                    toggle: false
+                },
+                {
+                    //number: 3,
+                    phase: 'รูปแบบที่ 3',
+                    time: 120,
+                    toggle: false
+                },
+                {
+                    //number: 3,
+                    phase: 'รูปแบบที่ 2',
+                    time: 120,
+                    toggle: false
+                }])
+            }
         }
     }, [pattern])
 
@@ -550,9 +624,18 @@ const CreatePlan = (props) => {
 
                 img_path.push(data[index].phase[10])
             }
+            console.log(img_path)
+            let swap = initHei
+            initHei = initWid
+            initWid = swap
             for (let index = 0; index < img_path.length; index++) {
                 var temp = img_path[index]
-                img_path[index] = { url: `/static/Mock-up_3way${temp}.png` }
+                if (junction.number_channel == 3) {
+                    img_path[index] = { url: `/static/Mock-up_3way${temp}_${degree}degree.png` }
+                }
+                else if (junction.number_channel == 4) {
+                    img_path[index] = { url: `/static/Mock-up_4way${(degree + ((temp - 1) * 90)) % 360}.png` }
+                }
             }
             setOverView(img_path)
         }
@@ -566,168 +649,542 @@ const CreatePlan = (props) => {
 
     useEffect(() => {
         if (check == 'รูปแบบที่ 1') {
-            setContent(<BootstrapDialog
-                open={patternOpen}
-                onClose={handleClosePattern}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                {/* <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
-                </DialogTitle> */}
-                <DialogContent>
-                    <Typography
-                        variant='h5'
-                        className={classes.dialogTitle}
-                    >
-                        เลือกรูปแบบการปล่อยรถ
-                    </Typography>
-                    <Grid
-                        className={classes.dialogDividerGrid}
-                    >
-                        <Divider className={classes.dialogDivider} />
-                    </Grid>
-                    <Grid
-                        className={classes.bottomImge}
-                    >
-                        <Grid
-                            className={classes.pattern}
+            if (junction.number_channel == 3) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
                         >
-                            <Grid
-                                className={classes.selectBorder}
-                            >
-                                <img src='/static/Mock-up_3way1.png' width='320px' height='280px' />
-                            </Grid>
-                            <Grid
-                                className={classes.clickPattern}
-                            >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
-                                >
-                                    รูปแบบที่ 1
-                                </Button>
-                            </Grid>
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
                         </Grid>
                         <Grid
-                            className={classes.pattern}
+                            className={classes.bottomImge}
                         >
-                            <img src='/static/Mock-up_3way2.png' width='320px' height='280px' />
                             <Grid
-                                className={classes.clickPattern}
+                                className={classes.pattern}
                             >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                <Grid
+                                    className={classes.selectBorder}
                                 >
-                                    รูปแบบที่ 2
-                                </Button>
+                                    <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
                             </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+            else if (junction.number_channel == 4) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
                         </Grid>
                         <Grid
-                            className={classes.pattern}
+                            className={classes.bottomImge}
                         >
-                            <img src='/static/Mock-up_3way3.png' width='320px' height='280px' />
                             <Grid
-                                className={classes.clickPattern}
+                                className={classes.pattern}
                             >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                <Grid
+                                    className={classes.selectBorder}
                                 >
-                                    รูปแบบที่ 3
-                                </Button>
+                                    <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </DialogContent>
-                {/* <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
-                    </Button>
-                </DialogActions> */}
-            </BootstrapDialog>)
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+
         }
         if (check == 'รูปแบบที่ 2') {
-            setContent(<BootstrapDialog
-                open={patternOpen}
-                onClose={handleClosePattern}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                {/* <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
-                </DialogTitle> */}
-                <DialogContent>
-                    <Typography
-                        variant='h5'
-                        className={classes.dialogTitle}
-                    >
-                        เลือกรูปแบบการปล่อยรถ
-                    </Typography>
-                    <Grid
-                        className={classes.dialogDividerGrid}
-                    >
-                        <Divider className={classes.dialogDivider} />
-                    </Grid>
-                    <Grid
-                        className={classes.bottomImge}
-                    >
-                        <Grid
-                            className={classes.pattern}
+            if (junction.number_channel == 3) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
                         >
-                            <img src='/static/Mock-up_3way1.png' width='320px' height='280px' />
-                            <Grid
-                                className={classes.clickPattern}
-                            >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
-                                >
-                                    รูปแบบที่ 1
-                                </Button>
-                            </Grid>
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
                         </Grid>
                         <Grid
-                            className={classes.pattern}
+                            className={classes.bottomImge}
                         >
                             <Grid
-                                className={classes.selectBorder}
+                                className={classes.pattern}
                             >
-                                <img src='/static/Mock-up_3way2.png' width='320px' height='280px' />
+                                <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
                             </Grid>
                             <Grid
-                                className={classes.clickPattern}
+                                className={classes.pattern}
                             >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                <Grid
+                                    className={classes.selectBorder}
                                 >
-                                    รูปแบบที่ 2
-                                </Button>
+                                    <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
                             </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+            else if (junction.number_channel == 4) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
                         </Grid>
                         <Grid
-                            className={classes.pattern}
+                            className={classes.bottomImge}
                         >
-                            <img src='/static/Mock-up_3way3.png' width='320px' height='280px' />
                             <Grid
-                                className={classes.clickPattern}
+                                className={classes.pattern}
                             >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
                                 >
-                                    รูปแบบที่ 3
-                                </Button>
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <Grid
+                                    className={classes.selectBorder}
+                                >
+                                    <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </DialogContent>
-                {/* <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
-                    </Button>
-                </DialogActions> */}
-            </BootstrapDialog>)
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+
         }
         if (check == 'รูปแบบที่ 3') {
+            if (junction.number_channel == 3) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <Grid
+                                    className={classes.selectBorder}
+                                >
+                                    <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+            else if (junction.number_channel == 4) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <Grid
+                                    className={classes.selectBorder}
+                                >
+                                    <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+        }
+        if (check == 'รูปแบบที่ 4') {
             setContent(<BootstrapDialog
                 open={patternOpen}
                 onClose={handleClosePattern}
@@ -755,7 +1212,7 @@ const CreatePlan = (props) => {
                         <Grid
                             className={classes.pattern}
                         >
-                            <img src='/static/Mock-up_3way1.png' width='320px' height='280px' />
+                            <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -769,7 +1226,7 @@ const CreatePlan = (props) => {
                         <Grid
                             className={classes.pattern}
                         >
-                            <img src='/static/Mock-up_3way2.png' width='320px' height='280px' />
+                            <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -783,11 +1240,7 @@ const CreatePlan = (props) => {
                         <Grid
                             className={classes.pattern}
                         >
-                            <Grid
-                                className={classes.selectBorder}
-                            >
-                                <img src='/static/Mock-up_3way3.png' width='320px' height='280px' />
-                            </Grid>
+                            <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -795,6 +1248,24 @@ const CreatePlan = (props) => {
                                     onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
                                 >
                                     รูปแบบที่ 3
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            <Grid
+                                className={classes.selectBorder}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                            </Grid>
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                >
+                                    รูปแบบที่ 4
                                 </Button>
                             </Grid>
                         </Grid>
@@ -809,81 +1280,175 @@ const CreatePlan = (props) => {
             </BootstrapDialog>)
         }
         if (check == 'เลือกรูปแบบ') {
-            setContent(<BootstrapDialog
-                open={patternOpen}
-                onClose={handleClosePattern}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                {/* <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
-                </DialogTitle> */}
-                <DialogContent>
-                    <Typography
-                        variant='h5'
-                        className={classes.dialogTitle}
-                    >
-                        เลือกรูปแบบการปล่อยรถ
-                    </Typography>
-                    <Grid
-                        className={classes.dialogDividerGrid}
-                    >
-                        <Divider className={classes.dialogDivider} />
-                    </Grid>
-                    <Grid
-                        className={classes.bottomImge}
-                    >
-                        <Grid
-                            className={classes.pattern}
+            if (junction.number_channel == 3) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
                         >
-                            <img src='/static/Mock-up_3way1.png' width='320px' height='280px' />
-                            <Grid
-                                className={classes.clickPattern}
-                            >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
-                                >
-                                    รูปแบบที่ 1
-                                </Button>
-                            </Grid>
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
                         </Grid>
                         <Grid
-                            className={classes.pattern}
+                            className={classes.bottomImge}
                         >
-                            <img src='/static/Mock-up_3way2.png' width='320px' height='280px' />
                             <Grid
-                                className={classes.clickPattern}
+                                className={classes.pattern}
                             >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
                                 >
-                                    รูปแบบที่ 2
-                                </Button>
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
                             </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+            else if (junction.number_channel == 4) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
                         </Grid>
                         <Grid
-                            className={classes.pattern}
+                            className={classes.bottomImge}
                         >
-                            <img src='/static/Mock-up_3way3.png' width='320px' height='280px' />
                             <Grid
-                                className={classes.clickPattern}
+                                className={classes.pattern}
                             >
-                                <Button
-                                    onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
                                 >
-                                    รูปแบบที่ 3
-                                </Button>
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </DialogContent>
-                {/* <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
-                    </Button>
-                </DialogActions> */}
-            </BootstrapDialog>)
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+
         }
 
     }, [check])
@@ -899,6 +1464,45 @@ const CreatePlan = (props) => {
         // console.log(juncID)
     }, [])
 
+    useEffect(() => {
+        if (juncID != null) {
+            console.log(juncID)
+            junctionService.getJunctionByID(juncID).then((data) => {
+                // console.log(data)
+                setJunction(data)
+            })
+
+        }
+
+    }, [juncID])
+
+    useEffect(() => {
+        if (junction != null) {
+            console.log(junction.rotate)
+            setDegree(junction.rotate)
+            // if (junction.number_channel == 3) {
+            //     setImgSlide1(images_pattern1)
+            //     setImgSlide2(images_pattern2)
+            // }
+            // else if (junction.number_channel == 4) {
+            //     setImgSlide1(images_pattern3)
+            //     setImgSlide2(images_pattern4)
+            // }
+        }
+    }, [junction])
+
+    useEffect(() => {
+        if (degree != null) {
+            if (junction.number_channel == 3) {
+                setImgSlide1(images_pattern1)
+                setImgSlide2(images_pattern2)
+            }
+            else if (junction.number_channel == 4) {
+                setImgSlide1(images_pattern3)
+                setImgSlide2(images_pattern4)
+            }
+        }
+    }, [degree])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Grid
@@ -988,7 +1592,7 @@ const CreatePlan = (props) => {
                                 <Table className={classes.table} aria-label="customized table">
                                     <TableHead>
                                         <TableRow>
-                                            <StyledTableCell align="center" width="10%"></StyledTableCell>
+                                            {/* <StyledTableCell align="center" width="10%"></StyledTableCell> */}
                                             <StyledTableCell align="center" width="20%">ลำดับที่</StyledTableCell>
                                             <StyledTableCell align="center" width="30%">รูปแบบการปล่อยรถ</StyledTableCell>
                                             <StyledTableCell align="center" width="30%">ระยะเวลาสัญญาณไฟเขียว</StyledTableCell>
@@ -998,7 +1602,7 @@ const CreatePlan = (props) => {
                                     <TableBody>
                                         {data.map((row, index) => (
                                             <StyledTableRow key={row.number}>
-                                                <StyledTableCell align="center">
+                                                {/* <StyledTableCell align="center">
                                                     <IconButton
                                                         onClick={() => {
                                                             handleToggle(row.number - 1)
@@ -1006,11 +1610,17 @@ const CreatePlan = (props) => {
                                                     >
                                                         {row.toggle ? <ExpandMore /> : <ExpandLess />}
                                                     </IconButton>
-                                                </StyledTableCell>
+                                                </StyledTableCell> */}
                                                 <StyledTableCell align="center">
                                                     {index + 1}
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
+                                                    {/* <img src=''/> */}
+                                                    <div
+                                                        style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+                                                    >
+                                                        {row.phase != 'เลือกรูปแบบ' && <img src={`/static/Mock-up_3way${row.phase.slice(10, row.phase.length)}_${degree}degree.png`} width='144px' height='72px' />}
+                                                    </div>
                                                     <Button
                                                         onClick={() => {
                                                             handleClickOpenPattern(row.phase, index)
@@ -1037,15 +1647,15 @@ const CreatePlan = (props) => {
 
                                                     </TextField>
                                                 </StyledTableCell>
-                                                <StyledTableCell align="center">
-                                                    <IconButton
+                                                < StyledTableCell align="center">
+                                                    {data.length != 1 && <IconButton
                                                         onClick={() => {
                                                             removeRow(index)
-                                                            goToPrevPicture()
+                                                            // goToPrevPicture()
                                                         }}
                                                     >
                                                         <Close />
-                                                    </IconButton>
+                                                    </IconButton>}
                                                 </StyledTableCell>
                                             </StyledTableRow>
                                         ))}
@@ -1124,18 +1734,68 @@ const CreatePlan = (props) => {
                                         marginTop: theme.spacing(5),
                                         maxWidth: 600,
                                         flexGrow: 1,
+                                        position: 'relative'
                                     }}
                                 >
-                                    {overview[index] != null && <img
+                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 180 || degree == 0) && junction.number_channel == 3 && <img
                                         src={overview[index].url}
                                         style={{
                                             height: 440,
                                             width: "100%",
-                                            maxWidth: 600,
+                                            width: 600,
                                             display: "block",
                                             overflow: "hidden",
                                         }}
                                     />}
+                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 90 || degree == 270) && junction.number_channel == 3 && <img
+                                        src={overview[index].url}
+                                        style={{
+                                            height: 600,
+                                            width: "100%",
+                                            width: 440,
+                                            display: "block",
+                                            overflow: "hidden",
+
+                                        }}
+                                    />}
+                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && junction.number_channel == 4 && <img
+                                        src={overview[index].url}
+                                        style={{
+                                            height: 600,
+                                            width: "100%",
+                                            width: 600,
+                                            display: "block",
+                                            overflow: "hidden",
+                                        }}
+                                    />}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '17%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '75%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '47%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '45%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '80%', marginLeft: '18%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '10%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '70%', marginLeft: '40%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '30%', marginLeft: '4%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '8%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '3%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '10%', marginLeft: '35%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '80%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
                                     <Grid
                                         className={classes.buttom}
                                     >
@@ -1191,13 +1851,15 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <SimpleImageSlider
+                                {imgSlide1 != null && <SimpleImageSlider
                                     width='320px'
                                     height='320px'
-                                    images={images_pattern1}
+                                    images={imgSlide1}
                                     // showBullets={true}
-                                    showNavs={true}
-                                />
+                                    // showNavs={true}
+                                    autoPlay
+                                    autoPlayDelay='1'
+                                />}
 
                                 <Grid
                                     className={classes.select_pattern}
@@ -1215,13 +1877,15 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <SimpleImageSlider
+                                {imgSlide2 != null && <SimpleImageSlider
                                     width='320px'
                                     height='320px'
-                                    images={images_pattern2}
+                                    images={imgSlide2}
                                     // showBullets={true}
-                                    showNavs={true}
-                                />
+                                    // showNavs={true}
+                                    autoPlay
+                                    autoPlayDelay='1'
+                                />}
                                 <Grid
                                     className={classes.select_pattern}
                                 >
@@ -1260,7 +1924,7 @@ const CreatePlan = (props) => {
                 </Grid>
                 {/* </form> */}
             </Grid>
-        </form>
+        </form >
     );
 };
 
