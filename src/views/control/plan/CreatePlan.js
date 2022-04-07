@@ -450,7 +450,7 @@ const CreatePlan = (props) => {
         var temp = {
             // number: data.length + 1,
             phase: `เลือกรูปแบบ`,
-            time: `วินาที`,
+            time: 30,
             toggle: false
         }
         setData([...data, temp])
@@ -505,6 +505,8 @@ const CreatePlan = (props) => {
     useEffect(() => {
         if (plan != null) {
             submitPattern()
+            console.log(juncID)
+            navigate(`/app/junction/${juncID}/plans`, { replace: true });
         }
         // submitPattern()
 
@@ -1619,7 +1621,8 @@ const CreatePlan = (props) => {
                                                     <div
                                                         style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
                                                     >
-                                                        {row.phase != 'เลือกรูปแบบ' && <img src={`/static/Mock-up_3way${row.phase.slice(10, row.phase.length)}_${degree}degree.png`} width='144px' height='72px' />}
+                                                        {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 3 && <img src={`/static/Mock-up_3way${row.phase.slice(10, row.phase.length)}_${degree}degree.png`} width='144px' height='72px' />}
+                                                        {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 4 && <img src={`/static/Mock-up_4way${(degree + ((parseInt(row.phase.slice(10, row.phase.length))) - 1) * 90) % 360}.png`} width='144px' height='144px' />}
                                                     </div>
                                                     <Button
                                                         onClick={() => {

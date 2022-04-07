@@ -4,7 +4,8 @@ export const patternService = {
     // createChannel,
     // updateChannel
     createPattern,
-    updatePattern
+    updatePattern,
+    deletePattern
 };
 
 async function createPattern(data) {
@@ -45,6 +46,24 @@ async function updatePattern(data, id) {
             }
             if (e.response.status === 401) {
                 window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function deletePattern(id) {
+    // console.log("data delete id: ", id)
+    return axios.delete(`${apiConstants.uri}/patterns/${id}`,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    ).then(() => true)
+        .catch((e) => {
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            else if (e.response.status > 300) {
+                e.message = e.response.data
+                return Promise.reject(e);
             }
             // window.location.reload(true)
         })

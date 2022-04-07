@@ -319,6 +319,7 @@ const EditPlan = (props) => {
     const [imgRotate, setImgRotate] = useState(<img src={`/static/junction/${number_channel}way${degree}degree.jpg`} width='818px' height='660px' />)
     const [imgSlide1, setImgSlide1] = useState(null)
     const [imgSlide2, setImgSlide2] = useState(null)
+    const [indList, setIndList] = useState([])
     const [search, setSearch] = React.useState({
 
         search: "",
@@ -453,7 +454,7 @@ const EditPlan = (props) => {
         var temp = {
             // number: data.length + 1,
             phase: `เลือกรูปแบบ`,
-            time: `วินาที`,
+            time: 30,
             toggle: false
         }
         setData([...data, temp])
@@ -478,7 +479,7 @@ const EditPlan = (props) => {
             junction_id: formik.values.junction_id
         }, planID).then((plan) => {
             console.log(plan)
-            if (patternList.length == data.length) {
+            if (data.length - patternList.length == 0) {
                 for (let index = 0; index < patternList.length; index++) {
                     var temp_2 = {
                         pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_${junction.number_channel}_WAYS`,
@@ -494,11 +495,79 @@ const EditPlan = (props) => {
                     })
                 }
             }
+            else if (data.length - patternList.length > 0) {
+                var incres = data.length - patternList.length
+                for (let index = 0; index < patternList.length; index++) {
+                    var temp_2 = {
+                        pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_${junction.number_channel}_WAYS`,
+                        order: index + 1,
+                        duration: data[index].time,
+                    }
+                    patternService.updatePattern({
+                        pattern: temp_2.pattern,
+                        order: temp_2.order,
+                        duration: temp_2.duration,
+                        plan_id: planID
+                    }, patternList[index].id).then(() => {
+                    })
+                }
+                for (let index = patternList.length; index < data.length; index++) {
+                    var temp_3 = {
+                        pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_${junction.number_channel}_WAYS`,
+                        order: index + 1,
+                        duration: data[index].time,
+                    }
+                    patternService.createPattern({
+                        pattern: temp_3.pattern,
+                        order: temp_3.order,
+                        duration: temp_3.duration,
+                        plan_id: planID
+                    }).then(() => {
+
+                    })
+                }
+            }
+            else if (data.length - patternList.length < 0) {
+                var decres = patternList.length - data.length
+                var indList = []
+                for (let index = 0; index < patternList.length; index++) {
+                    indList.push(patternList[index].id)
+                }
+                for (let index = 0; index < data.length; index++) {
+                    var temp_2 = {
+                        pattern: `PATTERN_${data[index].phase.slice(10, data[index].phase.length)}_${junction.number_channel}_WAYS`,
+                        order: index + 1,
+                        duration: data[index].time,
+                    }
+                    patternService.updatePattern({
+                        pattern: temp_2.pattern,
+                        order: temp_2.order,
+                        duration: temp_2.duration,
+                        plan_id: planID
+                    }, patternList[index].id).then(() => {
+                    })
+                }
+
+                for (let index = data.length; index < patternList.length; index++) {
+                    patternService.deletePattern(patternList[index].id)
+                }
+            }
             // setPlan(data.data.id)
             // submitPattern()
         })
-
+        navigate(`/app/junction/${plan.junction.id}/plans`, { replace: true });
     }
+
+    const handleChangeDuration = (event, ind) => {
+        var temp = data
+        for (let index = 0; index < temp.length; index++) {
+            if (ind == index) {
+                temp[ind].time = event.target.value
+            }
+        }
+        setData(temp)
+    };
+
     useEffect(() => {
         if (pattern == 1) {
             if (junction.number_channel == 3) {
@@ -611,7 +680,7 @@ const EditPlan = (props) => {
                     list.push(<ExpandMore />)
                 }
 
-                img_path.push(data[index].phase[10])
+                img_path.push(data[index].phase.charAt(10))
             }
             for (let index = 0; index < img_path.length; index++) {
                 var temp = img_path[index]
@@ -1478,22 +1547,21 @@ const EditPlan = (props) => {
         if (patternList.length > 0) {
 
             var temp = []
+            var indTemp = []
             for (let index = 0; index < patternList.length; index++) {
                 // console.log(patternList[index].pattern.slice(8, patternList.length - 10))
-                let temp_2 = ""
-                if (junction.number_channel == 3) {
-                    temp_2 = `รูปแบบที่ ${patternList[index].pattern.slice(8, patternList.length - 10)}`
-                }
-                else if (junction.number_channel == 4) {
-                    temp_2 = `รูปแบบที่ ${patternList[index].pattern.slice(8, patternList.length - 11)}`
-                }
+                let temp_2 = `รูปแบบที่ ${patternList[index].pattern.charAt(8)}`
+                // if (temp_2.length == 12) {
+                //     temp_2 = temp_2.slice(0, temp_2.charAt)
+                // }
+                indTemp.push(patternList[index].id)
                 temp.push({
                     phase: temp_2,
                     time: patternList[index].duration,
                     toggle: false
                 })
             }
-            console.log(temp)
+            setIndList(indTemp)
             setData(temp)
         }
     }, [patternList])
@@ -1634,7 +1702,7 @@ const EditPlan = (props) => {
                             <Table className={classes.table} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell align="center" width="10%"></StyledTableCell>
+                                        {/* <StyledTableCell align="center" width="10%"></StyledTableCell> */}
                                         <StyledTableCell align="center" width="20%">ลำดับที่</StyledTableCell>
                                         <StyledTableCell align="center" width="30%">รูปแบบการปล่อยรถ</StyledTableCell>
                                         <StyledTableCell align="center" width="30%">ระยะเวลาสัญญาณไฟเขียว</StyledTableCell>
@@ -1644,7 +1712,7 @@ const EditPlan = (props) => {
                                 <TableBody>
                                     {data.map((row, index) => (
                                         <StyledTableRow key={row.number}>
-                                            <StyledTableCell align="center">
+                                            {/* <StyledTableCell align="center">
                                                 <IconButton
                                                     onClick={() => {
                                                         handleToggle(row.number - 1)
@@ -1652,11 +1720,17 @@ const EditPlan = (props) => {
                                                 >
                                                     {row.toggle ? <ExpandMore /> : <ExpandLess />}
                                                 </IconButton>
-                                            </StyledTableCell>
+                                            </StyledTableCell> */}
                                             <StyledTableCell align="center">
                                                 {index + 1}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
+                                                <div
+                                                    style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+                                                >
+                                                    {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 3 && <img src={`/static/Mock-up_3way${row.phase.slice(10, row.phase.length)}_${degree}degree.png`} width='144px' height='72px' />}
+                                                    {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 4 && <img src={`/static/Mock-up_4way${(degree + ((parseInt(row.phase.slice(10, row.phase.length))) - 1) * 90) % 360}.png`} width='144px' height='144px' />}
+                                                </div>
                                                 <Button
                                                     onClick={() => {
                                                         handleClickOpenPattern(row.phase, index)
@@ -1667,8 +1741,13 @@ const EditPlan = (props) => {
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
                                                 <TextField
-                                                    defaultValue={row.time}
                                                     variant="outlined"
+                                                    name="time_duration"
+                                                    // onBlur={formik.handleBlur}
+                                                    onChange={(event) => { handleChangeDuration(event, index) }}
+                                                    defaultValue={row.time}
+                                                    // defaultValue='5'
+                                                    margin="normal"
                                                 >
 
                                                 </TextField>
