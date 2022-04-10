@@ -389,6 +389,7 @@ const ConfigMode = (props) => {
     const [junctionData, setJunctionData] = useState(null);
     const [menu, setMenu] = useState(0)
     const [planList, setPlanList] = useState([])
+    const [fixtimeList_id, setFixtimeList_id] = useState(null)
     const [imgRotate, setImgRotate] = useState(<img src={`/static/junction/${number_channel}way${degree}degree.jpg`} width='818px' height='660px' />)
     const [search, setSearch] = React.useState({
 
@@ -446,27 +447,103 @@ const ConfigMode = (props) => {
         setCheck(phase)
         setCurrent(index)
     };
-    const handleToggle = (id) => {
-        console.log(id)
-        var temp = data
-        for (let index = 0; index < temp.length; index++) {
-            if (index == id) {
-                temp[index].toggle = !temp[index].toggle
-                console.log(temp[index].toggle)
+    const handleSubmit = () => {
+        if (editAble.length == fixtimeList_id.length) {
+            for (let index = 0; index < editAble.length; index++) {
+                const date = new Date()
+                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                controlService.updateFixtime({
+                    start: new Date(start),
+                    end: new Date(end),
+                    junction_id: junctionData.id,
+                    plan_id: editAble[index].plan.id
+                }, fixtimeList_id[index])
+                // console.log(new Date(start))
+                // console.log(new Date(end))
+                // console.log()
             }
         }
-        setData(temp)
     }
     const addRow = () => {
+        var minute_str = parseInt(editAble[editAble.length - 1].end.slice(editAble[editAble.length - 1].end.length - 2, editAble[editAble.length - 1].end.length))
+        var hour_Str = parseInt(editAble[editAble.length - 1].end.slice(0, 2))
+        var str_temp = ''
+        var end_temp = ''
+        if (hour_Str == 23) {
+            end_temp = `0${hour_Str + 1}:`
+            if (minute_str == 59) {
+                str_temp = '00:00'
+                end_temp += `00`
+            }
+            else if (minute_str >= 9) {
+                str_temp = `${hour_Str}:${minute_str + 1}`
+                end_temp += `${minute_str}`
+            }
+            else if (minute_str < 9) {
+                str_temp = `${hour_Str}:0${minute_str + 1}`
+                end_temp += `0${minute_str}`
+            }
+        }
+        else if (hour_Str >= 9) {
+            end_temp = `${hour_Str + 1}:`
+            if (minute_str == 59) {
+                str_temp = `${hour_Str + 1}:00`
+                end_temp += `00`
+            }
+            else if (minute_str >= 9) {
+                str_temp = `${hour_Str}:${minute_str + 1}`
+                end_temp += `${minute_str}`
+            }
+            else if (minute_str < 9) {
+                str_temp = `${hour_Str}:0${minute_str + 1}`
+                end_temp += `0${minute_str}`
+            }
+        }
+        else if (hour_Str < 9) {
+            end_temp = `0${hour_Str + 1}:`
+            if (minute_str == 59) {
+                str_temp = `0${hour_Str + 1}:00`
+                end_temp += `00`
+            }
+            else if (minute_str >= 9) {
+                str_temp = `0${hour_Str}:${minute_str + 1}`
+                end_temp += `${minute_str}`
+            }
+            else if (minute_str < 9) {
+                str_temp = `0${hour_Str}:0${minute_str + 1}`
+                end_temp += `0${minute_str}`
+            }
+        }
+
         var temp = {
+
             // number: data.length + 1,
-            start: "00:00",
-            end: "00:00",
+            start: `${str_temp}`,
+            end: `${end_temp}`,
             plan: ""
         }
         setEditAble([...editAble, temp])
         setContent(null)
     }
+
+    // console.log(str)
+    // if (start.getMinutes() < 10) {
+    //     startM = `0${start.getMinutes()}`
+    // }
+    // else if (start.getMinutes() >= 10) {
+    //     startM = start.getMinutes()
+    // }
+    // if (end.getMinutes() < 10) {
+    //     endM = `0${end.getMinutes()}`
+    // }
+    // else if (end.getMinutes() >= 10) {
+    //     endM = end.getMinutes()
+    // }
+
+    // console.log(str)
+
+
 
     const removeRow = (index) => {
         const temp = [...editAble]
@@ -761,6 +838,7 @@ const ConfigMode = (props) => {
                                                             onChange={(event) => { handleChangeData(event, index, 0) }}
                                                             // value={formik.values.junctionName}
                                                             // select
+                                                            type="time"
                                                             margin="normal"
                                                             defaultValue={row.start}
                                                         />
@@ -774,6 +852,7 @@ const ConfigMode = (props) => {
                                                             onChange={(event) => { handleChangeData(event, index, 1) }}
                                                             // value={formik.values.junctionName}
                                                             // select
+                                                            type="time"
                                                             margin="normal"
                                                             defaultValue={row.end}
                                                         />
@@ -835,7 +914,8 @@ const ConfigMode = (props) => {
                                     onClick={() => {
                                         setMenu(1)
                                         setData(editAble)
-                                        formik.setValues(editAble)
+                                        // formik.setValues(editAble)
+                                        handleSubmit()
                                     }}
                                     type='submit'
                                 >
@@ -851,12 +931,28 @@ const ConfigMode = (props) => {
 
     useEffect(() => {
         if (fixtimeList.length > 0) {
+            var index_list = []
             var temp = []
             for (let index = 0; index < fixtimeList.length; index++) {
                 const start = new Date(`${fixtimeList[index].start}`)
                 const end = new Date(`${fixtimeList[index].end}`)
+                var startH = ""
+                var endH = ""
                 var startM = ""
                 var endM = ""
+                index_list.push(fixtimeList[index].id)
+                if (start.getHours() < 10) {
+                    startH = `0${start.getHours()}`
+                }
+                else if (start.getHours() >= 10) {
+                    startH = start.getHours()
+                }
+                if (end.getHours() < 10) {
+                    endH = `0${end.getHours()}`
+                }
+                else if (end.getHours() >= 10) {
+                    endH = end.getHours()
+                }
                 if (start.getMinutes() < 10) {
                     startM = `0${start.getMinutes()}`
                 }
@@ -870,13 +966,15 @@ const ConfigMode = (props) => {
                     endM = end.getMinutes()
                 }
                 temp.push({
-                    start: start.getHours() + ":" + startM,
-                    end: end.getHours() + ":" + endM,
+                    start: startH + ":" + startM,
+                    end: startM + ":" + endM,
                     plan: fixtimeList[index].plan
                 })
             }
+            console.log(temp)
             setData(temp)
             setEditAble(temp)
+            setFixtimeList_id(index_list)
         }
     }, [fixtimeList])
 
@@ -927,6 +1025,7 @@ const ConfigMode = (props) => {
                                                             onChange={(event) => { handleChangeData(event, index, 0) }}
                                                             // value={formik.values.junctionName}
                                                             // select
+                                                            type="time"
                                                             margin="normal"
                                                             defaultValue={row.start}
                                                         />
@@ -940,6 +1039,7 @@ const ConfigMode = (props) => {
                                                             onChange={(event) => { handleChangeData(event, index, 1) }}
                                                             // value={formik.values.junctionName}
                                                             // select
+                                                            type="time"
                                                             margin="normal"
                                                             defaultValue={row.end}
                                                         />
@@ -954,7 +1054,7 @@ const ConfigMode = (props) => {
                                                             name="planID"
                                                             // onBlur={formik.handleBlur}
                                                             onChange={(event) => { handleChangeData(event, index, 2) }}
-                                                            defaultValue={row.plan.id}
+                                                            defaultValue={row.plan?.id}
                                                             select
                                                             margin="normal"
                                                             fullWidth
@@ -1000,9 +1100,10 @@ const ConfigMode = (props) => {
                                     onClick={() => {
                                         setMenu(1)
                                         setData(editAble)
-                                        formik.setValues(editAble)
+                                        // formik.setValues(editAble)
+                                        handleSubmit()
                                     }}
-                                    type='submit'
+                                // type='submit'
                                 >
                                     บันทึกข้อมูล
                                 </Button>

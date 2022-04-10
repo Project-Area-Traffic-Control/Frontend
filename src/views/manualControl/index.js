@@ -20,7 +20,6 @@ import useLongPress from './useLongPress';
 import { setLocale } from 'yup';
 import { manualControlService } from '../../services/manualControl.service';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -92,6 +91,7 @@ const ManualControl = () => {
   const [junction, setJunction] = useState({})
   const [number, setNumber] = useState(0)
   const [imgList, setImgList] = useState([])
+  const [degree, setDegree] = useState(null)
   const [menu, setMenu] = useState("")
   const location = useLocation();
   useEffect(() => {
@@ -120,6 +120,7 @@ const ManualControl = () => {
           setJunction(temp)
         }
       }
+      setDegree(junction.rotate)
     }
     setNumber(junction.number_channel)
   }, [junction])
@@ -133,7 +134,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way1_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -149,7 +150,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way2_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -165,7 +166,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way3_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -189,7 +190,7 @@ const ManualControl = () => {
             <Grid
 
             >
-              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${junction.rotate}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -206,7 +207,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -222,7 +223,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -238,7 +239,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -261,6 +262,8 @@ const ManualControl = () => {
   const [dataPhase, setDataPhase] = useState({ "phase": 0 })
   const [dataMode, setDataMode] = useState({ "mode": 0 })
   const [content, setContent] = useState()
+
+
   const onLongPress = () => {
     console.log('longpress is triggered');
     setlongPress(true)
@@ -316,7 +319,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way1_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -333,7 +336,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way2_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -349,7 +352,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way3_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -371,7 +374,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way1_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -390,7 +393,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way2_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -406,7 +409,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_3way3_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -428,7 +431,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way1.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way1_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -445,7 +448,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_3way2.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way2_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -463,7 +466,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_3way3.png' width='277px' height='248px' />
+              < img src={`/static/Mock-up_3way3_${junction.rotate}degree.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -487,7 +490,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${junction.rotate}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -504,7 +507,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -520,7 +523,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -536,7 +539,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -559,7 +562,7 @@ const ManualControl = () => {
           >
             <Grid
             >
-              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${junction.rotate}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -578,7 +581,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -594,7 +597,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -610,7 +613,7 @@ const ManualControl = () => {
             className={classes.imgPattern}
           >
             <Grid>
-              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -633,7 +636,7 @@ const ManualControl = () => {
           >
             <Grid
             >
-              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 0) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -652,7 +655,7 @@ const ManualControl = () => {
             <Grid
 
             >
-              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -670,7 +673,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -688,7 +691,7 @@ const ManualControl = () => {
             <Grid
 
             >
-              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -711,7 +714,7 @@ const ManualControl = () => {
           >
             <Grid
             >
-              <img src='/static/Mock-up_4way1.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 0) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -730,7 +733,7 @@ const ManualControl = () => {
             <Grid
 
             >
-              <img src='/static/Mock-up_4way2.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -748,7 +751,7 @@ const ManualControl = () => {
             <Grid
 
             >
-              <img src='/static/Mock-up_4way3.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}
@@ -766,7 +769,7 @@ const ManualControl = () => {
             <Grid
               className={classes.selectBorder}
             >
-              <img src='/static/Mock-up_4way4.png' width='277px' height='248px' />
+              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
             </Grid>
             <Button
               className={classes.buttonPattern}

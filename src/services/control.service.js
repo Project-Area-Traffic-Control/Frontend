@@ -3,7 +3,8 @@ import axios from "axios"
 export const controlService = {
     // createChannel,
     // updateChannel
-    getAllFixtime
+    getAllFixtime,
+    updateFixtime
 };
 
 async function getAllFixtime() {
@@ -14,6 +15,27 @@ async function getAllFixtime() {
         .then(fixtime => {
             // console.log(junction.data)
             return fixtime.data;
+        })
+        .catch((e) => {
+            if (e.response.status === 400) {
+                e.message = e.response.data
+                return Promise.reject(e);
+            }
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function updateFixtime(data, id) {
+    return axios.put(`${apiConstants.uri}/fixtime_mode/${id}`, data,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    )
+        .then(fixtime => {
+            console.log("update: ", fixtime.data)
+            return fixtime.data
         })
         .catch((e) => {
             if (e.response.status === 400) {
