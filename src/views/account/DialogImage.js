@@ -111,7 +111,7 @@ class AlertDialogSlide extends PureComponent {
                 "newFile.jpeg"
             );
             this.setState({ croppedImageUrl });
-            
+
         }
     }
 
@@ -204,9 +204,10 @@ class AlertDialogSlide extends PureComponent {
                             {src === null ? "อัพโหลดรูปภาพ" : "เปลี่ยนรูปภาพ"}
                         </Button>
                         {src !== null ? (
-                            <Button onClick={() => console.log("Save Click handler"),
-                                console.log(this.fileUrl)
-                            }>
+                            <Button onClick={() => {
+                                // console.log("Save Click handler"),
+                                // console.log(this.fileUrl)
+                            }}>
                                 Save Photo
                             </Button>
                         ) : null}

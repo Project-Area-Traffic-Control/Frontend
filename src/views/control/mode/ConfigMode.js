@@ -464,6 +464,51 @@ const ConfigMode = (props) => {
                 // console.log()
             }
         }
+        else if (editAble.length - fixtimeList_id.length > 0) {
+            for (let index = 0; index < fixtimeList_id.length; index++) {
+                const date = new Date()
+                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                controlService.updateFixtime({
+                    start: new Date(start),
+                    end: new Date(end),
+                    junction_id: junctionData.id,
+                    plan_id: editAble[index].plan.id
+                }, fixtimeList_id[index])
+                // console.log(new Date(start))
+                // console.log(new Date(end))
+                // console.log()
+            }
+            for (let index = fixtimeList_id.length; index < editAble.length; index++) {
+                const date = new Date()
+                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                controlService.createFixtime({
+                    start: new Date(start),
+                    end: new Date(end),
+                    junction_id: junctionData.id,
+                    plan_id: editAble[index].plan.id
+                })
+            }
+        }
+        else if (fixtimeList_id.length - editAble.length > 0) {
+            console.log(fixtimeList_id)
+            for (let index = 0; index < editAble.length; index++) {
+                const date = new Date()
+                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                controlService.updateFixtime({
+                    start: new Date(start),
+                    end: new Date(end),
+                    junction_id: junctionData.id,
+                    plan_id: editAble[index].plan.id
+                }, fixtimeList_id[index])
+            }
+            for (let index = editAble.length; index < fixtimeList_id.length; index++) {
+                controlService.deleteFixtime(fixtimeList_id[index])
+                // console.log(fixtimeList_id[index])
+            }
+        }
     }
     const addRow = () => {
         var minute_str = parseInt(editAble[editAble.length - 1].end.slice(editAble[editAble.length - 1].end.length - 2, editAble[editAble.length - 1].end.length))

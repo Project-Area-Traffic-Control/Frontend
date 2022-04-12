@@ -6,7 +6,8 @@ export const planService = {
     getAllPlan,
     getPlanByID,
     createPlan,
-    updatePlan
+    updatePlan,
+    deletePlan
 };
 
 async function getAllPlan() {
@@ -89,6 +90,24 @@ async function updatePlan(data, id) {
             }
             if (e.response.status === 401) {
                 window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function deletePlan(id) {
+    // console.log("data delete id: ", id)
+    return axios.delete(`${apiConstants.uri}/plans/${id}`,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    ).then(() => true)
+        .catch((e) => {
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            else if (e.response.status > 300) {
+                e.message = e.response.data
+                return Promise.reject(e);
             }
             // window.location.reload(true)
         })

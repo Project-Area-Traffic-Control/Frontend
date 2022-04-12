@@ -147,20 +147,32 @@ const useStyles = makeStyles((theme) => ({
     buttonGrid: {
         marginTop: theme.spacing(5),
         display: 'flex',
-        width: '15%',
+        width: '10%',
         height: '52px',
         borderRadius: '13px',
         justifyContent: 'center',
         backgroundColor: '#287298',
-        marginLeft: '40%',
+        marginLeft: '10%',
+        color: '#FFFFFF',
+        fontSize: '18px'
+    },
+    deleteButtonGrid: {
+        marginTop: theme.spacing(5),
+        display: 'flex',
+        width: '10%',
+        height: '52px',
+        borderRadius: '13px',
+        justifyContent: 'center',
+        backgroundColor: '#ff3633',
+        marginLeft: '5%',
         color: '#FFFFFF',
         fontSize: '18px'
     },
     top_icon: {
-        width: '52%',
+        width: '96%',
         display: 'flex',
-        justifyContent: 'end',
-        // backgroundColor: '#000000'
+        justifyContent: 'center',
+        // backgroundColor: '#000000',
         // marginRight: '10%'
     },
     bottom: {
@@ -555,6 +567,14 @@ const EditPlan = (props) => {
             // setPlan(data.data.id)
             // submitPattern()
         })
+        navigate(`/app/junction/${plan.junction.id}/plans`, { replace: true });
+    }
+
+    async function deletePlan() {
+        for (let index = 0; index < patternList.length; index++) {
+            await patternService.deletePattern(patternList[index].id)
+        }
+        await planService.deletePlan(plan.id)
         navigate(`/app/junction/${plan.junction.id}/plans`, { replace: true });
     }
 
@@ -2170,6 +2190,16 @@ const EditPlan = (props) => {
                     type='submit'
                 >
                     บันทึกข้อมูล
+                </Button>
+                <Button
+                    className={classes.deleteButtonGrid}
+                    onClick={() => {
+                        // submitPlan()
+                        deletePlan()
+                    }}
+                    type='submit'
+                >
+                    ลบ
                 </Button>
             </Grid>
             {/* </form> */}
