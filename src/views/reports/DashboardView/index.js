@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   return (
     <Page className={classes.root} title="Dashboard">
-      <Container maxWidth={false}>
+      <Container >
         <Grid container spacing={3} className={classes.gridBox}>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalCarThisDay />

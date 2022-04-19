@@ -78,7 +78,7 @@ const items = [
     title: 'Monitor'
   },
   {
-    href: '/app/video-record',
+    href: '/app/statistic',
     icon: BarChart,
     title: 'ข้อมูลปริมาณการจราจร'
   },
@@ -337,7 +337,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       // onClick={handleClick}
                       />
                       <NavItem
-                        href={`/app`}
+                        href={`/app/${junction.id}/statistic`}
                         key={items[2].title}
                         title="ข้อมูลปริมาณการจราจร"
                         className={classes.collapse_1}

@@ -24,7 +24,7 @@ import ConfigMode from './views/control/mode';
 import CreatePlan from './views/control/plan/CreatePlan';
 import EditPlan from './views/control/plan/EditPlan';
 import AllRed from './views/allred';
-
+import Statistic from './views/statistic'
 // let junction = junctionService.getAllJunction()
 // let junctionID = []
 // for (let index = 0; index < junction.length; index++) {
@@ -53,6 +53,7 @@ const routes = [
       { path: 'manual_control/:junction_id', element: < ManualControl /> },
       { path: 'create_junction', element: < CreateJunction /> },
       { path: 'userManage', element: <UserManageView /> },
+      { path: ':junction_id/statistic', element: <Statistic /> },
       { path: '/', element: <DashboardView /> },
 
 
