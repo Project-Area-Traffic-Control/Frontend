@@ -173,11 +173,12 @@ const Statistic = () => {
     const [dateNumber, setDateNumber] = useState(null)
     const [dataDate_2, setDataDate_2] = useState(null)
     const [dataDate_3, setDataDate_3] = useState(null)
+    const [juncID, setJuncID] = useState(null)
     async function submitDate() {
         await vehicleService.getTotalBySearch({
             start: new Date(startDate),
             end: new Date(endDate),
-            junction_id: 4
+            junction_id: juncID
         }).then((data) => {
             // console.log(data)
             setVehicle_List(data)
@@ -306,7 +307,7 @@ const Statistic = () => {
         junctionService.getJunctionByID(location.pathname.slice(5, location.pathname.length - 10)).then((data) => {
             setChannel(data.channel)
         })
-
+        setJuncID(location.pathname.slice(5, location.pathname.length - 10))
     }, [])
 
     useEffect(() => {
@@ -469,106 +470,123 @@ const Statistic = () => {
                     dateRepeat.push(startToEnd[index])
                 }
             }
-            console.log(dateRepeat)
-            var dataDate = []
-            for (let j = 0; j < dateRepeat.length; j++) {
-                // console.log(dateRepeat[j].getDate())
-                var temp_3 = []
-                for (let index = 0; index < vehicle_List.length; index++) {
-                    // const element = array[index];
-                    var date = new Date(vehicle_List[index].create_time)
-                    // console.log(date.getDate())
-
-                    if (date.getDate() == dateRepeat[j].getDate()) {
-                        temp_3.push(date)
-                        // console.log(date)
-                    }
+            if (dateRepeat.length == 0) {
+                setDataDate_2([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]])
+                // var initial_count_channel = []
+                // for (let index = 0; index < channel.length; index++) {
+                //     initial_count_channel.push(0)
+                // }
+                var temp_data = []
+                for (let index = 0; index < channel.length; index++) {
+                    temp_data.push({
+                        value: 0,
+                        name: channel[index].name
+                    })
                 }
-                dataDate.push(temp_3)
+                setData_2(temp_data)
             }
-            var count_1 = []
-            var count_2 = []
-            var count_3 = []
-            var count_4 = []
-            var count_5 = []
-            var count_6 = []
-            var count_7 = []
-            for (let index = 0; index < dataDate.length; index++) {
-                count_1.push(0)
-                count_2.push(0)
-                count_3.push(0)
-                count_4.push(0)
-                count_5.push(0)
-                count_6.push(0)
-                count_7.push(0)
-            }
-            console.log(dataDate)
-            for (let index = 0; index < dataDate.length; index++) {
-                for (let j = 0; j < dataDate[index].length; j++) {
-                    // const element = array[index];
-                    var hours = new Date(dataDate[index][j])
-                    console.log(hours.getHours())
-                    if ((hours.getHours() >= 23 && hours.getHours() < 24) || (hours.getHours() >= 0 && hours.getHours() < 6)) {
-                        count_1[index] += 1
-                    }
-                    else if (hours.getHours() >= 6 && hours.getHours() < 8) {
-                        count_2[index] += 1
-                    }
-                    else if (hours.getHours() >= 8 && hours.getHours() < 11) {
-                        count_3[index] += 1
-                    }
-                    else if (hours.getHours() >= 11 && hours.getHours() < 13) {
-                        count_4[index] += 1
-                    }
-                    else if (hours.getHours() >= 13 && hours.getHours() < 16) {
-                        count_5[index] += 1
-                    }
-                    else if (hours.getHours() >= 16 && hours.getHours() < 19) {
-                        count_6[index] += 1
-                    }
-                    else if (hours.getHours() >= 19 && hours.getHours() < 23) {
-                        count_7[index] += 1
-                    }
-                }
-            }
-            console.log([count_1, count_2, count_3, count_4, count_5, count_6, count_7])
-            setDataDate_2([count_1, count_2, count_3, count_4, count_5, count_6, count_7])
-
-            var initial_count_channel = []
-            for (let index = 0; index < channel.length; index++) {
-                initial_count_channel.push(0)
-            }
-            for (let index = 0; index < vehicle_List.length; index++) {
-                var dateDay = new Date(vehicle_List[index].create_time)
+            else {
+                console.log(dateRepeat)
+                var dataDate = []
                 for (let j = 0; j < dateRepeat.length; j++) {
-                    if (dateDay.getDate() == dateRepeat[j].getDate()) {
-                        if (vehicle_List[index].channel.name == channel[0]?.name) {
-                            initial_count_channel[0] += 1
+                    // console.log(dateRepeat[j].getDate())
+                    var temp_3 = []
+                    for (let index = 0; index < vehicle_List.length; index++) {
+                        // const element = array[index];
+                        var date = new Date(vehicle_List[index].create_time)
+                        // console.log(date.getDate())
+
+                        if (date.getDate() == dateRepeat[j].getDate()) {
+                            temp_3.push(date)
+                            // console.log(date)
                         }
-                        if (vehicle_List[index].channel.name == channel[1]?.name) {
-                            initial_count_channel[1] += 1
+                    }
+                    dataDate.push(temp_3)
+                }
+                var count_1 = []
+                var count_2 = []
+                var count_3 = []
+                var count_4 = []
+                var count_5 = []
+                var count_6 = []
+                var count_7 = []
+                for (let index = 0; index < dataDate.length; index++) {
+                    count_1.push(0)
+                    count_2.push(0)
+                    count_3.push(0)
+                    count_4.push(0)
+                    count_5.push(0)
+                    count_6.push(0)
+                    count_7.push(0)
+                }
+                console.log(dataDate)
+                for (let index = 0; index < dataDate.length; index++) {
+                    for (let j = 0; j < dataDate[index].length; j++) {
+                        // const element = array[index];
+                        var hours = new Date(dataDate[index][j])
+                        console.log(hours.getHours())
+                        if ((hours.getHours() >= 23 && hours.getHours() < 24) || (hours.getHours() >= 0 && hours.getHours() < 6)) {
+                            count_1[index] += 1
                         }
-                        if (vehicle_List[index].channel.name == channel[2]?.name) {
-                            initial_count_channel[2] += 1
+                        else if (hours.getHours() >= 6 && hours.getHours() < 8) {
+                            count_2[index] += 1
                         }
-                        if (vehicle_List[index].channel.name == channel[3]?.name) {
-                            initial_count_channel[3] += 1
+                        else if (hours.getHours() >= 8 && hours.getHours() < 11) {
+                            count_3[index] += 1
                         }
-                        if (vehicle_List[index].channel.name == channel[4]?.name) {
-                            initial_count_channel[4] += 1
+                        else if (hours.getHours() >= 11 && hours.getHours() < 13) {
+                            count_4[index] += 1
+                        }
+                        else if (hours.getHours() >= 13 && hours.getHours() < 16) {
+                            count_5[index] += 1
+                        }
+                        else if (hours.getHours() >= 16 && hours.getHours() < 19) {
+                            count_6[index] += 1
+                        }
+                        else if (hours.getHours() >= 19 && hours.getHours() < 23) {
+                            count_7[index] += 1
                         }
                     }
                 }
+                console.log([count_1, count_2, count_3, count_4, count_5, count_6, count_7])
+                setDataDate_2([count_1, count_2, count_3, count_4, count_5, count_6, count_7])
+
+                var initial_count_channel = []
+                for (let index = 0; index < channel.length; index++) {
+                    initial_count_channel.push(0)
+                }
+                for (let index = 0; index < vehicle_List.length; index++) {
+                    var dateDay = new Date(vehicle_List[index].create_time)
+                    for (let j = 0; j < dateRepeat.length; j++) {
+                        if (dateDay.getDate() == dateRepeat[j].getDate()) {
+                            if (vehicle_List[index].channel.name == channel[0]?.name) {
+                                initial_count_channel[0] += 1
+                            }
+                            if (vehicle_List[index].channel.name == channel[1]?.name) {
+                                initial_count_channel[1] += 1
+                            }
+                            if (vehicle_List[index].channel.name == channel[2]?.name) {
+                                initial_count_channel[2] += 1
+                            }
+                            if (vehicle_List[index].channel.name == channel[3]?.name) {
+                                initial_count_channel[3] += 1
+                            }
+                            if (vehicle_List[index].channel.name == channel[4]?.name) {
+                                initial_count_channel[4] += 1
+                            }
+                        }
+                    }
+                }
+                var temp_data = []
+                for (let index = 0; index < initial_count_channel.length; index++) {
+                    temp_data.push({
+                        value: initial_count_channel[index],
+                        name: channel[index].name
+                    })
+                }
+                setData_2(temp_data)
+                // console.log(dataDate)
             }
-            var temp_data = []
-            for (let index = 0; index < initial_count_channel.length; index++) {
-                temp_data.push({
-                    value: initial_count_channel[index],
-                    name: channel[index].name
-                })
-            }
-            setData_2(temp_data)
-            // console.log(dataDate)
         }
     }, [menu])
 

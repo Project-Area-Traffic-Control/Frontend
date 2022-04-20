@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
   },
   tableCon: {
     marginTop: theme.spacing(3),
-    maxHeight: '400px',
+    maxHeight: '500px',
   },
   table: {
     overflow: 'visible',
@@ -82,36 +82,36 @@ const rows = [
   createData('Gingerbread2', 356, 16.0),
 ];
 
-const Location = ({ className, ...rest }) => {
+const Location = (props) => {
   const classes = useStyles();
 
   return (
-    <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Example Table" className={classes.cardHeader} />
+    <Card className={classes.root} >
+      <CardHeader title="ตารางแสดงข้อมูลของแยกจราจรล่าสุด" className={classes.cardHeader} />
       {/* <Divider /> */}
       <TableContainer className={classes.tableCon}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center" width="10%"></StyledTableCell>
-              <StyledTableCell align="center" width="30%">Username</StyledTableCell>
-              <StyledTableCell align="center" width="30%">ชื่อ</StyledTableCell>
-              <StyledTableCell align="center" width="30%">นามสกุล</StyledTableCell>
+              {/* <StyledTableCell align="center" width="10%"></StyledTableCell> */}
+              <StyledTableCell align="center" width="33%">เวลาที่บันทึก</StyledTableCell>
+              <StyledTableCell align="center" width="34%">ชื่อแยกจราจร</StyledTableCell>
+              <StyledTableCell align="center" width="33%">ชื่อช่องสัญญาณ</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell align="center">
+            {props.data.map((row) => (
+              <StyledTableRow >
+                {/* <StyledTableCell align="center">
                   <IconButton>
                     <AssignmentIcon />
                   </IconButton>
-                </StyledTableCell>
+                </StyledTableCell> */}
                 <StyledTableCell align="center">
-                  {row.userName}
+                  {new Date(row?.create_time).getHours()} : {new Date(row?.create_time).getMinutes()}
                 </StyledTableCell>
-                <StyledTableCell align="center">{row.name}</StyledTableCell>
-                <StyledTableCell align="center">{row.surName}</StyledTableCell>
+                <StyledTableCell align="center">{row?.junction?.name}</StyledTableCell>
+                <StyledTableCell align="center">{row?.channel?.name}</StyledTableCell>
 
               </StyledTableRow>
             ))}

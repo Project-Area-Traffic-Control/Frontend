@@ -22,8 +22,8 @@ const useStyles = makeStyles(() => ({
     backgroundColor: colors.indigo[600],
     height: 76,
     width: 76,
-    color:colors.grey[100],
-    
+    color: colors.grey[100],
+
 
   },
   textTotal: {
@@ -41,13 +41,13 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const TotalCarThisDay = ({ className, ...rest }) => {
+const TotalCarThisDay = (props) => {
   const classes = useStyles();
 
   return (
     <Card
-      className={clsx(classes.root, className)}
-      {...rest}
+      className={classes.root}
+    // {...rest}
     >
       <CardContent>
         <Grid
@@ -62,14 +62,14 @@ const TotalCarThisDay = ({ className, ...rest }) => {
               variant="h6"
               className={classes.textTotal}
             >
-              Example Card 1
+              ช่องสัญญาณที่มีการจราจรมากที่สุด
             </Typography>
             <Typography
               color="textPrimary"
-              variant="h3"
+              variant="h4"
               className={classes.textData}
             >
-              138
+              {props.max[0]} : {props.max[1]} คัน / ชม.
             </Typography>
           </Grid>
           <Grid item>

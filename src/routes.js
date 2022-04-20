@@ -25,6 +25,7 @@ import CreatePlan from './views/control/plan/CreatePlan';
 import EditPlan from './views/control/plan/EditPlan';
 import AllRed from './views/allred';
 import Statistic from './views/statistic'
+import Monitor from './views/monitor';
 // let junction = junctionService.getAllJunction()
 // let junctionID = []
 // for (let index = 0; index < junction.length; index++) {
@@ -39,7 +40,7 @@ const routes = [
       { path: 'map', element: <MapView /> },
       { path: 'management', element: <ManagementView /> },
       { path: 'add_device', element: <AddDevice /> },
-      { path: 'dashboard', element: <DashboardView /> },
+      { path: 'dashboard/:junction_id', element: <DashboardView /> },
       { path: 'account', element: < AccountView /> },
       { path: 'edit_account', element: <EditAccount /> },
       { path: 'junction', element: < JunctionView /> },
@@ -54,6 +55,7 @@ const routes = [
       { path: 'create_junction', element: < CreateJunction /> },
       { path: 'userManage', element: <UserManageView /> },
       { path: ':junction_id/statistic', element: <Statistic /> },
+      { path: 'monitor/:junction_id', element: <Monitor /> },
       { path: '/', element: <DashboardView /> },
 
 

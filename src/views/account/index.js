@@ -56,7 +56,7 @@ const AccountList = () => {
           <Grid
             className={classes.profileImg}
           >
-            <img src='/static/avatar/avatar_test1.jpg' width='216px' height='188px' />
+            <img src='/static/avatar/avatar_test.png' width='216px' height='188px' />
           </Grid>
           <AccountInfo />
         </Grid>

@@ -279,7 +279,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                     </ListItem>
                     {openJunction.length > 0 && <Collapse in={openJunction[index].junction} timeout="auto" unmountOnExit>
                       <NavItem
-                        href={`/app/dashboard`}
+                        href={`/app/dashboard/${junction.id}`}
                         key={items[2].title}
                         title="Dashboard"
                         className={classes.collapse_1}
@@ -329,7 +329,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       // onClick={handleClick}
                       />
                       <NavItem
-                        href={`/app`}
+                        href={`/app/monitor/${junction.id}`}
                         key={items[2].title}
                         title="Camera"
                         className={classes.collapse_1}
