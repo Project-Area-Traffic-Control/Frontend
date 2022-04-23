@@ -34,7 +34,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 //import LocationSearchInput from './LocationSearch';
 import * as Yup from 'yup';
 import { Form, useFormik } from 'formik';
-import { Assignment, Close, ExpandLess, ExpandMore, KeyboardArrowLeft, KeyboardArrowRight, RemoveFromQueueTwoTone, RotateRight } from '@material-ui/icons';
+import { Assignment, BarChart, Close, ExpandLess, ExpandMore, KeyboardArrowLeft, KeyboardArrowRight, RemoveFromQueueTwoTone, RotateRight, VerticalAlignBottom } from '@material-ui/icons';
 // import ReportTable from './ReportTable';
 import { channelService } from '../../../services/channel.service';
 import { Slide } from 'react-slideshow-image';
@@ -45,6 +45,7 @@ import theme from '../../../theme';
 import { planService } from '../../../services/plan.service';
 import { patternService } from '../../../services/pattern.service';
 import { junctionService } from '../../../services/junction.service';
+import { vehicleService } from '../../../services/vehicle.service';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -67,15 +68,21 @@ const useStyles = makeStyles((theme) => ({
         // display: 'flex'
     },
     titleGrid: {
+        // height: '80px',
+        // width: '100%',
+        display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        alignContent: 'center',
         height: '80px',
         width: '100%',
-        display: 'flex-direction',
-        justifyContent: 'center'
+        // display: 'flex',
     },
     titleLeft: {
         color: '#17395C',
         paddingTop: theme.spacing(3),
-        paddingLeft: theme.spacing(2)
+        paddingLeft: theme.spacing(2),
+        width: '88%'
     },
     divider: {
         backgroundColor: '#287298',
@@ -147,14 +154,23 @@ const useStyles = makeStyles((theme) => ({
     buttonGrid: {
         marginTop: theme.spacing(5),
         display: 'flex',
-        width: '15%',
+        width: '30%',
         height: '52px',
         borderRadius: '13px',
         justifyContent: 'center',
+        // alignContent: 'center',
         backgroundColor: '#287298',
-        marginLeft: '40%',
+        // marginLeft: '40%',
         color: '#FFFFFF',
         fontSize: '18px'
+    },
+    buttomCreate: {
+        marginLeft: '50%',
+        // marginTop: theme.spacing(3)
+        display: 'flex',
+        alignContent: 'center',
+        height: '100%',
+        width: '100%',
     },
     top_icon: {
         width: '52%',
@@ -196,6 +212,22 @@ const useStyles = makeStyles((theme) => ({
         // height: '320px',
         display: 'flex',
         justifyContent: 'center'
+    },
+    bottomTime: {
+        marginTop: theme.spacing(5),
+        // width: '320px',
+        // height: '320px',
+        // display: ,
+        // justifyContent: 'center'
+        height: '250px',
+        width: '400px'
+    },
+    startTimeCalculate: {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '80'
     },
     pattern: {
         display: 'flex-end',
@@ -274,6 +306,18 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
+const BootstrapDialog_2 = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+
+    },
+    '& .MuiDialog-paper': {
+
+    },
+    '& .MuiDialogActions-root': {
+        padding: theme.spacing(1),
+    },
+}));
+
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
@@ -315,10 +359,17 @@ const CreatePlan = (props) => {
     const [overview, setOverView] = useState([]);
     const [juncID, setJuncID] = useState(null)
     const [junction, setJunction] = useState([])
+    const [channel, setChannel] = useState(null)
     const [degree, setDegree] = useState(null)
     const [plan, setPlan] = useState(null)
     const [imgSlide1, setImgSlide1] = useState(null)
     const [imgSlide2, setImgSlide2] = useState(null)
+    const [calculate_list, setCalculate_List] = useState(null)
+    const [vehicle_List, setVehicle_List] = useState(null)
+    const [openCalculate, setOpenCalculate] = useState(false)
+    const [dateSearch, setDateSearch] = useState(null)
+    const [startTime, setStartTime] = useState(null)
+    const [endTime, setEndTime] = useState(null)
     var initHei = '440px'
     var initWid = '600px'
     const [search, setSearch] = React.useState({
@@ -347,10 +398,16 @@ const CreatePlan = (props) => {
     const handleClose = () => {
         setOpen(false);
     };
+    const handleCloseCalculate = () => {
+        setOpenCalculate(false);
+    };
     const handleClosePattern = () => {
         setPatternOpen(false);
         setCheck("")
     };
+    const toggleCalculate = () => {
+        setOpenCalculate(true)
+    }
     const formik = useFormik({
         initialValues: {
             planName: "",
@@ -368,6 +425,18 @@ const CreatePlan = (props) => {
             // console.log(values)
         },
     });
+    const handleChangeStartCalculate = (event) => {
+        setStartTime(event.target.value.slice(0, 2))
+        // console.log(event.target.value.slice(0, 2))
+    }
+    const handleChangeEndCalculate = (event) => {
+        setEndTime(event.target.value.slice(0, 2))
+        // console.log(event.target.value)
+    }
+    const handleChangeDateCalculate = (event) => {
+        setDateSearch(new Date(event.target.value))
+        // console.log(event.target.value)
+    }
     const handleChangeManu = (event) => {
         setSearch({
             ...search,
@@ -502,6 +571,114 @@ const CreatePlan = (props) => {
             })
         }
     }
+
+    async function calculateCycle() {
+        // console.log(new Date(dateSearch))
+        const start = new Date(dateSearch)
+        const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1)
+        // console.log(start.toLocaleDateString())
+        await vehicleService.getTotalBySearch({
+            start: start,
+            end: end,
+            junction_id: juncID
+        }).then((data) => {
+            // console.log(data)
+            setVehicle_List(data)
+        })
+        handleCloseCalculate()
+    }
+
+    useEffect(() => {
+        if (vehicle_List != null) {
+            var temp = []
+            for (let index = 0; index < data.length; index++) {
+                temp.push({
+                    count: 0,
+                    channel: parseInt(data[index].phase[data[index].phase.length - 1]) - 1
+                })
+            }
+            for (let index = 0; index < vehicle_List.length; index++) {
+                var tempTime = new Date(vehicle_List[index].create_time)
+                if (tempTime.getHours() >= 10 && tempTime.getHours() <= 16) {
+                    if (vehicle_List[index].channel?.id == channel[0]?.id) {
+                        for (let index = 0; index < temp.length; index++) {
+                            if (temp[index].channel == 0) {
+                                temp[index].count += 1
+                            }
+                        }
+                        // temp[0] += 1
+                    }
+                    if (vehicle_List[index].channel?.id == channel[1]?.id) {
+                        for (let index = 0; index < temp.length; index++) {
+                            if (temp[index].channel == 1) {
+                                temp[index].count += 1
+                            }
+                        }
+                        // temp[1] += 1
+                    }
+                    if (vehicle_List[index].channel?.id == channel[2]?.id) {
+                        for (let index = 0; index < temp.length; index++) {
+                            if (temp[index].channel == 2) {
+                                temp[index].count += 1
+                            }
+                        }
+                        // temp[2] += 1
+                    }
+                    if (vehicle_List[index].channel?.id == channel[3]?.id) {
+                        for (let index = 0; index < temp.length; index++) {
+                            if (temp[index].channel == 3) {
+                                temp[index].count += 1
+                            }
+                        }
+                        // temp[3] += 1
+                    }
+                    if (vehicle_List[index].channel?.id == channel[4]?.id) {
+                        for (let index = 0; index < temp.length; index++) {
+                            if (temp[index].channel == 4) {
+                                temp[index].count += 1
+                            }
+                        }
+                        // temp[4] += 1
+                    }
+                }
+            }
+            setCalculate_List(temp)
+            console.log(temp)
+        }
+    }, [vehicle_List])
+    useEffect(() => {
+        if (calculate_list != null) {
+            // console.log(data)
+            const lost_time = (parseInt(formik.values.yellow_time) + parseInt(formik.values.delay_red_time)) * data.length
+            var sum = 0.0
+            for (let index = 0; index < channel.length; index++) {
+                sum += parseFloat((parseInt(calculate_list[index].count) / parseInt(channel[index].nunmber_lane)) / 1800)
+
+            }
+            console.log(sum)
+            const cycleTime = parseInt(((1.5 * lost_time) + 5) / (1 - sum)) + 1
+            const greenTime = cycleTime - lost_time
+            var temp_green = []
+            for (let index = 0; index < calculate_list.length; index++) {
+                // console.log(channel[calculate_list[index].channel].nunmber_lane)
+                temp_green.push(parseInt((parseFloat((parseInt(calculate_list[index].count) / parseInt(channel[calculate_list[index].channel].nunmber_lane)) / 1800) / sum) * greenTime))
+            }
+            console.log(temp_green)
+            var temp_data = data
+            for (let index = 0; index < temp_data.length; index++) {
+
+                temp_data[index].time = temp_green[index]
+
+            }
+            setData(temp_data)
+            // console.log(lost_time)
+            // for (let index = 0; index < array.length; index++) {
+            //     const element = array[index];
+
+            // }
+        }
+
+    }, [calculate_list])
     useEffect(() => {
         if (plan != null) {
             submitPattern()
@@ -626,7 +803,7 @@ const CreatePlan = (props) => {
 
                 img_path.push(data[index].phase[10])
             }
-            console.log(img_path)
+            // console.log(img_path)
             let swap = initHei
             initHei = initWid
             initWid = swap
@@ -1482,6 +1659,7 @@ const CreatePlan = (props) => {
         if (junction != null) {
             console.log(junction.rotate)
             setDegree(junction.rotate)
+            setChannel(junction.channel)
             // if (junction.number_channel == 3) {
             //     setImgSlide1(images_pattern1)
             //     setImgSlide2(images_pattern2)
@@ -1584,6 +1762,22 @@ const CreatePlan = (props) => {
                             >
                                 ตารางการทำงาน
                             </Typography>
+                            <Grid
+                                className={classes.buttomGrid}
+                            >
+
+                                {juncID != null && <IconButton
+                                    className={classes.buttomCreate}
+                                    onClick={() => { toggleCalculate() }}
+                                >
+                                    <Typography
+                                        variant='h5'>
+                                        คำนวน
+                                    </Typography>
+                                    {/* <img src='/static/button/Plus.png' /> */}
+                                    <BarChart style={{ marginLeft: theme.spacing(1) }} />
+                                </IconButton>}
+                            </Grid>
                         </Grid>
                         <Divider className={classes.divider} />
                         <Grid
@@ -1911,6 +2105,98 @@ const CreatePlan = (props) => {
                         </Button>
                     </DialogActions>
                 </BootstrapDialog>
+                <BootstrapDialog_2
+                    open={openCalculate}
+                    onClose={handleCloseCalculate}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกช่วงเวลาที่จะนำค่าสถิติมาคำนวน
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
+                        </Grid>
+                        <Grid
+                            className={classes.bottomTime}
+                        >
+                            <Grid
+                                className={classes.startTimeCalculate}
+                            >
+                                <Typography>
+                                    ช่วงเวลาเริ่มต้น
+                                </Typography>
+                                <TextField
+                                    // className={classes.textField_name}
+                                    style={{ marginLeft: theme.spacing(3) }}
+                                    variant="outlined"
+                                    name="start"
+                                    // onBlur={formik.handleBlur}
+                                    onChange={(event) => { handleChangeStartCalculate(event) }}
+                                    // value={formik.values.junctionName}
+                                    // select
+                                    type="time"
+                                    margin="normal"
+                                // defaultValue={row.start}
+                                />
+                            </Grid>
+
+                            <Grid
+                                className={classes.startTimeCalculate}
+                            >
+                                <Typography>
+                                    ช่วงเวลาสิ้นสุด
+                                </Typography>
+                                <TextField
+                                    // className={classes.textField_name}
+                                    style={{ marginLeft: theme.spacing(3) }}
+                                    variant="outlined"
+                                    name="end"
+                                    // onBlur={formik.handleBlur}
+                                    onChange={(event) => { handleChangeEndCalculate(event) }}
+                                    // value={formik.values.junctionName}
+                                    // select
+                                    type="time"
+                                    margin="normal"
+                                // defaultValue={row.start}
+                                />
+                            </Grid>
+
+                            <Grid
+                                className={classes.startTimeCalculate}
+                            >
+                                <Typography>
+                                    วันที่ค้นหา
+                                </Typography>
+                                <TextField
+                                    // className={classes.textField_name}
+                                    style={{ marginLeft: theme.spacing(7) }}
+                                    variant="outlined"
+                                    name="date"
+                                    // onBlur={formik.handleBlur}
+                                    onChange={(event) => { handleChangeDateCalculate(event) }}
+                                    // value={formik.values.junctionName}
+                                    // select
+                                    type="Date"
+                                    margin="normal"
+                                // defaultValue={row.start}
+                                />
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        {/* <Button onClick={ha}>Disagree</Button> */}
+                        <Button onClick={() => { calculateCycle() }} autoFocus>
+                            ตกลง
+                        </Button>
+                    </DialogActions>
+                </BootstrapDialog_2>
                 {content}
                 <Grid
                     className={classes.top_icon}

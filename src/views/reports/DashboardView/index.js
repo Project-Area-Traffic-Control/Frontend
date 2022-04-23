@@ -39,7 +39,7 @@ const Dashboard = () => {
   const [juncID, setJuncID] = useState(null)
   const [raw_data, setRawData] = useState(null)
   const [start, setStart] = useState(null)
-  const [end, setDate] = useState(null)
+  const [end, setEnd] = useState(null)
   const [channel, setChannel] = useState(null)
   const [channel_1, setChannel_1] = useState(null)
   const [channel_2, setChannel_2] = useState(null)
@@ -47,6 +47,8 @@ const Dashboard = () => {
   const [channel_4, setChannel_4] = useState(null)
   const [channel_5, setChannel_5] = useState(null)
   const [vehicle_List, setVehicle_List] = useState(null)
+  const [maxIndex, setMaxIndex] = useState(null)
+  const [maxHour, setMaxHour] = useState(null)
   const [lastestVehicle_List, setLastestVehicle_List] = useState(null)
   const [max, setMax] = useState(null)
   const [data, setData] = useState(null)
@@ -67,6 +69,10 @@ const Dashboard = () => {
   }
   useEffect(() => {
     setJuncID(location.pathname.slice(15, location.pathname.length))
+    const start = new Date()
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1)
+    setStart(start)
+    setEnd(end)
   }, [location.pathname])
 
   useEffect(() => {
@@ -84,15 +90,38 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (vehicle_List != null) {
+      console.log(start.getDate())
       var temp = []
       for (let index = vehicle_List.length - 1; index >= vehicle_List.length - 20; index--) {
         // if (vehicle_List[])
         temp.push(vehicle_List[index])
       }
+      var countHour = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      for (let index = 0; index < vehicle_List.length; index++) {
+        var tempDate = new Date(vehicle_List[index].create_time)
+        if (start.getDate() == tempDate.getDate())
+          countHour[tempDate.getHours()] += 1
+      }
+      var max = -1
+      var max_index = 0
+      for (let index = 0; index < countHour.length; index++) {
+        if (max <= countHour[index]) {
+          max = countHour[index]
+          max_index = index
+        }
+      }
+      setMaxHour(max)
+      setMaxIndex(max_index)
       // console.log(temp)
       setLastestVehicle_List(temp)
     }
   }, [vehicle_List])
+
+  useEffect(() => {
+    if (maxHour != null) {
+      console.log(maxHour)
+    }
+  }, [maxHour])
 
   useEffect(() => {
     if (channel != null) {
@@ -107,14 +136,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_1(data.length)
+          setChannel_1(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -133,15 +163,15 @@ const Dashboard = () => {
         vehicleService.getTotalByChannelID(channel[1]?.id).then(data => {
           // temp.push(data)
           // console.log(data.length)
-          // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_2(data.length)
+          setChannel_2(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -161,14 +191,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_3(data.length)
+          setChannel_3(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -191,14 +222,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_1(data.length)
+          setChannel_1(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -218,14 +250,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_2(data.length)
+          setChannel_2(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -245,14 +278,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_3(data.length)
+          setChannel_3(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -272,14 +306,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_4(data.length)
+          setChannel_4(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -302,14 +337,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_1(data.length)
+          setChannel_1(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -329,14 +365,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_2(data.length)
+          setChannel_2(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -356,14 +393,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_3(data.length)
+          setChannel_3(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -383,14 +421,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_4(data.length)
+          setChannel_4(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -410,14 +449,15 @@ const Dashboard = () => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
-          // for (let j = 0; j < data.length; j++) {
-          //   var date = new Date(data[j].create_time)
-          //   if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
-          //     count.push(data[j])
-          //   }
-          // }
+          var count = 0
+          for (let j = 0; j < data.length; j++) {
+            var date = new Date(data[j].create_time)
+            if (date.getDate() == startDate.getDate() && date.getMonth() == startDate.getMonth()) {
+              count += 1
+            }
+          }
           // if (index == 0) {
-          setChannel_5(data.length)
+          setChannel_5(count)
           // }
           // if (index == 1) {
           //   setChannel_2(count.length)
@@ -638,18 +678,18 @@ const Dashboard = () => {
     <Page className={classes.root} title="Dashboard">
       <Container >
         <Grid container spacing={3} className={classes.gridBox}>
-          {max != null && < Grid item lg={3} sm={6} xl={3} xs={12}>
+          {max != null && < Grid item lg={3} sm={6} xl={6} xs={12}>
             <TotalCarThisDay max={max} />
           </Grid>}
-          <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <TotalCar7Day />
-          </Grid>
-          <Grid item lg={3} sm={6} xl={3} xs={12}>
+          {maxHour != null && maxIndex != null && <Grid item lg={3} sm={6} xl={6} xs={12}>
+            <TotalCar7Day maxHour={maxHour} max_index={maxIndex} />
+          </Grid>}
+          {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalCarBlacklist />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalCarWhitelist />
-          </Grid>
+          </Grid> */}
 
           {data != null && <Grid item lg={8} md={8} xl={8} xs={12}>
             {/* <ChartView /> */}

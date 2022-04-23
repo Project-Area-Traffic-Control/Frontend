@@ -59,7 +59,7 @@ const TotalCarThisDay = (props) => {
             <Typography
               color="textSecondary"
               gutterBottom
-              variant="h6"
+              variant="h5"
               className={classes.textTotal}
             >
               ช่องสัญญาณที่มีการจราจรมากที่สุด

@@ -108,7 +108,7 @@ const Location = (props) => {
                   </IconButton>
                 </StyledTableCell> */}
                 <StyledTableCell align="center">
-                  {new Date(row?.create_time).getHours()} : {new Date(row?.create_time).getMinutes()}
+                  {new Date(row?.create_time).getHours() < 10 ? `0${new Date(row?.create_time).getHours()}` : new Date(row?.create_time).getHours()} : {new Date(row?.create_time).getMinutes() < 10 ? `0${new Date(row?.create_time).getMinutes()}` : new Date(row?.create_time).getMinutes()}
                 </StyledTableCell>
                 <StyledTableCell align="center">{row?.junction?.name}</StyledTableCell>
                 <StyledTableCell align="center">{row?.channel?.name}</StyledTableCell>

@@ -191,6 +191,7 @@ const Statistic = () => {
     const [totalDate, setTotalDate] = useState(null)
     const [channelSelect, setChannelSelect] = useState(null)
     const [selectMenu, setSelectMenu] = useState(null)
+    const [reload, setReload] = useState(null)
     const handleChangeMenu = (event) => {
         setMenu(event.target.value)
     }
@@ -301,14 +302,17 @@ const Statistic = () => {
     };
 
     useEffect(() => {
+        // window.location.reload(true);
+        setVehicle_List([])
         const date = new Date()
         setStartDate(date.getDate() - 1)
         setEndDate(date.getDate())
+        // console.log(location.pathname.slice(5, location.pathname.length - 10))
         junctionService.getJunctionByID(location.pathname.slice(5, location.pathname.length - 10)).then((data) => {
             setChannel(data.channel)
         })
         setJuncID(location.pathname.slice(5, location.pathname.length - 10))
-    }, [])
+    }, [location.pathname])
 
     useEffect(() => {
         if (channel != null) {
@@ -938,7 +942,7 @@ const Statistic = () => {
                         {/* <ChartView /> */}
                     </Grid>
 
-                    {totalDate != null && <Grid className={classes.bottomContent}>
+                    {vehicle_List.length != 0 && totalDate != null && <Grid className={classes.bottomContent}>
                         <Grid
                             className={classes.titleGrid}
                         >
@@ -1087,7 +1091,7 @@ const Statistic = () => {
                         {/* <ChartView /> */}
                     </Grid>}
 
-                    {totalDate != null && <Grid className={classes.bottomContent}>
+                    {vehicle_List.length != 0 && totalDate != null && <Grid className={classes.bottomContent}>
                         <Grid
                             className={classes.titleGrid}
                         >
@@ -1253,7 +1257,7 @@ const Statistic = () => {
                         {/* <ChartView /> */}
                     </Grid>}
 
-                    {totalDate != null && <Grid className={classes.bottomContent}>
+                    {vehicle_List.length != 0 && totalDate != null && <Grid className={classes.bottomContent}>
                         <Grid
                             className={classes.titleGrid}
                         >

@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: colors.yellow[600],
     height: 76,
     width: 76,
-    color:colors.grey[100]
+    color: colors.grey[100]
 
   },
   textTotal: {
@@ -41,13 +41,12 @@ const useStyles = makeStyles(() => ({
 
 }));
 
-const Online = ({ className, ...rest }) => {
+const Online = (props) => {
   const classes = useStyles();
 
   return (
     <Card
-      className={clsx(classes.root, className)}
-      {...rest}
+      className={classes.root}
     >
       <CardContent>
         <Grid
@@ -59,17 +58,17 @@ const Online = ({ className, ...rest }) => {
             <Typography
               color="textSecondary"
               gutterBottom
-              variant="h6"
+              variant="h5"
               className={classes.textTotal}
             >
-              Example Card 2
+              เวลาที่ตรวจนับจำนวนรถยนต์ได้มากที่สุด
             </Typography>
             <Typography
               color="textPrimary"
-              variant="h3"
+              variant="h4"
               className={classes.textData}
             >
-              1124
+              เวลา  {props.max_index < 10 ? `0${props.max_index}` : props.max_index} : 00 จำนวนรถยนต์ {props.maxHour}
             </Typography>
           </Grid>
           <Grid item>
