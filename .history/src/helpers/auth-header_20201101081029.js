@@ -1,0 +1,12 @@
+import { useCookies } from 'react-cookie';
+export function authHeader() {
+    // return authorization header with jwt token
+    const [cookies] = useCookies(['name']);
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (user && user.token) {
+        return { 'Authorization': 'Bearer ' + user.token };
+    } else {
+        return {};
+    }
+}

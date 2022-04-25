@@ -24,14 +24,14 @@ import {
 import NavItem from './NavItem';
 
 const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
+  avatar: '/static/images/avatars/avatar_test.png',
+  jobTitle: 'ผู้บังคับหมู่งานจราจร',
+  name: 'สิบตรีอี้ป๋อ หวัง'
 };
 
 const items = [
   {
-    href: '/app/dashboard',
+    href: '/app/TestDashboard',
     icon: BarChartIcon,
     title: 'Dashboard'
   },
