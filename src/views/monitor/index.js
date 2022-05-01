@@ -181,6 +181,27 @@ const Monitor = (props) => {
         PROVINCE: "",
         IP: ""
     })
+    const [device4, setDevice4] = useState({
+        CAMERA: "",
+        IMAGE: "",
+        LICENSEPLATE: "",
+        PROVINCE: "",
+        IP: ""
+    })
+    const [device5, setDevice5] = useState({
+        CAMERA: "",
+        IMAGE: "",
+        LICENSEPLATE: "",
+        PROVINCE: "",
+        IP: ""
+    })
+    const [device6, setDevice6] = useState({
+        CAMERA: "",
+        IMAGE: "",
+        LICENSEPLATE: "",
+        PROVINCE: "",
+        IP: ""
+    })
     const [open, setOpen] = useState([])
     const [camID, setCamID] = useState(1)
     const toggleDetail = (ind) => {
@@ -268,6 +289,45 @@ const Monitor = (props) => {
                 // console.info('NEWDATA')
             });
         }
+        if (camID == 4) {
+            socket.on(socketON, data => {
+                console.log("Message", data)
+                setDevice4({
+                    // CAMERA: data.CAMERA,
+                    IMAGE: 'data:image/png;base64,' + data.capture,
+                    // LICENSEPLATE: data.LICENSEPLATE,
+                    // PROVINCE: data.PROVINCE,
+                    // IP: data.IP
+                })
+                // console.info('NEWDATA')
+            });
+        }
+        if (camID == 5) {
+            socket.on(socketON, data => {
+                console.log("Message", data)
+                setDevice5({
+                    // CAMERA: data.CAMERA,
+                    IMAGE: 'data:image/png;base64,' + data.capture,
+                    // LICENSEPLATE: data.LICENSEPLATE,
+                    // PROVINCE: data.PROVINCE,
+                    // IP: data.IP
+                })
+                // console.info('NEWDATA')
+            });
+        }
+        if (camID == 6) {
+            socket.on(socketON, data => {
+                console.log("Message", data)
+                setDevice6({
+                    // CAMERA: data.CAMERA,
+                    IMAGE: 'data:image/png;base64,' + data.capture,
+                    // LICENSEPLATE: data.LICENSEPLATE,
+                    // PROVINCE: data.PROVINCE,
+                    // IP: data.IP
+                })
+                // console.info('NEWDATA')
+            });
+        }
 
     }, [camID])
     return (
@@ -281,6 +341,9 @@ const Monitor = (props) => {
                     {camID == 1 && <img src={device1.IMAGE} width="90%" marginTop="2%" height="100%" />}
                     {camID == 2 && <img src={device2.IMAGE} width="90%" marginTop="2%" height="100%" />}
                     {camID == 3 && <img src={device3.IMAGE} width="90%" marginTop="2%" height="100%" />}
+                    {camID == 4 && <img src={device4.IMAGE} width="90%" marginTop="2%" height="100%" />}
+                    {camID == 5 && <img src={device5.IMAGE} width="90%" marginTop="2%" height="100%" />}
+                    {camID == 6 && <img src={device6.IMAGE} width="90%" marginTop="2%" height="100%" />}
                     {/* <Grid item className={classes.gridDetail}>
                     {device1.LICENSEPLATE != '' && <Typography variant='h4' className={classes.detailText}>
                         ป้ายทะเบียน: {device1.LICENSEPLATE}
@@ -342,6 +405,42 @@ const Monitor = (props) => {
                                 icon=""
                                 onClick={() => {
                                     setCamID(3)
+                                }}
+                            />
+                        </ListItem>
+                        <ListItem >
+                            {/* {open[0] ? <ExpandLess /> : <ExpandMore />} */}
+                            <NavItem
+                                href=""
+                                // key={items[1].title}
+                                title="กล้องวิดิโอที่ 4"
+                                icon=""
+                                onClick={() => {
+                                    setCamID(4)
+                                }}
+                            />
+                        </ListItem>
+                        <ListItem >
+                            {/* {open[0] ? <ExpandLess /> : <ExpandMore />} */}
+                            <NavItem
+                                href=""
+                                // key={items[1].title}
+                                title="กล้องวิดิโอที่ 5"
+                                icon=""
+                                onClick={() => {
+                                    setCamID(5)
+                                }}
+                            />
+                        </ListItem>
+                        <ListItem >
+                            {/* {open[0] ? <ExpandLess /> : <ExpandMore />} */}
+                            <NavItem
+                                href=""
+                                // key={items[1].title}
+                                title="กล้องวิดิโอที่ 6"
+                                icon=""
+                                onClick={() => {
+                                    setCamID(6)
                                 }}
                             />
                         </ListItem>

@@ -577,10 +577,11 @@ const CreatePlan = (props) => {
         const start = new Date(dateSearch)
         const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1)
         // console.log(start.toLocaleDateString())
+        console.log(juncID)
         await vehicleService.getTotalBySearch({
             start: start,
             end: end,
-            junction_id: juncID
+            junction_id: parseInt(juncID)
         }).then((data) => {
             // console.log(data)
             setVehicle_List(data)

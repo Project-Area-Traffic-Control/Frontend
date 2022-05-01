@@ -38,6 +38,7 @@ import CommuteIcon from '@material-ui/icons/Commute';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import clsx from 'clsx';
 import HomeIcon from '@material-ui/icons/Home';
+import GroupIcon from '@material-ui/icons/Group';
 import { BarChart, CallSplit, DonutLarge, ExpandLess, ExpandMore, StarBorder, Videocam } from '@material-ui/icons';
 import { junctionService } from '../../../services/junction.service';
 import { control } from 'leaflet';
@@ -86,6 +87,11 @@ const items = [
     href: '/404',
     icon: ExitToAppIcon,
     title: 'Logout'
+  },
+  {
+    href: '/app/user',
+    icon: GroupIcon,
+    title: 'จัดการผู้ใช้'
   },
 ];
 
@@ -242,6 +248,17 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
             </ListItem>
             <ListItem >
+
+              <NavItem
+                href={items[8].href}
+                key={items[8].title}
+                title={items[8].title}
+                icon={items[8].icon}
+              // onClick={handleClick}
+              />
+
+            </ListItem>
+            <ListItem >
               <NavItem
                 href={location.pathname}
                 key={items[1].title}
@@ -289,7 +306,15 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       <NavItem
                         href={`/app/junction/${junction.id}`}
                         key={items[2].title}
-                        title="ข้อมูลแยกจราจร"
+                        title="ตั้งค่าแยกสัญญาจราจร"
+                        className={classes.collapse_1}
+                      // icon={items[2].icon}
+                      // onClick={handleClick}
+                      />
+                      <NavItem
+                        href={`/app/channel/${junction.id}`}
+                        key={items[2].title}
+                        title="ตั้งค่าช่องสัญญาณไฟจราจร"
                         className={classes.collapse_1}
                       // icon={items[2].icon}
                       // onClick={handleClick}

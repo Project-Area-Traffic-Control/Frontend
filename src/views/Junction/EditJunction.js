@@ -26,6 +26,7 @@ import { junctionService } from '../../services/junction.service';
 import { channelService } from '../../services/channel.service';
 import MyMap from './LocationSearch';
 import { RotateRight } from '@material-ui/icons';
+import { planService } from '../../services/plan.service';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
@@ -247,6 +248,7 @@ const EditJunction = () => {
     const [status, setStatus] = useState(0)
     const [open, setOpen] = useState(false)
     const [alertOpen, setAlertOpen] = useState(false)
+    const [plan, setPlan] = useState(null)
     const location = useLocation();
     // useEffect(() => {
     //     junctionService.getJunctionByID(pathID).then(data => {
@@ -286,6 +288,7 @@ const EditJunction = () => {
             })
             setDegree(parseInt(junction.rotate))
             setChannel(junction.channel)
+            setPlan(junction.plan)
             setGlobalPosition([junction.latitude, junction.longitude])
             setStatus(junction.channel.length)
             channel_Formik.setValues({
@@ -512,6 +515,9 @@ const EditJunction = () => {
     async function deleteSubmit() {
         for (let index = 0; index < channel.length; index++) {
             await channelService.deleteChannel(channel[index].id)
+        }
+        for (let index = 0; index < plan.length; index++) {
+            await planService.deletePlan(plan[index].id)
         }
         await junctionService.deleteJunction(pathID)
         navigate(`/app/junction`, { replace: true });

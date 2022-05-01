@@ -6,7 +6,9 @@ export const controlService = {
     getAllFixtime,
     updateFixtime,
     createFixtime,
-    deleteFixtime
+    deleteFixtime,
+    getFixtimeByID,
+    createFlashing
 };
 
 async function getAllFixtime() {
@@ -17,6 +19,27 @@ async function getAllFixtime() {
         .then(fixtime => {
             // console.log(junction.data)
             return fixtime.data;
+        })
+        .catch((e) => {
+            if (e.response.status === 400) {
+                e.message = e.response.data
+                return Promise.reject(e);
+            }
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function getFixtimeByID(id) {
+    return axios.get(`${apiConstants.uri}/fixtime_mode/${id}`,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    )
+        .then(fixtime_mode => {
+            // console.log(junction.data)
+            return fixtime_mode.data;
         })
         .catch((e) => {
             if (e.response.status === 400) {
@@ -86,6 +109,28 @@ async function deleteFixtime(id) {
             else if (e.response.status > 300) {
                 e.message = e.response.data
                 return Promise.reject(e);
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function createFlashing(data) {
+    return axios.post(`${apiConstants.uri}/flash_mode`, data,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    )
+        .then(flash_mode => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            console.log(flash_mode.data)
+            return flash_mode.data;
+        })
+        .catch((e) => {
+            if (e.response.status === 400) {
+                e.message = e.response.data
+                return Promise.reject(e);
+            }
+            if (e.response.status === 401) {
+                window.location.reload(true)
             }
             // window.location.reload(true)
         })

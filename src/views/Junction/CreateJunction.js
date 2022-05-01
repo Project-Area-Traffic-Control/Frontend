@@ -33,6 +33,8 @@ import { junctionService } from '../../services/junction.service';
 import { Assignment, RotateRight } from '@material-ui/icons';
 import MyMap from './LocationSearch';
 import { channelService } from '../../services/channel.service';
+import { planService } from '../../services/plan.service';
+import { controlService } from '../../services/control.service';
 // import ManagementTable from '../../components/table/manageTable';
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -269,85 +271,77 @@ const CreateJunction = () => {
                 "rotate": degree
             })
             // console.log(channel)
-            if (values.number_channel == 3 && channel != 0) {
+            if (values.number_channel == 3) {
                 await channelService.createChannel({
-                    "name": channel.name_1,
-                    "number_lane": parseInt(channel.number_lane_1),
+                    "name": "",
+                    "number_lane": 1,
                     "order": 1,
                     "junction_id": res.id
+                }).then((data) => {
+                    console.log(data)
                 })
                 await channelService.createChannel({
-                    "name": channel.name_2,
-                    "number_lane": parseInt(channel.number_lane_2),
+                    "name": "",
+                    "number_lane": 1,
                     "order": 2,
                     "junction_id": res.id
                 })
                 await channelService.createChannel({
-                    "name": channel.name_3,
-                    "number_lane": parseInt(channel.number_lane_3),
+                    "name": "",
+                    "number_lane": 1,
                     "order": 3,
                     "junction_id": res.id
                 })
             }
-            else if (values.number_channel == 4 && channel != 0) {
+            else if (values.number_channel == 4) {
                 await channelService.createChannel({
-                    "name": channel.name_1,
-                    "number_lane": parseInt(channel.number_lane_1),
+                    "name": "",
+                    "number_lane": 1,
                     "order": 1,
                     "junction_id": res.id
                 })
                 await channelService.createChannel({
-                    "name": channel.name_2,
-                    "number_lane": parseInt(channel.number_lane_2),
+                    "name": "",
+                    "number_lane": 1,
                     "order": 2,
                     "junction_id": res.id
                 })
                 await channelService.createChannel({
-                    "name": channel.name_3,
-                    "number_lane": parseInt(channel.number_lane_3),
+                    "name": "",
+                    "number_lane": 1,
                     "order": 3,
                     "junction_id": res.id
                 })
                 await channelService.createChannel({
-                    "name": channel.name_4,
-                    "number_lane": parseInt(channel.number_lane_4),
-                    "order": 3,
+                    "name": "",
+                    "number_lane": 1,
+                    "order": 4,
                     "junction_id": res.id
                 })
             }
-            else if (values.number_channel == 5 && channel != 0) {
-                await channelService.createChannel({
-                    "name": channel.name_1,
-                    "number_lane": parseInt(channel.number_lane_1),
-                    "order": 1,
-                    "junction_id": res.id
-                })
-                await channelService.createChannel({
-                    "name": channel.name_2,
-                    "number_lane": parseInt(channel.number_lane_2),
-                    "order": 2,
-                    "junction_id": res.id
-                })
-                await channelService.createChannel({
-                    "name": channel.name_3,
-                    "number_lane": parseInt(channel.number_lane_3),
-                    "order": 3,
-                    "junction_id": res.id
-                })
-                await channelService.createChannel({
-                    "name": channel.name_4,
-                    "number_lane": parseInt(channel.number_lane_4),
-                    "order": 3,
-                    "junction_id": res.id
-                })
-                await channelService.createChannel({
-                    "name": channel.name_5,
-                    "number_lane": parseInt(channel.number_lane_5),
-                    "order": 3,
-                    "junction_id": res.id
-                })
-            }
-            navigate(`/app/junction`, { replace: true });
+
+            await planService.createPlan({
+                "name": "ALLRED",
+                "yellow_time": 3,
+                "delay_red_time": 0,
+                "junction_id": res.id
+            })
+            const planRes = await planService.createPlan({
+                "name": "FLASHING",
+                "yellow_time": 3,
+                "delay_red_time": 0,
+                "junction_id": res.id
+            })
+            // const dateStart = new Date().setHours(0, 0, 0)
+            // const dateEnd = new Date().setHours(5, 0, 0)
+            // await controlService.createFixtime({
+            //     "start": new Date(dateStart),
+            //     "end": new Date(dateEnd),
+            //     "junction_id": res.id,
+            //     "plan_id": planRes.id,
+            // })
+            // navigate(`/app/junction`, { replace: true });
+
         },
     });
 
@@ -770,13 +764,13 @@ const CreateJunction = () => {
                                             value={formik.values.lng}
                                             margin="normal"
                                         />
-                                        <Button
+                                        {/* <Button
                                             className={classes.buttonConfig}
                                             onClick={() => setOpen(true)}
                                         // type='submit'
                                         >
                                             ตั้งค่าช่องสัญญาณ
-                                        </Button>
+                                        </Button> */}
                                         {/* <ReportTable number_channel={formik.values.number_channel} channel={props.channel} pathID={props.pathID} status={props.status} formik={formik} /> */}
                                         <Grid
                                             className={classes.top_icon}
