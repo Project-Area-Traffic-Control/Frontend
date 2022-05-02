@@ -80,7 +80,7 @@ const LoginView = () => {
 
   useEffect(() => {
     if (submit == true) {
-      navigate('/app/dashboard', { replace: true });
+      navigate('/app/', { replace: true });
     }
 
 

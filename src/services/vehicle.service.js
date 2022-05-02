@@ -9,6 +9,7 @@ export const vehicleService = {
 };
 
 async function getTotalBySearch(data) {
+    console.log(data)
     return axios.put(`${apiConstants.uri}/vehicle/getSearch`, data,
         { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
         { withCredentials: true }
@@ -30,6 +31,7 @@ async function getTotalBySearch(data) {
 }
 
 async function getTotalByChannelID(id) {
+    // console.log(id)
     return await axios.get(`${apiConstants.uri}/vehicle/${id}/channel`,
         { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
         { withCredentials: true }

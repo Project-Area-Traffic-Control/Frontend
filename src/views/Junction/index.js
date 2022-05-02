@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     paddingTop: theme.spacing(5),
-    width: '100%',
+    marginLeft: '5%',
+    width: '95%',
     display: 'flex'
   },
   container_1: {

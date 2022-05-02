@@ -125,6 +125,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (channel != null) {
+      console.log(channel)
       const startDate = new Date()
       const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 1)
       // const endDate = new Date(2022, 7, 32)
@@ -144,6 +145,7 @@ const Dashboard = () => {
             }
           }
           // if (index == 0) {
+          // console.log(count)
           setChannel_1(count)
           // }
           // if (index == 1) {
@@ -187,7 +189,7 @@ const Dashboard = () => {
           // }
           // temp.push(temp_2)
         })
-        vehicleService.getTotalByChannelID(channel[2].id).then(data => {
+        vehicleService.getTotalByChannelID(channel[2]?.id).then(data => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
@@ -332,7 +334,7 @@ const Dashboard = () => {
         })
       }
 
-      if (channel.length == 4) {
+      if (channel.length == 5) {
         vehicleService.getTotalByChannelID(channel[0]?.id).then(data => {
           // temp.push(data)
           // console.log(data.length)
@@ -389,7 +391,7 @@ const Dashboard = () => {
           // }
           // temp.push(temp_2)
         })
-        vehicleService.getTotalByChannelID(channel[2].id).then(data => {
+        vehicleService.getTotalByChannelID(channel[2]?.id).then(data => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
@@ -417,7 +419,7 @@ const Dashboard = () => {
           // }
           // temp.push(temp_2)
         })
-        vehicleService.getTotalByChannelID(channel[3].id).then(data => {
+        vehicleService.getTotalByChannelID(channel[3]?.id).then(data => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
@@ -445,7 +447,7 @@ const Dashboard = () => {
           // }
           // temp.push(temp_2)
         })
-        vehicleService.getTotalByChannelID(channel[4].id).then(data => {
+        vehicleService.getTotalByChannelID(channel[4]?.id).then(data => {
           // temp.push(data)
           // console.log(data.length)
           // temp_3.push(data)
@@ -625,7 +627,7 @@ const Dashboard = () => {
   }, [channel_1, channel_2, channel_3, channel_4, channel_5])
   useEffect(() => {
     if (data != null) {
-      // console.log(data)
+      console.log(data)
     }
   }, [data])
 

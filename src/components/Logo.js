@@ -6,6 +6,8 @@ const Logo = (props) => {
       alt="Logo"
       src="/static/logo.png"
       {...props}
+      // height='60px'
+      // width= '60px'
     />
   );
 };

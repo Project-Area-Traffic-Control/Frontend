@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
@@ -21,8 +21,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import {deviceService} from "../../services"
-
+import { deviceService, userService } from "../../services"
+import { useNavigate } from 'react-router-dom';
 const useStyles = makeStyles(() => ({
   root: {},
   actions: {
@@ -32,24 +32,20 @@ const useStyles = makeStyles(() => ({
 
 const DeviceTable = ({ className, ...rest }) => {
   const classes = useStyles();
-  const [orders,setOrders] = useState([]);
-
-  useEffect(()=>{
-
-      deviceService.getAlldevice().then((data)=>{
-        setOrders(data.data)
-
-      }).catch((e)=>{
-          console.log(e)
-      })
-  },[])
+  const [users, setusers] = useState(null)
+  const navigate = useNavigate();
+  useEffect(() => {
+    userService.getAllUser().then((data) => {
+      setusers(data)
+    })
+  }, [])
 
   return (
     <Card
       className={clsx(classes.root, className)}
       {...rest}
     >
-      <CardHeader title="Android Devices" />
+      <CardHeader title="ตารางจัดการผู้ใช้" />
       <Divider />
       <PerfectScrollbar>
         <Box minWidth={800}>
@@ -57,98 +53,62 @@ const DeviceTable = ({ className, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                Phone Number
+                  Username
                 </TableCell>
                 <TableCell>
-                  Owner Name
-                </TableCell>
-                <TableCell sortDirection="desc">
-                  <Tooltip
-                    enterDelay={300}
-                    title="Sort"
-                  >
-                    <TableSortLabel
-                      active
-                      direction="desc"
-                    >
-                      Date
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-                <TableCell sortDirection="desc">
-                  <Tooltip
-                    enterDelay={300}
-                    title="Sort"
-                  >
-                    <TableSortLabel
-                      active
-                      direction="desc"
-                    >
-                      Time
-                    </TableSortLabel>
-                  </Tooltip>
+                  Firstname
                 </TableCell>
                 <TableCell>
-                  Brand
+                  Lastname
                 </TableCell>
                 <TableCell>
-                  Ip Adress
+                  Email
+                </TableCell>
+                <TableCell>
+                  Tel
+                </TableCell>
+                <TableCell>
+
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {orders.map((order) => (
+            {users != null && <TableBody>
+              {users.map((row) => (
                 <TableRow
                   hover
-                  key={order.id}
+                  key={row.id}
                 >
                   <TableCell>
-                     <Chip
-                      color="secondary"
-                      label={order.phone_number}
-                      size="small"
-                    />
+                    {row?.username}
                   </TableCell>
                   <TableCell>
-                    {order.ownerName}
+                    {row?.profile?.firstname}
                   </TableCell>
                   <TableCell>
-                    {moment(order.created).format('DD/MM/YYYY')}
-                  </TableCell>
-                   <TableCell>
-                    {moment(order.created).format('HH:mm')}
+                    {row?.profile?.lastname}
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      color="primary"
-                      label={order.brand}
-                      size="small"
-                    />
+                    {row?.profile?.email}
                   </TableCell>
                   <TableCell>
-                    {order.ipAddress}
+                    {row?.profile?.tel}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => {
+                        navigate(`/app/${row?.id}/edit_user`, { replace: true });
+                      }}
+                    >
+                      แก้ไขข้อมูล
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
+            </TableBody>}
           </Table>
         </Box>
       </PerfectScrollbar>
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        p={2}
-      >
-        <Button
-          color="primary"
-          endIcon={<ArrowRightIcon />}
-          size="small"
-          variant="text"
-        >
-          View all
-        </Button>
-      </Box>
-    </Card>
+    </Card >
   );
 };
 

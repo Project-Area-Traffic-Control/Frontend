@@ -3,7 +3,8 @@ import axios from "axios"
 export const channelService = {
     createChannel,
     updateChannel,
-    deleteChannel
+    deleteChannel,
+    getChannelByJunctionID
 };
 
 async function createChannel(data) {
@@ -15,6 +16,27 @@ async function createChannel(data) {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             console.log(channel.data)
             return channel;
+        })
+        .catch((e) => {
+            if (e.response.status === 400) {
+                e.message = e.response.data
+                return Promise.reject(e);
+            }
+            if (e.response.status === 401) {
+                window.location.reload(true)
+            }
+            // window.location.reload(true)
+        })
+}
+
+async function getChannelByJunctionID(id) {
+    return axios.get(`${apiConstants.uri}/channels/getByJunctionID/${id}`,
+        { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
+        { withCredentials: true }
+    )
+        .then(channel => {
+
+            return channel.data;
         })
         .catch((e) => {
             if (e.response.status === 400) {

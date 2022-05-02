@@ -25,7 +25,7 @@ import Page from '../../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
@@ -45,6 +45,10 @@ import theme from '../../../theme';
 import { controlService } from '../../../services/control.service';
 import { planService } from '../../../services/plan.service';
 import { junctionService } from '../../../services/junction.service';
+import { fixtimeService } from '../../../services/fixtime.service';
+import { apiConstants } from '../../../_constants';
+import socketIOClient from 'socket.io-client';
+
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -389,8 +393,13 @@ const ConfigMode = (props) => {
     const [junctionData, setJunctionData] = useState(null);
     const [menu, setMenu] = useState(null)
     const [planList, setPlanList] = useState([])
+    const [dataFixtime, setDataFixtime] = useState(null)
     const [fixtimeList_id, setFixtimeList_id] = useState(null)
     const [imgRotate, setImgRotate] = useState(<img src={`/static/junction/${number_channel}way${degree}degree.jpg`} width='818px' height='660px' />)
+    const [addRowContent, setAddRowContent] = useState(null)
+    const [addRowStatus, setAddRowStatus] = useState(null)
+    const [startIndex, setStartIndex] = useState(null)
+    const { junction_id } = useParams();
     const [search, setSearch] = React.useState({
 
         search: "",
@@ -421,13 +430,24 @@ const ConfigMode = (props) => {
     };
     const handleChangeData = (event, ind, type) => {
         var temp = editAble
+        // console.log(event.target.value)
         for (let index = 0; index < temp.length; index++) {
             if (ind == index) {
                 if (type == 0) {
-                    temp[ind].start = event.target.value
+                    console.log(event)
+                    temp[ind].start = event
                 }
                 else if (type == 1) {
                     temp[ind].end = event.target.value
+                    console.log(event.target.value)
+                    console.log(ind)
+                    if (ind != editAble.length - 1) {
+                        setStartIndex({
+                            data: temp[ind].end,
+                            index: ind + 1
+                        })
+                    }
+                    // temp_str = temp[ind].start
                 }
                 else if (type == 2) {
                     planService.getPlanByID(event.target.value).then((data) => {
@@ -437,8 +457,38 @@ const ConfigMode = (props) => {
                 }
             }
         }
+
         setEditAble(temp)
     };
+    useEffect(() => {
+        if (startIndex != null) {
+            var temp = editAble
+            if (startIndex.data.slice(3, 5) >= 59) {
+                if (parseInt(startIndex.data.slice(0, 2)) + 1 <= 9) {
+                    temp[startIndex.index].start = `0${parseInt(startIndex.data.slice(0, 2)) + 1}:00`
+                }
+                if (parseInt(startIndex.data.slice(0, 2)) + 1 > 9) {
+                    temp[startIndex.index].start = `${parseInt(startIndex.data.slice(0, 2)) + 1}:00`
+                }
+            }
+            else {
+                if (startIndex.data.slice(3, 5) >= 9 && startIndex.data.slice(0, 2) >= 9) {
+                    temp[startIndex.index].start = `${startIndex.data.slice(0, 2)}:${parseInt(startIndex.data.slice(3, 5)) + 1}`
+                }
+                if (startIndex.data.slice(3, 5) >= 9 && startIndex.data.slice(0, 2) < 9) {
+                    temp[startIndex.index].start = `${startIndex.data.slice(0, 2)}:${parseInt(startIndex.data.slice(3, 5)) + 1}`
+                }
+                if (startIndex.data.slice(3, 5) < 9 && startIndex.data.slice(0, 2) >= 9) {
+                    temp[startIndex.index].start = `${startIndex.data.slice(0, 2)}:0${parseInt(startIndex.data.slice(3, 5)) + 1}`
+                }
+                if (startIndex.data.slice(3, 5) < 9 && startIndex.data.slice(0, 2) < 9) {
+                    temp[startIndex.index].start = `${startIndex.data.slice(0, 2)}:0${parseInt(startIndex.data.slice(3, 5)) + 1}`
+                }
+            }
+            console.log(startIndex)
+            setEditAble(temp)
+        }
+    }, [startIndex])
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -447,129 +497,214 @@ const ConfigMode = (props) => {
         setCheck(phase)
         setCurrent(index)
     };
-    const handleSubmit = () => {
-        if (editAble.length == fixtimeList_id.length) {
-            for (let index = 0; index < editAble.length; index++) {
-                const date = new Date()
-                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
-                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
-                controlService.updateFixtime({
-                    start: new Date(start),
-                    end: new Date(end),
-                    junction_id: junctionData.id,
-                    plan_id: editAble[index].plan.id
-                }, fixtimeList_id[index])
-                // console.log(new Date(start))
-                // console.log(new Date(end))
-                // console.log()
+    async function handleSubmit() {
+        console.log(editAble)
+        if (editAble[editAble.length - 1].end.slice(0, 2) == 23 && editAble[editAble.length - 1].end.slice(3, 5) == 59 && editAble.length != 0) {
+            if (editAble.length == fixtimeList_id.length) {
+                console.log("เท่ากัน")
+                for (let index = 0; index < editAble.length; index++) {
+                    console.log(parseInt(editAble[index].start), parseInt(editAble[index].end))
+                    const date = new Date()
+                    // const endDate = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    // console.log("start : ", new Date(start).toString(), " end", new Date(end).toString())
+                    await controlService.updateFixtime({
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'junction_id': junctionData.id,
+                        'plan_id': editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                    // console.log(new Date(starDate).toLocaleTimeStringString())
+                    // console.log(new Date(endDate).toLocaleTimeString())
+                    // console.log()
+                }
+            }
+            else if (editAble.length - fixtimeList_id.length > 0) {
+                for (let index = 0; index < fixtimeList_id.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.updateFixtime({
+                        start: new Date(start),
+                        end: new Date(end),
+                        junction_id: junctionData.id,
+                        plan_id: editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                    // console.log(new Date(start))
+                    // console.log(new Date(end))
+                    // console.log()
+                }
+                for (let index = fixtimeList_id.length; index < editAble.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.createFixtime({
+                        start: new Date(start),
+                        end: new Date(end),
+                        junction_id: junctionData.id,
+                        plan_id: editAble[index].plan.id
+                    })
+                }
+            }
+            else if (fixtimeList_id.length - editAble.length > 0) {
+                console.log(fixtimeList_id)
+                for (let index = 0; index < editAble.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.updateFixtime({
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'junction_id': junctionData.id,
+                        'plan_id': editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                }
+                for (let index = editAble.length; index < fixtimeList_id.length; index++) {
+                    await controlService.deleteFixtime(fixtimeList_id[index])
+                    // console.log(fixtimeList_id[index])
+                }
             }
         }
-        else if (editAble.length - fixtimeList_id.length > 0) {
-            for (let index = 0; index < fixtimeList_id.length; index++) {
-                const date = new Date()
-                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
-                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
-                controlService.updateFixtime({
-                    start: new Date(start),
-                    end: new Date(end),
-                    junction_id: junctionData.id,
-                    plan_id: editAble[index].plan.id
-                }, fixtimeList_id[index])
-                // console.log(new Date(start))
-                // console.log(new Date(end))
-                // console.log()
+        else if (editAble.length != 0) {
+            var temp = editAble
+            temp[editAble.length - 1].end = "23:59"
+            setEditAble(temp)
+            if (editAble.length == fixtimeList_id.length) {
+                console.log("เท่ากัน")
+                for (let index = 0; index < editAble.length; index++) {
+                    console.log(parseInt(editAble[index].start), parseInt(editAble[index].end))
+                    const date = new Date()
+                    // const endDate = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    // console.log("start : ", new Date(start).toString(), " end", new Date(end).toString())
+                    await controlService.updateFixtime({
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'junction_id': junctionData.id,
+                        'plan_id': editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                    // console.log(new Date(starDate).toLocaleTimeStringString())
+                    // console.log(new Date(endDate).toLocaleTimeString())
+                    // console.log()
+                }
             }
-            for (let index = fixtimeList_id.length; index < editAble.length; index++) {
-                const date = new Date()
-                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
-                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
-                controlService.createFixtime({
-                    start: new Date(start),
-                    end: new Date(end),
-                    junction_id: junctionData.id,
-                    plan_id: editAble[index].plan.id
-                })
+            else if (editAble.length - fixtimeList_id.length > 0) {
+                for (let index = 0; index < fixtimeList_id.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.updateFixtime({
+                        start: new Date(start),
+                        end: new Date(end),
+                        junction_id: junctionData.id,
+                        plan_id: editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                    // console.log(new Date(start))
+                    // console.log(new Date(end))
+                    // console.log()
+                }
+                for (let index = fixtimeList_id.length; index < editAble.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.createFixtime({
+                        start: new Date(start),
+                        end: new Date(end),
+                        junction_id: junctionData.id,
+                        plan_id: editAble[index].plan.id
+                    })
+                }
+            }
+            else if (fixtimeList_id.length - editAble.length > 0) {
+                console.log(fixtimeList_id)
+                for (let index = 0; index < editAble.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.updateFixtime({
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'junction_id': junctionData.id,
+                        'plan_id': editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                }
+                for (let index = editAble.length; index < fixtimeList_id.length; index++) {
+                    await controlService.deleteFixtime(fixtimeList_id[index])
+                    // console.log(fixtimeList_id[index])
+                }
             }
         }
-        else if (fixtimeList_id.length - editAble.length > 0) {
-            console.log(fixtimeList_id)
-            for (let index = 0; index < editAble.length; index++) {
-                const date = new Date()
-                const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
-                const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
-                controlService.updateFixtime({
-                    start: new Date(start),
-                    end: new Date(end),
-                    junction_id: junctionData.id,
-                    plan_id: editAble[index].plan.id
-                }, fixtimeList_id[index])
-            }
-            for (let index = editAble.length; index < fixtimeList_id.length; index++) {
-                controlService.deleteFixtime(fixtimeList_id[index])
-                // console.log(fixtimeList_id[index])
-            }
+        const socket = socketIOClient(apiConstants.socketUri, { path: '/socket' });
+        var dataSocket = {
+            junction_id: junction_id,
+            type: "FIXTIME",
         }
+        socket.on('connect', (socketIO) => {
+            console.log(socketIO)
+            socket.emit("update:setting", dataSocket)
+        })
+        setData(editAble)
     }
     const addRow = () => {
-        var minute_str = parseInt(editAble[editAble.length - 1].end.slice(editAble[editAble.length - 1].end.length - 2, editAble[editAble.length - 1].end.length))
-        var hour_Str = parseInt(editAble[editAble.length - 1].end.slice(0, 2))
-        var str_temp = ''
-        var end_temp = ''
-        if (hour_Str == 23) {
-            end_temp = `0${hour_Str + 1}:`
-            if (minute_str == 59) {
-                str_temp = '00:00'
-                end_temp += `00`
-            }
-            else if (minute_str >= 9) {
-                str_temp = `${hour_Str}:${minute_str + 1}`
-                end_temp += `${minute_str}`
-            }
-            else if (minute_str < 9) {
-                str_temp = `${hour_Str}:0${minute_str + 1}`
-                end_temp += `0${minute_str}`
-            }
-        }
-        else if (hour_Str >= 9) {
-            end_temp = `${hour_Str + 1}:`
-            if (minute_str == 59) {
-                str_temp = `${hour_Str + 1}:00`
-                end_temp += `00`
-            }
-            else if (minute_str >= 9) {
-                str_temp = `${hour_Str}:${minute_str + 1}`
-                end_temp += `${minute_str}`
-            }
-            else if (minute_str < 9) {
-                str_temp = `${hour_Str}:0${minute_str + 1}`
-                end_temp += `0${minute_str}`
-            }
-        }
-        else if (hour_Str < 9) {
-            end_temp = `0${hour_Str + 1}:`
-            if (minute_str == 59) {
-                str_temp = `0${hour_Str + 1}:00`
-                end_temp += `00`
-            }
-            else if (minute_str >= 9) {
-                str_temp = `0${hour_Str}:${minute_str + 1}`
-                end_temp += `${minute_str}`
-            }
-            else if (minute_str < 9) {
-                str_temp = `0${hour_Str}:0${minute_str + 1}`
-                end_temp += `0${minute_str}`
-            }
-        }
+        if (editAble.length == 0) {
+            var temp = {
 
-        var temp = {
-
-            // number: data.length + 1,
-            start: `${str_temp}`,
-            end: `${end_temp}`,
-            plan: ""
+                // number: data.length + 1,
+                start: `00:00`,
+                end: `23:59`,
+                plan: ""
+            }
+            setEditAble([temp])
+            setContent(null)
         }
-        setEditAble([...editAble, temp])
-        setContent(null)
+        else if (editAble[editAble.length - 1].end.slice(0, 2) == 23 && editAble[editAble.length - 1].end.slice(3, 5) == 59) {
+            console.log("test")
+        }
+        else {
+            var minute_str = parseInt(editAble[editAble.length - 1].end.slice(editAble[editAble.length - 1].end.length - 2, editAble[editAble.length - 1].end.length))
+            var hour_Str = parseInt(editAble[editAble.length - 1].end.slice(0, 2))
+            var str_temp = ''
+            var end_temp = '23:59'
+
+            if (hour_Str >= 9) {
+                if (minute_str == 59) {
+                    str_temp = `${hour_Str + 1}:00`
+                }
+                else if (minute_str >= 9) {
+                    if (hour_Str == 9) {
+                        str_temp = `0${hour_Str}:${minute_str + 1}`
+                    }
+                    else {
+                        str_temp = `${hour_Str}:${minute_str + 1}`
+                    }
+                }
+                else if (minute_str < 9) {
+                    str_temp = `0${hour_Str}:0${minute_str + 1}`
+                }
+            }
+            if (hour_Str < 9) {
+                if (minute_str == 59) {
+                    str_temp = `0${hour_Str + 1}:00`
+                }
+                else if (minute_str >= 9) {
+                    str_temp = `0${hour_Str}:${minute_str + 1}`
+                }
+                else if (minute_str < 9) {
+                    str_temp = `0${hour_Str}:0${minute_str + 1}`
+                }
+            }
+            var temp = {
+
+                // number: data.length + 1,
+                start: `${str_temp}`,
+                end: `${end_temp}`,
+                plan: ""
+            }
+            setEditAble([...editAble, temp])
+            setContent(null)
+        }
     }
 
     // console.log(str)
@@ -587,7 +722,6 @@ const ConfigMode = (props) => {
     // }
 
     // console.log(str)
-
 
 
     const removeRow = (index) => {
@@ -610,7 +744,7 @@ const ConfigMode = (props) => {
         setCheck("")
     };
 
-    const [fixtimeList, setFixtimeList] = useState([])
+    const [fixtimeList, setFixtimeList] = useState(null)
     const [data, setData] = useState([])
 
     const formik = useFormik({
@@ -629,18 +763,33 @@ const ConfigMode = (props) => {
         // planService.getAllPlan().then((data) => {
 
         // })
+        console.log(location.pathname.slice(14, location.pathname.length - 12))
         junctionService.getJunctionByID(location.pathname.slice(14, location.pathname.length - 12)).then((data) => {
+            console.log(data)
             setJunctionData(data)
             setChannelList(data.channel)
-            setFixtimeList(data.fixtime_plan)
             setPlanList(data.plan)
-            setMenu(1)
+            // var temp = []
+            // for (let index = 0; index < data?.fixtime_plan?.length; index++) {
+            //     temp.push({
+            //         start: `${data.fixtimeList[index].start}`,
+            //         end: `${data.fixtimeList[index].end}`,
+            //         plan: ""
+            //     })
+
+            // }
+            // setMenu(1)
         })
-    }, [])
+        fixtimeService.getAllFixtime().then((data) => {
+            // console.log(data)
+            setFixtimeList(data)
+        })
+
+    }, [location.pathname])
 
     useEffect(() => {
         if (menu != null) {
-            if (menu == 1) {
+            if (menu == 1 || menu == 0) {
                 setContent(<Grid
                     className={classes.bottom}
                 >
@@ -681,7 +830,7 @@ const ConfigMode = (props) => {
                                                     {row.end}
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                    {planList[index]?.name}
+                                                    {row?.plan?.name}
                                                 </StyledTableCell>
                                             </StyledTableRow>
                                         ))}
@@ -842,6 +991,8 @@ const ConfigMode = (props) => {
                 </Grid>)
             }
             else if (menu > 0 && menu % 2 == 1) {
+                console.log(data)
+                setEditAble(data)
                 setContent(
                     <form onSubmit={formik.handleSubmit}>
                         <Grid
@@ -887,6 +1038,7 @@ const ConfigMode = (props) => {
                                                                 onChange={(event) => { handleChangeData(event, index, 0) }}
                                                                 // value={formik.values.junctionName}
                                                                 // select
+                                                                disabled
                                                                 type="time"
                                                                 margin="normal"
                                                                 defaultValue={row.start}
@@ -944,11 +1096,12 @@ const ConfigMode = (props) => {
                                         </Table>
                                     </TableContainer>
                                 </Grid>
-                                <Grid
+                                < Grid
                                     className={classes.top_icon}
                                 >
                                     <Button
                                         // className={classes.buttonGrid}
+                                        style={{ border: '2px solid #287298', marginTop: theme.spacing(3) }}
                                         onClick={addRow}
                                     // type='submit'
                                     >
@@ -973,24 +1126,40 @@ const ConfigMode = (props) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </form>
+                    </form >
                 )
             }
         }
     }, [menu])
 
     useEffect(() => {
-        if (fixtimeList.length > 0) {
+        if (fixtimeList != null) {
+            console.log(fixtimeList)
+            var temp_fixtime = []
+            for (let index = 0; index < fixtimeList.length; index++) {
+                if (fixtimeList[index]?.junction?.id == location.pathname.slice(14, location.pathname.length - 12)) {
+                    // console.log('test' + index)
+                    temp_fixtime.push(fixtimeList[index])
+                }
+            }
+            setDataFixtime(temp_fixtime)
+
+            // setMenu(1)
+        }
+    }, [fixtimeList])
+
+    useEffect(() => {
+        if (dataFixtime != null) {
             var index_list = []
             var temp = []
-            for (let index = 0; index < fixtimeList.length; index++) {
-                const start = new Date(`${fixtimeList[index].start}`)
-                const end = new Date(`${fixtimeList[index].end}`)
+            for (let index = 0; index < dataFixtime.length; index++) {
+                const start = new Date(`${dataFixtime[index].start}`)
+                const end = new Date(`${dataFixtime[index].end}`)
                 var startH = ""
                 var endH = ""
                 var startM = ""
                 var endM = ""
-                index_list.push(fixtimeList[index].id)
+                index_list.push(dataFixtime[index].id)
                 if (start.getHours() < 10) {
                     startH = `0${start.getHours()}`
                 }
@@ -1017,17 +1186,27 @@ const ConfigMode = (props) => {
                 }
                 temp.push({
                     start: startH + ":" + startM,
-                    end: startM + ":" + endM,
-                    plan: planList[index]
+                    end: endH + ":" + endM,
+                    plan: dataFixtime[index].plan
                 })
             }
             console.log(temp)
             setData(temp)
             setEditAble(temp)
             setFixtimeList_id(index_list)
+            setMenu(1)
         }
-    }, [fixtimeList])
-
+    }, [dataFixtime])
+    useEffect(() => {
+        if (editAble.length != 0) {
+            if (editAble[editAble.length - 1].end.slice(0, 2) == 23 && editAble[editAble.length - 1].end.slice(3, 5) == 59) {
+                setAddRowStatus(0)
+            }
+            else {
+                setAddRowStatus(1)
+            }
+        }
+    }, [editAble])
     useEffect(() => {
         if (content == null) {
             setContent(
@@ -1077,6 +1256,7 @@ const ConfigMode = (props) => {
                                                             // select
                                                             type="time"
                                                             margin="normal"
+                                                            disabled
                                                             defaultValue={row.start}
                                                         />
                                                     </StyledTableCell>
@@ -1142,6 +1322,7 @@ const ConfigMode = (props) => {
                                     เพิ่มรูปแบบ
                                 </Button>
                             </Grid>
+                            {addRowContent != null && addRowContent}
                             <Grid
                                 className={classes.bottom_icon}
                             >

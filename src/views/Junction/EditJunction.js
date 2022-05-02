@@ -26,11 +26,15 @@ import { junctionService } from '../../services/junction.service';
 import { channelService } from '../../services/channel.service';
 import MyMap from './LocationSearch';
 import { RotateRight } from '@material-ui/icons';
+import { planService } from '../../services/plan.service';
+import { apiConstants } from '../../_constants';
+import socketIOClient from 'socket.io-client';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
         height: '100%',
-        width: '100%',
+        width: '95%',
+        marginLeft: '2%'
         // display: 'flex'
         // paddingBottom: theme.spacing(3),
         // paddingTop: theme.spacing(3)
@@ -247,7 +251,9 @@ const EditJunction = () => {
     const [status, setStatus] = useState(0)
     const [open, setOpen] = useState(false)
     const [alertOpen, setAlertOpen] = useState(false)
+    const [plan, setPlan] = useState(null)
     const location = useLocation();
+
     // useEffect(() => {
     //     junctionService.getJunctionByID(pathID).then(data => {
     //         setJunction(data)
@@ -286,6 +292,7 @@ const EditJunction = () => {
             })
             setDegree(parseInt(junction.rotate))
             setChannel(junction.channel)
+            setPlan(junction.plan)
             setGlobalPosition([junction.latitude, junction.longitude])
             setStatus(junction.channel.length)
             channel_Formik.setValues({
@@ -320,7 +327,7 @@ const EditJunction = () => {
             //     setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
             //     setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
             // }
-            setMenu(junction.channel.length)
+            setMenu(junction.number_channel)
         }
         // console.log(channel)
     }, [junction])
@@ -390,68 +397,6 @@ const EditJunction = () => {
             temp_2.order_5 = 5
             console.log(temp_2)
             setConfig(temp_2)
-            if (menu == 3) {
-                setImgPath_1(<img src={`/static/Mock-up_3way1_${degree}degree.png`} width={imgWid} height={imgHei} />)
-                setImgPath_2(<img src={`/static/Mock-up_3way2_${degree}degree.png`} width={imgWid} height={imgHei} />)
-                setImgPath_3(<img src={`/static/Mock-up_3way3_${degree}degree.png`} width={imgWid} height={imgHei} />)
-                setImgPath_4(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-                setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-                //     let temp = {
-                //         name_4: "empty",
-                //         number_lane_4: "empty",
-                //         name_5: "empty",
-                //         number_lane_5: "empty",
-                //     }
-                //     let temp_2 = channel_Formik.values
-                //     channel_Formik.setValues({
-                //         name_1: temp_2.name_1,
-                //         number_lane_1: temp_2.number_lane_1,
-                //         order_1: temp_2.order_1,
-                //         name_2: temp_2.name_2,
-                //         number_lane_2: temp_2.number_lane_2,
-                //         order_2: temp_2.order_2,
-                //         name_3: temp_2.name_3,
-                //         number_lane_3: temp_2.number_lane_3,
-                //         order_3: temp_2.order_3,
-                //         name_4: temp.name_4,
-                //         number_lane_4: temp.number_lane_4,
-                //         order_4: temp_2.order_4,
-                //         name_5: temp.name_5,
-                //         number_lane_5: temp.number_lane_5,
-                //         order_5: temp_2.order_5,
-                //         junction_id: temp_2.junction_id
-                // })
-            }
-            else if (menu == 4) {
-                setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width={imgWid} height={imgHei} />)
-                setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width={imgWid} height={imgHei} />)
-                setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width={imgWid} height={imgHei} />)
-                setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width={imgWid} height={imgHei} />)
-                setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
-                //     let temp = {
-                //         name_5: "empty",
-                //         number_lane_5: "empty",
-                //     }
-                //     let temp_2 = channel_Formik.values
-                //     channel_Formik.setValues({
-                //         name_1: temp_2.name_1,
-                //         number_lane_1: temp_2.number_lane_1,
-                //         order_1: temp_2.order_1,
-                //         name_2: temp_2.name_2,
-                //         number_lane_2: temp_2.number_lane_2,
-                //         order_2: temp_2.order_2,
-                //         name_3: temp_2.name_3,
-                //         number_lane_3: temp_2.number_lane_3,
-                //         order_3: temp_2.order_3,
-                //         name_4: temp_2.name_4,
-                //         number_lane_4: temp_2.number_lane_4,
-                //         order_4: temp_2.order_4,
-                //         name_5: temp.name_5,
-                //         number_lane_5: temp.number_lane_5,
-                //         order_5: temp_2.order_5,
-                //         junction_id: temp_2.junction_id
-                //     })
-            }
         }
         // console.log(channel_Formik.values)
     }, [menu])
@@ -513,6 +458,9 @@ const EditJunction = () => {
         for (let index = 0; index < channel.length; index++) {
             await channelService.deleteChannel(channel[index].id)
         }
+        for (let index = 0; index < plan.length; index++) {
+            await planService.deletePlan(plan[index].id)
+        }
         await junctionService.deleteJunction(pathID)
         navigate(`/app/junction`, { replace: true });
     }
@@ -535,551 +483,37 @@ const EditJunction = () => {
         }),
         onSubmit: async (values) => {
 
-            // console.log(config)
+            console.log(values)
             await junctionService.updateJuncionID({
                 "name": values.junctionName,
                 "latitude": parseFloat(values.lat),
                 "longitude": parseFloat(values.lng),
-                "number_channel": values.number_channel,
+                "number_channel": parseInt(values.number_channel),
                 "area_id": values.areaID,
                 "rotate": degree
             }, pathID)
-
-            if (status == 0) {
-                if (values.number_channel == 3) {
-                    await channelService.createChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-                }
-                else if (values.number_channel == 4) {
-                    await channelService.createChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-                }
-                else if (values.number_channel == 5) {
-                    await channelService.createChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-                    await channelService.createChannel({
-                        "name": config.name_5,
-                        "number_lane": parseInt(config.number_lane_5),
-                        "order": 5,
-                        "junction_id": pathID
-                    })
-                }
+            if (junction.number_channel == 3 && values.number_channel == 4) {
+                await channelService.createChannel({
+                    "name": "",
+                    "number_lane": 1,
+                    "order": 4,
+                    "junction_id": pathID
+                })
             }
-            else if (status == 1) {
-                if (values.number_channel == 3) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-                }
-                else if (values.number_channel == 4) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-                }
-                else if (values.number_channel == 5) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_5,
-                        "number_lane": parseInt(config.number_lane_5),
-                        "order": 5,
-                        "junction_id": pathID
-                    })
-                }
+            if (junction.number_channel == 4 && values.number_channel == 3) {
+                await channelService.deleteChannel(channel[3].id)
             }
-            else if (status == 2) {
-                if (values.number_channel == 3) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-                }
-                else if (values.number_channel == 4) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-                }
-
-                else if (values.number_channel == 5) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_5,
-                        "number_lane": parseInt(config.number_lane_5),
-                        "order": 5,
-                        "junction_id": pathID
-                    })
-                }
+            const socket = socketIOClient(apiConstants.socketUri, { path: '/socket' });
+            var data = {
+                junction_id: pathID,
+                type: "JUNCTION",
             }
-            else if (status == 3) {
-                if (values.number_channel == 3) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
+            socket.on('connect', (socketIO) => {
+                console.log(socketIO)
+                socket.emit("update:setting", data)
+            })
 
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-                }
-                else if (values.number_channel == 4) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-                }
-                else if (values.number_channel == 5) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    })
-
-                    await channelService.createChannel({
-                        "name": config.name_5,
-                        "number_lane": parseInt(config.number_lane_5),
-                        "order": 5,
-                        "junction_id": pathID
-                    })
-                }
-            }
-            else if (status == 4) {
-                if (values.number_channel == 3) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.deleteChannel(channel[3].id)
-                }
-                else if (values.number_channel == 4) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    }, channel[3].id)
-                }
-                else if (values.number_channel == 5) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    }, channel[3].id)
-
-                    await channelService.createChannel({
-                        "name": config.name_5,
-                        "number_lane": parseInt(config.number_lane_5),
-                        "order": 5,
-                        "junction_id": pathID
-                    })
-                }
-
-            }
-            else if (status == 5) {
-                if (values.number_channel == 3) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.deleteChannel(channel[3].id)
-
-                    await channelService.deleteChannel(channel[4].id)
-                }
-                else if (values.number_channel == 4) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    }, channel[3].id)
-
-                    await channelService.deleteChannel(channel[4].id)
-                }
-                else if (values.number_channel == 5) {
-                    await channelService.updateChannel({
-                        "name": config.name_1,
-                        "number_lane": parseInt(config.number_lane_1),
-                        "order": 1,
-                        "junction_id": pathID
-                    }, channel[0].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_2,
-                        "number_lane": parseInt(config.number_lane_2),
-                        "order": 2,
-                        "junction_id": pathID
-                    }, channel[1].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_3,
-                        "number_lane": parseInt(config.number_lane_3),
-                        "order": 3,
-                        "junction_id": pathID
-                    }, channel[2].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_4,
-                        "number_lane": parseInt(config.number_lane_4),
-                        "order": 4,
-                        "junction_id": pathID
-                    }, channel[3].id)
-
-                    await channelService.updateChannel({
-                        "name": config.name_5,
-                        "number_lane": parseInt(config.number_lane_5),
-                        "order": 5,
-                        "junction_id": pathID
-                    }, channel[4].id)
-                }
-            }
+            console.log(socket)
             // window.location.reload(false)
             navigate(`/app/junction`, { replace: true });
         },
@@ -1147,10 +581,6 @@ const EditJunction = () => {
         {
             value: 4,
             label: '4 แยก',
-        },
-        {
-            value: 5,
-            label: '5 แยก',
         }
     ];
     return (
@@ -1246,13 +676,13 @@ const EditJunction = () => {
                                             value={formik.values.lng}
                                             margin="normal"
                                         />
-                                        <Button
+                                        {/* <Button
                                             className={classes.buttonConfig}
                                             onClick={() => setOpen(true)}
                                         // type='submit'
                                         >
                                             ตั้งค่าช่องสัญญาณ
-                                        </Button>
+                                        </Button> */}
                                         {/* <ReportTable number_channel={formik.values.number_channel} channel={channel} pathID={pathID} formik={formik} /> */}
                                         <Grid
                                             className={classes.top_icon}
@@ -1279,208 +709,6 @@ const EditJunction = () => {
                         </Grid>
                     </form>
                 </Grid>
-                <BootstrapDialog
-                    onClose={handleClose}
-                    aria-labelledby="customized-dialog-title"
-                    open={open}
-                >
-                    <Grid
-                        className={classes.titleDialog}
-                    >
-                        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                            ตั้งค่าช่องสัญญาณ
-                        </BootstrapDialogTitle>
-                        <Grid
-                            className={classes.top_icon}
-                        >
-                            <IconButton
-                                onClick={() => {
-                                    setDegree(degree + 90)
-                                }}
-                            >
-                                <RotateRight />
-                            </IconButton>
-                        </Grid>
-                    </Grid>
-                    <form onSubmit={channel_Formik.handleSubmit}>
-                        <DialogContent dividers>
-                            <Grid>
-                                <Typography variant='h5' className={classes.titleText}>
-                                    ช่องทางเดินรถที่ 1
-                                </Typography>
-                                <TextField
-                                    error={Boolean(channel_Formik.touched.name_1 && channel_Formik.errors.name_1)}
-                                    helperText={channel_Formik.touched.name_1 && channel_Formik.errors.name_1}
-                                    className={classes.textField_name}
-                                    label="ชื่อช่องทางเดินรถ"
-                                    variant="outlined"
-                                    name="name_1"
-                                    onBlur={channel_Formik.handleBlur}
-                                    onChange={channel_Formik.handleChange}
-                                    value={channel_Formik.values.name_1}
-                                />
-                                <TextField
-                                    error={Boolean(channel_Formik.touched.number_lane_1 && channel_Formik.errors.number_lane_1)}
-                                    helperText={channel_Formik.touched.number_lane_1 && channel_Formik.errors.number_lane_1}
-                                    name="number_lane_1"
-                                    onBlur={channel_Formik.handleBlur}
-                                    onChange={channel_Formik.handleChange}
-                                    value={channel_Formik.values.number_lane_1}
-                                    className={classes.textField_lane}
-                                    label="จำนวนเลน"
-                                    variant="outlined"
-                                />
-                                <Grid
-                                    className={classes.channelImg}
-                                >
-                                    {/* <img src='/static/junction/3way-set-port.jpg' width='310.5px' height='247.5px' /> */}
-                                    {imgPath_1}
-                                </Grid>
-                            </Grid>
-                            <Grid>
-                                <Typography variant='h5' className={classes.titleText}>
-                                    ช่องทางเดินรถที่ 2
-                                </Typography>
-                                <TextField
-                                    error={Boolean(channel_Formik.touched.name_2 && channel_Formik.errors.name_2)}
-                                    helperText={channel_Formik.touched.name_2 && channel_Formik.errors.name_2}
-                                    className={classes.textField_name}
-                                    label="ชื่อช่องทางเดินรถ"
-                                    variant="outlined"
-                                    name="name_2"
-                                    onBlur={channel_Formik.handleBlur}
-                                    onChange={channel_Formik.handleChange}
-                                    value={channel_Formik.values.name_2}
-                                />
-                                <TextField
-                                    error={Boolean(channel_Formik.touched.number_lane_2 && channel_Formik.errors.number_lane_2)}
-                                    helperText={channel_Formik.touched.number_lane_2 && channel_Formik.errors.number_lane_2}
-                                    name="number_lane_2"
-                                    onBlur={channel_Formik.handleBlur}
-                                    onChange={channel_Formik.handleChange}
-                                    value={channel_Formik.values.number_lane_2}
-                                    className={classes.textField_lane}
-                                    label="จำนวนเลน"
-                                    variant="outlined"
-                                />
-                                <Grid
-                                    className={classes.channelImg}
-                                >
-                                    {/* <img src='/static/junction/3way-set-port.jpg' width='310.5px' height='247.5px' /> */}
-                                    {imgPath_2}
-                                </Grid>
-                            </Grid>
-                            <Grid>
-                                <Typography variant='h5' className={classes.titleText}>
-                                    ช่องทางเดินรถที่ 3
-                                </Typography>
-                                <TextField
-                                    error={Boolean(channel_Formik.touched.name_3 && channel_Formik.errors.name_3)}
-                                    helperText={channel_Formik.touched.name_3 && channel_Formik.errors.name_3}
-                                    className={classes.textField_name}
-                                    label="ชื่อช่องทางเดินรถ"
-                                    variant="outlined"
-                                    name="name_3"
-                                    onBlur={channel_Formik.handleBlur}
-                                    onChange={channel_Formik.handleChange}
-                                    value={channel_Formik.values.name_3}
-                                />
-                                <TextField
-                                    error={Boolean(channel_Formik.touched.number_lane_3 && channel_Formik.errors.number_lane_3)}
-                                    helperText={channel_Formik.touched.number_lane_3 && channel_Formik.errors.number_lane_3}
-                                    name="number_lane_3"
-                                    onBlur={channel_Formik.handleBlur}
-                                    onChange={channel_Formik.handleChange}
-                                    value={channel_Formik.values.number_lane_3}
-                                    className={classes.textField_lane}
-                                    label="จำนวนเลน"
-                                    variant="outlined"
-                                />
-                                <Grid
-                                    className={classes.channelImg}
-                                >
-                                    {/* <img src='/static/junction/3way-set-port.jpg' width='310.5px' height='247.5px' /> */}
-                                    {imgPath_3}
-                                </Grid>
-                            </Grid>
-                            {formik.values.number_channel >= 4 &&
-                                <Grid>
-                                    <Typography variant='h5' className={classes.titleText}>
-                                        ช่องทางเดินรถที่ 4
-                                    </Typography>
-                                    <TextField
-                                        error={Boolean(channel_Formik.touched.name_4 && channel_Formik.errors.name_4)}
-                                        helperText={channel_Formik.touched.name_4 && channel_Formik.errors.name_4}
-                                        className={classes.textField_name}
-                                        label="ชื่อช่องทางเดินรถ"
-                                        variant="outlined"
-                                        name="name_4"
-                                        onBlur={channel_Formik.handleBlur}
-                                        onChange={channel_Formik.handleChange}
-                                        value={channel_Formik.values.name_4}
-                                    />
-                                    <TextField
-                                        error={Boolean(channel_Formik.touched.number_lane_4 && channel_Formik.errors.number_lane_4)}
-                                        helperText={channel_Formik.touched.number_lane_4 && channel_Formik.errors.number_lane_4}
-                                        name="number_lane_4"
-                                        onBlur={channel_Formik.handleBlur}
-                                        onChange={channel_Formik.handleChange}
-                                        value={channel_Formik.values.number_lane_4}
-                                        className={classes.textField_lane}
-                                        label="จำนวนเลน"
-                                        variant="outlined"
-                                    />
-                                    <Grid
-                                        className={classes.channelImg}
-                                    >
-                                        {/* <img src='/static/junction/3way-set-port.jpg' width='310.5px' height='247.5px' /> */}
-                                        {imgPath_4}
-                                    </Grid>
-                                </Grid>
-                            }
-                            {formik.values.number_channel == 5 &&
-                                <Grid>
-                                    <Typography variant='h5' className={classes.titleText}>
-                                        ช่องทางเดินรถที่ 5
-                                    </Typography>
-                                    <TextField
-                                        error={Boolean(channel_Formik.touched.name_5 && channel_Formik.errors.name_5)}
-                                        helperText={channel_Formik.touched.name_5 && channel_Formik.errors.name_5}
-                                        className={classes.textField_name}
-                                        label="ชื่อช่องทางเดินรถ"
-                                        variant="outlined"
-                                        name="name_5"
-                                        onBlur={channel_Formik.handleBlur}
-                                        onChange={channel_Formik.handleChange}
-                                        value={channel_Formik.values.name_5}
-                                    />
-                                    <TextField
-                                        error={Boolean(channel_Formik.touched.number_lane_5 && channel_Formik.errors.number_lane_5)}
-                                        helperText={channel_Formik.touched.number_lane_5 && channel_Formik.errors.number_lane_5}
-                                        name="number_lane_5"
-                                        onBlur={channel_Formik.handleBlur}
-                                        onChange={channel_Formik.handleChange}
-                                        value={channel_Formik.values.number_lane_5}
-                                        className={classes.textField_lane}
-                                        label="จำนวนเลน"
-                                        variant="outlined"
-                                    />
-                                    <Grid
-                                        className={classes.channelImg}
-                                    >
-                                        {/* <img src='/static/junction/3way-set-port.jpg' width='310.5px' height='247.5px' /> */}
-                                        {imgPath_5}
-                                    </Grid>
-                                </Grid>
-                            }
-                        </DialogContent>
-                        <DialogActions>
-                            <Button autoFocus className={classes.buttonGrid} type='submit'>
-                                บันทึก
-                            </Button>
-                        </DialogActions>
-                    </form>
-                </BootstrapDialog>
                 <Dialog
                     open={alertOpen}
                     onClose={handleCloseAlert}

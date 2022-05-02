@@ -150,6 +150,41 @@ const useStyles = makeStyles(theme => ({
         width: '15px',
         height: '15px'
     },
+    dayColor_1: {
+        backgroundColor: '#F96D6D',
+        width: '15px',
+        height: '15px'
+    },
+    dayColor_2: {
+        backgroundColor: '#F4F96D',
+        width: '15px',
+        height: '15px'
+    },
+    dayColor_3: {
+        backgroundColor: '#F668D5',
+        width: '15px',
+        height: '15px'
+    },
+    dayColor_4: {
+        backgroundColor: '#45D762',
+        width: '15px',
+        height: '15px'
+    },
+    dayColor_5: {
+        backgroundColor: '#E88F36',
+        width: '15px',
+        height: '15px'
+    },
+    dayColor_6: {
+        backgroundColor: '#30E3E9',
+        width: '15px',
+        height: '15px'
+    },
+    dayColor_7: {
+        backgroundColor: '#9F30E9',
+        width: '15px',
+        height: '15px'
+    },
     typoloColor: {
         marginLeft: theme.spacing(3),
         marginBottom: theme.spacing(2)
@@ -1265,7 +1300,7 @@ const Statistic = () => {
                                 variant='h4'
                                 className={classes.titleLeft}
                             >
-                                ข้อมูลปริมาณการจราจรเฉลี่ยในแต่ละวัน
+                                ข้อมูลปริมาณการจราจรเฉลี่ยในแต่ละช่องทาง
                             </Typography>
                         </Grid>
                         <Divider className={classes.divider} />
@@ -1371,42 +1406,105 @@ const Statistic = () => {
                                     className={classes.detailChannel_1}
                                 >
                                     <Grid
-                                        className={classes.detailColor_1}
+                                        className={classes.dayColor_1}
                                     >
 
                                     </Grid>
                                     <Typography
                                         className={classes.typoloColor}
                                     >
-                                        {channel[0].name}
+                                        {/* {channel[0].name} */}
+                                        วันอาทิตย์
                                     </Typography>
                                 </Grid>
                                 <Grid
                                     className={classes.detailChannel_2}
                                 >
                                     <Grid
-                                        className={classes.detailColor_2}
+                                        className={classes.dayColor_2}
                                     >
 
                                     </Grid>
                                     <Typography
                                         className={classes.typoloColor}
                                     >
-                                        {channel[1].name}
+                                        {/* {channel[1].name} */}
+                                        วันจันทร์
                                     </Typography>
                                 </Grid>
                                 <Grid
                                     className={classes.detailChannel_2}
                                 >
                                     <Grid
-                                        className={classes.detailColor_3}
+                                        className={classes.dayColor_3}
                                     >
 
                                     </Grid>
                                     <Typography
                                         className={classes.typoloColor}
                                     >
-                                        {channel[2].name}
+                                        {/* {channel[2].name} */}
+                                        วันอังคาร
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    className={classes.detailChannel_2}
+                                >
+                                    <Grid
+                                        className={classes.dayColor_4}
+                                    >
+
+                                    </Grid>
+                                    <Typography
+                                        className={classes.typoloColor}
+                                    >
+                                        {/* {channel[2].name} */}
+                                        วันพุธ
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    className={classes.detailChannel_2}
+                                >
+                                    <Grid
+                                        className={classes.dayColor_5}
+                                    >
+
+                                    </Grid>
+                                    <Typography
+                                        className={classes.typoloColor}
+                                    >
+                                        {/* {channel[2].name} */}
+                                        วันพฤหัสบดี
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    className={classes.detailChannel_2}
+                                >
+                                    <Grid
+                                        className={classes.dayColor_6}
+                                    >
+
+                                    </Grid>
+                                    <Typography
+                                        className={classes.typoloColor}
+                                    >
+                                        {/* {channel[2].name} */}
+                                        วันศุกร์
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    className={classes.detailChannel_2}
+                                >
+                                    <Grid
+                                        className={classes.dayColor_7}
+                                    >
+
+                                    </Grid>
+                                    <Typography
+                                        className={classes.typoloColor}
+                                    >
+                                        {/* {channel[2].name} */}
+                                        วันเสาร์
                                     </Typography>
                                 </Grid>
                             </Grid>
