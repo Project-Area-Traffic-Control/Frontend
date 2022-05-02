@@ -103,13 +103,13 @@ const user = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   },
   mobileDrawer: {
     width: 256
   },
   desktopDrawer: {
-    width: 326,
+    width: 400,
     top: 64,
     height: 'calc(100% - 64px)',
     backgroundColor: "#ffffff"
@@ -206,16 +206,10 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const content = (
-    <Box height="100%" display="flex" flexDirection="column" className={clsx(classes.root)}>
+    <Box height="100%" display="flex" flexDirection="column" className={clsx(classes.root)} width="100%">
       <Box
         className={classes.avatarBox}
       >
-        <Avatar
-          component={RouterLink}
-          src={user.avatar}
-          to="/app/account"
-          className={classes.avatar}
-        />
         <Typography
           color="textPrimary"
           variant="h5"
@@ -236,7 +230,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         <List>
           {/* {items.map(item => ( */}
           <div>
-            <ListItem >
+            {/* <ListItem >
 
               <NavItem
                 href={items[0].href}
@@ -246,7 +240,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
               // onClick={handleClick}
               />
 
-            </ListItem>
+            </ListItem> */}
             <ListItem >
 
               <NavItem
@@ -295,30 +289,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                       {openJunction.length > 0 && openJunction[index].junction ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     {openJunction.length > 0 && <Collapse in={openJunction[index].junction} timeout="auto" unmountOnExit>
-                      <NavItem
+                      {/* <NavItem
                         href={`/app/dashboard/${junction.id}`}
                         key={items[2].title}
                         title="Dashboard"
                         className={classes.collapse_1}
                       // icon={items[2].icon}
                       // onClick={handleClick}
-                      />
-                      <NavItem
-                        href={`/app/junction/${junction.id}`}
-                        key={items[2].title}
-                        title="ตั้งค่าแยกสัญญาจราจร"
-                        className={classes.collapse_1}
-                      // icon={items[2].icon}
-                      // onClick={handleClick}
-                      />
-                      <NavItem
-                        href={`/app/channel/${junction.id}`}
-                        key={items[2].title}
-                        title="ตั้งค่าช่องสัญญาณไฟจราจร"
-                        className={classes.collapse_1}
-                      // icon={items[2].icon}
-                      // onClick={handleClick}
-                      />
+                      /> */}
                       <NavItem
                         href={location.pathname}
                         key={items[2].title}
@@ -328,6 +306,22 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                         onClick={() => { handleClickJunction(index, 1) }}
                       />
                       <Collapse in={openJunction[index].control} timeout="auto" unmountOnExit>
+                        <NavItem
+                          href={`/app/junction/${junction.id}`}
+                          key={items[2].title}
+                          title="ตั้งค่าแยกสัญญาจราจร"
+                          className={classes.collapse_2}
+                        // icon={items[2].icon}
+                        // onClick={handleClick}
+                        />
+                        <NavItem
+                          href={`/app/channel/${junction.id}`}
+                          key={items[2].title}
+                          title="ตั้งค่าช่องสัญญาณไฟจราจร"
+                          className={classes.collapse_2}
+                        // icon={items[2].icon}
+                        // onClick={handleClick}
+                        />
                         <NavItem
                           href={`junction/${junction.id}/plans`}
                           key={items[2].title}
@@ -339,7 +333,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                         <NavItem
                           href={`junction/${junction.id}/config_mode`}
                           key={items[2].title}
-                          title="ตั้งค่าโหมดการทำงาน"
+                          title="ตั้งค่าตารางการทำงาน"
                           className={classes.collapse_2}
                         // icon={items[2].icon}
                         // onClick={handleClick}

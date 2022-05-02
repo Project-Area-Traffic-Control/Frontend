@@ -453,26 +453,26 @@ const CreatePlan = (props) => {
 
     const [index, setActiveStep] = React.useState(0);
     const images_pattern1 = [
-        { url: `/static/Mock-up_3way1_${degree}degree.png` },
-        { url: `/static/Mock-up_3way2_${degree}degree.png` },
-        { url: `/static/Mock-up_3way3_${degree}degree.png` },
+        { url: `/static/3way1_${degree}degree.jpg` },
+        { url: `/static/3way2_${degree}degree.jpg` },
+        { url: `/static/3way3_${degree}degree.jpg` },
     ];
     const images_pattern2 = [
-        { url: `/static/Mock-up_3way1_${degree}degree.png` },
-        { url: `/static/Mock-up_3way3_${degree}degree.png` },
-        { url: `/static/Mock-up_3way2_${degree}degree.png` },
+        { url: `/static/3way1_${degree}degree.jpg` },
+        { url: `/static/3way3_${degree}degree.jpg` },
+        { url: `/static/3way2_${degree}degree.jpg` },
     ];
     const images_pattern3 = [
-        { url: `/static/Mock-up_4way${degree}.png` },
-        { url: `/static/Mock-up_4way${(degree + 90) % 360}.png` },
-        { url: `/static/Mock-up_4way${(degree + 180) % 360}.png` },
-        { url: `/static/Mock-up_4way${(degree + 270) % 360}.png` },
+        { url: `/static/4way${(((degree / 90) + 1) % 5)}.jpg` },
+        { url: `/static/4way${(((degree / 90) + 2) % 5)}.jpg` },
+        { url: `/static/4way${(((degree / 90) + 3) % 5)}.jpg` },
+        { url: `/static/4way${(((degree / 90) + 4) % 5)}.jpg` },
     ]
     const images_pattern4 = [
-        { url: `/static/Mock-up_4way${degree}.png` },
-        { url: `/static/Mock-up_4way${(degree + 270) % 360}.png` },
-        { url: `/static/Mock-up_4way${(degree + 180) % 360}.png` },
-        { url: `/static/Mock-up_4way${(degree + 90) % 360}.png` },
+        { url: `/static/4way${(((degree / 90) + 1) % 5)}.jpg` },
+        { url: `/static/4way${(((degree / 90) + 4) % 5)}.jpg` },
+        { url: `/static/4way${(((degree / 90) + 3) % 5)}.jpg` },
+        { url: `/static/4way${(((degree / 90) + 2) % 5)}.jpg` },
     ]
     const StyledTableCell = withStyles((theme) => ({
         head: {
@@ -811,10 +811,47 @@ const CreatePlan = (props) => {
             for (let index = 0; index < img_path.length; index++) {
                 var temp = img_path[index]
                 if (junction.number_channel == 3) {
-                    img_path[index] = { url: `/static/Mock-up_3way${temp}_${degree}degree.png` }
+                    img_path[index] = { url: `/static/3way${temp}_${degree}degree.jpg` }
                 }
                 else if (junction.number_channel == 4) {
-                    img_path[index] = { url: `/static/Mock-up_4way${(degree + ((temp - 1) * 90)) % 360}.png` }
+                    if (temp == 1 || temp == 2 || temp == 3 || temp == 4) {
+                        img_path[index] = { url: `/static/4way${((degree / 90) + temp) % 5}.jpg` }
+                    }
+                    else {
+                        if (temp == 5) {
+                            if (degree == 0 || degree == 180) {
+                                img_path[index] = { url: `/static/4way5.jpg` }
+                            }
+                            else{
+                                img_path[index] = { url: `/static/4way6.jpg` }
+                            }
+                        }
+                        if (temp == 6) {
+                            if (degree == 0 || degree == 180) {
+                                img_path[index] = { url: `/static/4way6.jpg` }
+                            }
+                            else{
+                                img_path[index] = { url: `/static/4way5.jpg` }
+                            }
+                        }
+                        if (temp == 7) {
+                            if (degree == 0 || degree == 180) {
+                                img_path[index] = { url: `/static/4way7.jpg` }
+                            }
+                            else{
+                                img_path[index] = { url: `/static/4way8.jpg` }
+                            }
+                        }
+                        if (temp == 8) {
+                            if (degree == 0 || degree == 180) {
+                                img_path[index] = { url: `/static/4way8.jpg` }
+                            }
+                            else{
+                                img_path[index] = { url: `/static/4way7.jpg` }
+                            }
+                        }
+                    }
+
                 }
             }
             setOverView(img_path)
@@ -860,7 +897,7 @@ const CreatePlan = (props) => {
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                    <img src={`/static/3way1_${degree}degree.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -874,8 +911,9 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way2_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -886,10 +924,14 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way3_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -897,6 +939,21 @@ const CreatePlan = (props) => {
                                         onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
                                     >
                                         รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                <img src={`/static/3way4_${degree}degree.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -941,7 +998,7 @@ const CreatePlan = (props) => {
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -955,8 +1012,9 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -967,10 +1025,14 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -983,8 +1045,9 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -992,6 +1055,77 @@ const CreatePlan = (props) => {
                                         onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
                                     >
                                         รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                    >
+                                        รูปแบบที่ 5
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                    >
+                                        รูปแบบที่ 6
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                    >
+                                        รูปแบบที่ 7
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                    >
+                                        รูปแบบที่ 8
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1036,7 +1170,7 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way1_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1049,11 +1183,12 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                    <img src={`/static/3way2_${degree}degree.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1065,10 +1200,14 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way3_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1076,6 +1215,23 @@ const CreatePlan = (props) => {
                                         onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
                                     >
                                         รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+
+                                <img src={`/static/3way4_${degree}degree.jpg`} width='280px' height='280px' />
+
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1117,7 +1273,9 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1130,11 +1288,12 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1146,10 +1305,14 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1162,15 +1325,87 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
                                     <Button
-                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
                                     >
                                         รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                    >
+                                        รูปแบบที่ 5
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                    >
+                                        รูปแบบที่ 6
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                    >
+                                        รูปแบบที่ 7
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                    >
+                                        รูปแบบที่ 8
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1215,7 +1450,7 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way1_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1228,8 +1463,9 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way2_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1240,13 +1476,17 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                    <img src={`/static/3way3_${degree}degree.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1255,6 +1495,21 @@ const CreatePlan = (props) => {
                                         onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
                                     >
                                         รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                <img src={`/static/3way4_${degree}degree.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1296,7 +1551,9 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1309,8 +1566,11 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1321,13 +1581,17 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1341,8 +1605,183 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                    >
+                                        รูปแบบที่ 5
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                    >
+                                        รูปแบบที่ 6
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                    >
+                                        รูปแบบที่ 7
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                    >
+                                        รูปแบบที่ 8
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
+        }
+        if (check == 'รูปแบบที่ 4') {
+            if (junction.number_channel == 3) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/3way1_${degree}degree.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                <img src={`/static/3way2_${degree}degree.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                <img src={`/static/3way3_${degree}degree.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                <Grid
+                                    className={classes.selectBorder}
+                                >
+                                    <img src={`/static/3way4_${degree}degree.jpg`} width='280px' height='280px' />
+                                </Grid>
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1363,8 +1802,186 @@ const CreatePlan = (props) => {
                     </DialogActions> */}
                 </BootstrapDialog>)
             }
+            if (junction.number_channel == 4) {
+                setContent(<BootstrapDialog
+                    open={patternOpen}
+                    onClose={handleClosePattern}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    {/* <DialogTitle id="alert-dialog-title">
+                        {"Use Google's location service?"}
+                    </DialogTitle> */}
+                    <DialogContent>
+                        <Typography
+                            variant='h5'
+                            className={classes.dialogTitle}
+                        >
+                            เลือกรูปแบบการปล่อยรถ
+                        </Typography>
+                        <Grid
+                            className={classes.dialogDividerGrid}
+                        >
+                            <Divider className={classes.dialogDivider} />
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                    >
+                                        รูปแบบที่ 1
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+
+                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                    >
+                                        รูปแบบที่ 2
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                    >
+                                        รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                <Grid
+                                    className={classes.selectBorder}
+                                >
+                                    <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                </Grid>
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                    >
+                                        รูปแบบที่ 5
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                    >
+                                        รูปแบบที่ 6
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                    >
+                                        รูปแบบที่ 7
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                    >
+                                        รูปแบบที่ 8
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    {/* <DialogActions>
+                        <Button onClick={handleClose}>Disagree</Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions> */}
+                </BootstrapDialog>)
+            }
         }
-        if (check == 'รูปแบบที่ 4') {
+        if (check == 'รูปแบบที่ 5') {
             setContent(<BootstrapDialog
                 open={patternOpen}
                 onClose={handleClosePattern}
@@ -1392,7 +2009,9 @@ const CreatePlan = (props) => {
                         <Grid
                             className={classes.pattern}
                         >
-                            <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+
+                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -1405,8 +2024,11 @@ const CreatePlan = (props) => {
                         </Grid>
                         <Grid
                             className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
                         >
-                            <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+
+                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -1417,10 +2039,16 @@ const CreatePlan = (props) => {
                                 </Button>
                             </Grid>
                         </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
                         <Grid
                             className={classes.pattern}
                         >
-                            <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+
+                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -1433,12 +2061,11 @@ const CreatePlan = (props) => {
                         </Grid>
                         <Grid
                             className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
                         >
-                            <Grid
-                                className={classes.selectBorder}
-                            >
-                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
-                            </Grid>
+
+                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+
                             <Grid
                                 className={classes.clickPattern}
                             >
@@ -1450,6 +2077,82 @@ const CreatePlan = (props) => {
                             </Grid>
                         </Grid>
                     </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            <Grid
+                                className={classes.selectBorder}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                            </Grid>
+
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                >
+                                    รูปแบบที่ 5
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                >
+                                    รูปแบบที่ 6
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                >
+                                    รูปแบบที่ 7
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                >
+                                    รูปแบบที่ 8
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </DialogContent>
                 {/* <DialogActions>
                     <Button onClick={handleClose}>Disagree</Button>
@@ -1457,7 +2160,549 @@ const CreatePlan = (props) => {
                         Agree
                     </Button>
                 </DialogActions> */}
-            </BootstrapDialog>)
+            </BootstrapDialog >)
+        }
+        if (check == 'รูปแบบที่ 6') {
+            setContent(<BootstrapDialog
+                open={patternOpen}
+                onClose={handleClosePattern}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                {/* <DialogTitle id="alert-dialog-title">
+                    {"Use Google's location service?"}
+                </DialogTitle> */}
+                <DialogContent>
+                    <Typography
+                        variant='h5'
+                        className={classes.dialogTitle}
+                    >
+                        เลือกรูปแบบการปล่อยรถ
+                    </Typography>
+                    <Grid
+                        className={classes.dialogDividerGrid}
+                    >
+                        <Divider className={classes.dialogDivider} />
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                >
+                                    รูปแบบที่ 1
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                >
+                                    รูปแบบที่ 2
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                >
+                                    รูปแบบที่ 3
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                >
+                                    รูปแบบที่ 4
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                >
+                                    รูปแบบที่ 5
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            <Grid
+                                className={classes.selectBorder}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            </Grid>
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                >
+                                    รูปแบบที่ 6
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                >
+                                    รูปแบบที่ 7
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                >
+                                    รูปแบบที่ 8
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                {/* <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions> */}
+            </BootstrapDialog >)
+        }
+        if (check == 'รูปแบบที่ 7') {
+            setContent(<BootstrapDialog
+                open={patternOpen}
+                onClose={handleClosePattern}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                {/* <DialogTitle id="alert-dialog-title">
+                    {"Use Google's location service?"}
+                </DialogTitle> */}
+                <DialogContent>
+                    <Typography
+                        variant='h5'
+                        className={classes.dialogTitle}
+                    >
+                        เลือกรูปแบบการปล่อยรถ
+                    </Typography>
+                    <Grid
+                        className={classes.dialogDividerGrid}
+                    >
+                        <Divider className={classes.dialogDivider} />
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                >
+                                    รูปแบบที่ 1
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                >
+                                    รูปแบบที่ 2
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                >
+                                    รูปแบบที่ 3
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                >
+                                    รูปแบบที่ 4
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                >
+                                    รูปแบบที่ 5
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                >
+                                    รูปแบบที่ 6
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            <Grid
+                                className={classes.selectBorder}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                            </Grid>
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                >
+                                    รูปแบบที่ 7
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                >
+                                    รูปแบบที่ 8
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                {/* <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions> */}
+            </BootstrapDialog >)
+        }
+        if (check == 'รูปแบบที่ 8') {
+            setContent(<BootstrapDialog
+                open={patternOpen}
+                onClose={handleClosePattern}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                {/* <DialogTitle id="alert-dialog-title">
+                    {"Use Google's location service?"}
+                </DialogTitle> */}
+                <DialogContent>
+                    <Typography
+                        variant='h5'
+                        className={classes.dialogTitle}
+                    >
+                        เลือกรูปแบบการปล่อยรถ
+                    </Typography>
+                    <Grid
+                        className={classes.dialogDividerGrid}
+                    >
+                        <Divider className={classes.dialogDivider} />
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 1") }}
+                                >
+                                    รูปแบบที่ 1
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 2") }}
+                                >
+                                    รูปแบบที่ 2
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                >
+                                    รูปแบบที่ 3
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+
+                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                >
+                                    รูปแบบที่ 4
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                >
+                                    รูปแบบที่ 5
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                >
+                                    รูปแบบที่ 6
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className={classes.bottomImge}
+                    >
+                        <Grid
+                            className={classes.pattern}
+                        >
+
+                            {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                >
+                                    รูปแบบที่ 7
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.pattern}
+                            style={{ marginLeft: theme.spacing(5) }}
+                        >
+                            <Grid
+                                className={classes.selectBorder}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                            </Grid>
+                            <Grid
+                                className={classes.clickPattern}
+                            >
+                                <Button
+                                    onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                >
+                                    รูปแบบที่ 8
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                {/* <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions> */}
+            </BootstrapDialog >)
         }
         if (check == 'เลือกรูปแบบ') {
             if (junction.number_channel == 3) {
@@ -1488,7 +2733,7 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_3way1_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way1_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1501,8 +2746,9 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_3way2_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way2_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1513,10 +2759,14 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_3way3_${degree}degree.png`} width='320px' height='280px' />
+                                <img src={`/static/3way3_${degree}degree.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1524,6 +2774,21 @@ const CreatePlan = (props) => {
                                         onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
                                     >
                                         รูปแบบที่ 3
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                <img src={`/static/3way4_${degree}degree.jpg`} width='280px' height='280px' />
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
+                                    >
+                                        รูปแบบที่ 4
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1565,7 +2830,9 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_4way${degree}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1578,8 +2845,11 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1590,10 +2860,16 @@ const CreatePlan = (props) => {
                                     </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1606,15 +2882,91 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width='320px' height='280px' />
+
+                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+
                                 <Grid
                                     className={classes.clickPattern}
                                 >
                                     <Button
-                                        onClick={() => { changePattern(current, "รูปแบบที่ 3") }}
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 4") }}
                                     >
-                                        รูปแบบที่ 3
+                                        รูปแบบที่ 4
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+                                {((degree == 0 || degree == 180)) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                {((degree == 90 || degree == 270)) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 5") }}
+                                    >
+                                        รูปแบบที่ 5
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way6.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way5.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 6") }}
+                                    >
+                                        รูปแบบที่ 6
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className={classes.bottomImge}
+                        >
+                            <Grid
+                                className={classes.pattern}
+                            >
+
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 7") }}
+                                    >
+                                        รูปแบบที่ 7
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
+                            >
+                                {(degree == 0 || degree == 180) && <img src={`/static/4way8.jpg`} width='280px' height='280px' />}
+                                {(degree == 90 || degree == 270) && <img src={`/static/4way7.jpg`} width='280px' height='280px' />}
+                                <Grid
+                                    className={classes.clickPattern}
+                                >
+                                    <Button
+                                        onClick={() => { changePattern(current, "รูปแบบที่ 8") }}
+                                    >
+                                        รูปแบบที่ 8
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1626,11 +2978,9 @@ const CreatePlan = (props) => {
                             Agree
                         </Button>
                     </DialogActions> */}
-                </BootstrapDialog>)
+                </BootstrapDialog >)
             }
-
         }
-
     }, [check])
 
     useEffect(() => {
@@ -1812,12 +3162,21 @@ const CreatePlan = (props) => {
                                                     {index + 1}
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
+
                                                     {/* <img src=''/> */}
                                                     <div
                                                         style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
                                                     >
-                                                        {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 3 && <img src={`/static/Mock-up_3way${row.phase.slice(10, row.phase.length)}_${degree}degree.png`} width='144px' height='72px' />}
-                                                        {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 4 && <img src={`/static/Mock-up_4way${(degree + ((parseInt(row.phase.slice(10, row.phase.length))) - 1) * 90) % 360}.png`} width='144px' height='144px' />}
+                                                        {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 3 && <img src={`/static/3way${row.phase.slice(10, row.phase.length)}_${degree}degree.jpg`} width='144px' height='144px' />}
+                                                        {row.phase != 'เลือกรูปแบบ' && row.phase != 'รูปแบบที่ 5' && row.phase != 'รูปแบบที่ 6' && row.phase != 'รูปแบบที่ 7' && row.phase != 'รูปแบบที่ 8' && junction.number_channel == 4 && <img src={`/static/4way${((degree / 90) + (parseInt(row.phase.slice(10, row.phase.length)))) % 5}.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 5' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way5.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 5' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way6.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 6' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way6.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 6' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way5.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 7' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way7.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 7' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way8.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 8' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way8.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 8' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way7.jpg`} width='144px' height='144px' />}
                                                     </div>
                                                     <Button
                                                         onClick={() => {
@@ -1926,74 +3285,55 @@ const CreatePlan = (props) => {
                         >
                             <Grid
                                 className={classes.overview}
+                                style={{ marginBottom: theme.spacing(10), marginTop: theme.spacing(10) }}
                             >
                                 {overview.length != 0 && <div
                                     style={{
                                         marginTop: theme.spacing(5),
-                                        maxWidth: 600,
+                                        maxWidth: 500,
+                                        maxHeight: 500,
                                         flexGrow: 1,
                                         position: 'relative'
                                     }}
                                 >
-                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 180 || degree == 0) && junction.number_channel == 3 && <img
+                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && <img
                                         src={overview[index].url}
                                         style={{
-                                            height: 440,
+                                            height: 500,
                                             width: "100%",
-                                            width: 600,
+                                            width: 500,
                                             display: "block",
                                             overflow: "hidden",
                                         }}
                                     />}
-                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 90 || degree == 270) && junction.number_channel == 3 && <img
-                                        src={overview[index].url}
-                                        style={{
-                                            height: 600,
-                                            width: "100%",
-                                            width: 440,
-                                            display: "block",
-                                            overflow: "hidden",
-
-                                        }}
-                                    />}
-                                    {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && junction.number_channel == 4 && <img
-                                        src={overview[index].url}
-                                        style={{
-                                            height: 600,
-                                            width: "100%",
-                                            width: 600,
-                                            display: "block",
-                                            overflow: "hidden",
-                                        }}
-                                    />}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '17%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '75%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '47%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '45%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '80%', marginLeft: '18%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '10%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '70%', marginLeft: '40%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '30%', marginLeft: '4%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '8%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '3%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '10%', marginLeft: '35%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '80%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+                                    {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
                                     <Grid
                                         className={classes.buttom}
                                     >
@@ -2074,6 +3414,7 @@ const CreatePlan = (props) => {
                             </Grid>
                             <Grid
                                 className={classes.pattern}
+                                style={{ marginLeft: theme.spacing(5) }}
                             >
                                 {imgSlide2 != null && <SimpleImageSlider
                                     width='320px'
@@ -2099,12 +3440,6 @@ const CreatePlan = (props) => {
                             </Grid>
                         </Grid>
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Disagree</Button>
-                        <Button onClick={handleClose} autoFocus>
-                            Agree
-                        </Button>
-                    </DialogActions>
                 </BootstrapDialog>
                 <BootstrapDialog_2
                     open={openCalculate}

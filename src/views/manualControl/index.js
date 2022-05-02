@@ -18,7 +18,7 @@ import RemoteControlView from './RemoteControlView';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { junctionService } from '../../services/junction.service';
 import Countdown from 'react-countdown';
 import CountUp from 'react-countup';
@@ -31,6 +31,8 @@ import AutoTimer from './AutoTimer';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { planService } from '../../services/plan.service';
 import theme from '../../theme';
+import { apiConstants } from '../../../src/_constants'
+import socket from '../../SocketController';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -315,7 +317,10 @@ const ManualControl = () => {
   const [minutes, setMinutes] = useState(null);
   const [seconds, setSeconds] = useState(null);
   const [newContent_1, setNewContent_1] = useState(null)
-  const [statusNewContent, setStatusNewContent] = useState(null)
+  const [statusNewContent, setStatusNewContent] = useState(<Grid
+    className={classes.newContent_1}
+  >
+  </Grid>)
   const [statusManual, setStatusManual] = useState(null)
   const [statusMode, setStatusMode] = useState(null)
   const [channel, setChannel] = useState(null)
@@ -325,6 +330,7 @@ const ManualControl = () => {
   const [overview, setOverView] = useState([]);
   const [index, setActiveStep] = React.useState(0);
   const [junctionContent, setJunctionContent] = useState(null)
+  const { junction_id } = useParams();
   const goToNextPicture = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -477,314 +483,7 @@ const ManualControl = () => {
     },
   }))(TableRow);
 
-  useEffect(() => {
-    if (menu != "") {
-      if (menu == 0) {
-        if (number == 3) {
-          setContent(<Grid
-            className={classes.contentGrid}
-          >
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid>
-                < img src={`/static/Mock-up_3way1_${junction.rotate}degree.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                onClick={() => {
-                  setToggle(0)
-                  handleSetPhase(1)
-                }}
-              >
-                Phase ที่ 1
-              </Button>
-            </Grid>
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid>
-                < img src={`/static/Mock-up_3way2_${junction.rotate}degree.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                onClick={() => {
-                  setToggle(1)
-                  handleSetPhase(2)
-                }}
-              >
-                Phase ที่ 2
-              </Button>
-            </Grid>
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid>
-                < img src={`/static/Mock-up_3way3_${junction.rotate}degree.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                onClick={() => {
-                  setToggle(2)
-                  handleSetPhase(3)
-                }}
-              >
-                Phase ที่ 3
-              </Button>
-            </Grid>
-          </Grid>)
-        }
-        else if (number == 4) {
-          setContent(<Grid
-            className={classes.contentGrid}
-          >
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid
 
-              >
-                <img src={`/static/Mock-up_4way${junction.rotate}.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                {...longPressEvent}
-                onClick={() => {
-                  setToggle(3)
-                  handleSetPhase(5)
-                }}
-              >
-                Phase ที่ 5
-              </Button>
-            </Grid>
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid>
-                <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                onClick={() => {
-                  setToggle(4)
-                  handleSetPhase(6)
-                }}
-              >
-                Phase ที่ 6
-              </Button>
-            </Grid>
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid>
-                <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                onClick={() => {
-                  setToggle(5)
-                  handleSetPhase(7)
-                }}
-              >
-                Phase ที่ 7
-              </Button>
-            </Grid>
-            <Grid
-              className={classes.imgPattern}
-            >
-              <Grid>
-                <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
-              </Grid>
-              <Button
-                className={classes.buttonPattern}
-                onClick={() => {
-                  setToggle(6)
-                  handleSetPhase(8)
-                }}
-              >
-                Phase ที่ 8
-              </Button>
-            </Grid>
-          </Grid>)
-        }
-      }
-      if (menu == 1) {
-        setContent(
-          <Grid
-            style={{ width: '100%', marginLeft: '15%' }}
-          >
-            <Grid
-              className={classes.bottomLeft}
-            >
-              <Grid
-                className={classes.titleGrid}
-              >
-                <Typography
-                  variant='h4'
-                  className={classes.titleLeft}
-                >
-                  ตารางการทำงาน
-                </Typography>
-              </Grid>
-              <Divider className={classes.divider} />
-              <Grid
-                className={classes.textFieldLeft}
-              >
-                <TableContainer className={classes.tableCon}>
-                  <Table className={classes.table} aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell align="center" width="20%">เวลาเริ่มต้น</StyledTableCell>
-                        <StyledTableCell align="center" width="20%">เวลาสิ้นสุด</StyledTableCell>
-                        <StyledTableCell align="center" width="60%">รูปแบบการจัดการสัญญาณไฟ</StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {fixtimeShow.map((row, index) => (
-                        <StyledTableRow key={row.id}>
-                          <StyledTableCell align="center">
-                            {row.start}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row.end}
-                          </StyledTableCell>
-                          <StyledTableCell align="center">
-                            {row?.plan?.name}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
-            </Grid>
-            {/* {data != null && <Grid
-              className={classes.bottom}
-            >
-              <Grid
-                className={classes.topLeft}
-              >
-                <Grid
-                  className={classes.titleGrid}
-                >
-                  <Typography
-                    variant='h4'
-                    className={classes.titleLeft}
-                  >
-                    ลักษณะการทำงาน
-                  </Typography>
-                </Grid>
-                <Divider className={classes.divider} />
-                <Grid
-                  className={classes.pattern}
-                >
-                  <Grid
-                    className={classes.overview}
-                  >
-                    {overview.length != 0 && <div
-                      style={{
-                        marginTop: theme.spacing(5),
-                        maxWidth: 600,
-                        flexGrow: 1,
-                        position: 'relative'
-                      }}
-                    >
-                      {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 180 || degree == 0) && junction.number_channel == 3 && <img
-                        src={overview[index].url}
-                        style={{
-                          height: 440,
-                          width: "100%",
-                          width: 600,
-                          display: "block",
-                          overflow: "hidden",
-                        }}
-                      />}
-                      {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 90 || degree == 270) && junction.number_channel == 3 && <img
-                        src={overview[index].url}
-                        style={{
-                          height: 600,
-                          width: "100%",
-                          width: 440,
-                          display: "block",
-                          overflow: "hidden",
-
-                        }}
-                      />}
-                      {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && junction.number_channel == 4 && <img
-                        src={overview[index].url}
-                        style={{
-                          height: 600,
-                          width: "100%",
-                          width: 600,
-                          display: "block",
-                          overflow: "hidden",
-                        }}
-                      />}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '17%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '75%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '47%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '45%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '80%', marginLeft: '18%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '10%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '70%', marginLeft: '40%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '30%', marginLeft: '4%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '8%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '3%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '10%', marginLeft: '35%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '80%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '83%', marginLeft: '53%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} > {junction.channel[0].name}</div >}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '53%', marginLeft: '1%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[1].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '7%', marginLeft: '33%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[2].name}</div>}
-                      {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '35%', marginLeft: '80%', fontSize: '24px', backgroundColor: 'white', border: '3px solid black', borderSpacing: '1px' }} >{junction.channel[3].name}</div>}
-                      <Grid
-                        className={classes.buttom}
-                      >
-                        <Grid
-                          className={classes.leftBut}
-                        >
-                          <Button
-                            size="small"
-                            onClick={goToPrevPicture}
-                            disabled={index === 0}
-                          >
-                            <KeyboardArrowLeft />Previous
-                          </Button>
-                        </Grid>
-                        <Grid
-                          className={classes.rightBut}
-                        >
-                          <Button
-                            size="small"
-                            onClick={goToNextPicture}
-                            disabled={index === overview.length - 1}
-                          >
-                            Next<KeyboardArrowRight />
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </div>}
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>} */}
-          </Grid>
-        )
-      }
-
-    }
-  }, [number, menu])
 
   useEffect(() => {
     if (time != null) {
@@ -830,7 +529,69 @@ const ManualControl = () => {
         setPlanDetail(data.data)
       })
     }
+
   }, [planID])
+
+  useEffect(() => {
+    // const socket = socketIOClient(apiConstants.socketUri, { path: '/socket' });
+    const socketIO = socket
+    socket.emit('get:data', junction_id)
+    socketIO.on(`update:mode:${junction_id}`, data => {
+      if (data == "auto") {
+        setStatusNewContent(0)
+        setStatusMode(1)
+        socketIO.emit('get:data', junction_id)
+      }
+      if (data == "manual") {
+        setStatusMode(2)
+        setStatusNewContent(1)
+        socketIO.emit('get:data', junction_id)
+      }
+      if (data == "red") {
+        setStatusNewContent(0)
+        setStatusMode(3)
+        setActiveStep(0)
+      }
+      if (data == "flashing") {
+        setStatusNewContent(0)
+        setStatusMode(4)
+        setActiveStep(0)
+      }
+    });
+
+    socketIO.on(`update:data:${junction_id}`, data => {
+      if (data.mode == "auto") {
+        setStatusNewContent(0)
+        setStatusMode(1)
+      }
+      if (data.mode == "manual") {
+        setStatusMode(2)
+        setStatusNewContent(1)
+      }
+      if (data.mode == "red") {
+        setStatusNewContent(0)
+        setStatusMode(3)
+        setActiveStep(0)
+      }
+      if (data.mode == "flashing") {
+        setStatusNewContent(0)
+        setStatusMode(4)
+        setActiveStep(0)
+      }
+      console.log("socket data: ", data)
+      setTimer(data.Timer)
+      setActiveStep(data.phase)
+    })
+
+    socketIO.on(`update:timer:${junction_id}`, data => {
+      setTimer(data)
+    })
+
+    socketIO.on(`update:phase:${junction_id}`, data => {
+      setActiveStep(data)
+      setStatusManual(data)
+    })
+  }, [])
 
   useEffect(() => {
     if (planDetail != null) {
@@ -845,25 +606,23 @@ const ManualControl = () => {
         // console.log()
       }
       setData(temp)
-      setStatusNewContent(0)
+      // setStatusNewContent(0)
 
     }
   }, [planDetail])
 
 
 
+
+
   useEffect(() => {
     if (statusNewContent != null) {
+
       if (statusNewContent == 0) {
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
-          <Button
-            className={classes.buttonManual_control}
-            onClick={() => { setStatusNewContent(1) }}
-          >
-            <img src='/static/configManual.png' />
-          </Button>
+
           <Grid
             className={classes.title_mode}
           >
@@ -873,8 +632,8 @@ const ManualControl = () => {
             className={classes.buttonMode_grid}
           >
             <Button
-              className={classes.buttonMode_content}
-              onClick={() => { setStatusMode(1) }}
+              className={classes.unSelectButtonMode_content}
+              onClick={() => { emitMode(1) }}
             >
               อัตโนมัติ
             </Button>
@@ -884,7 +643,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(2) }}
+              onClick={() => { setStatusNewContent(1) }}
             >
               ควบคุม
             </Button>
@@ -894,7 +653,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(3) }}
+              onClick={() => { emitMode(3) }}
             >
               ไฟเเดง
             </Button>
@@ -904,7 +663,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(4) }}
+              onClick={() => { emitMode(4) }}
             >
               ไฟกระพริบ
             </Button>
@@ -933,6 +692,7 @@ const ManualControl = () => {
       }
       if (statusNewContent == 1) {
         // setStatusMode
+        emitMode(2)
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
@@ -953,28 +713,28 @@ const ManualControl = () => {
               className={classes.imgManual_content}
             >
               <Button
-                onClick={() => { setStatusManual(1) }}
+                onClick={() => { emitPhase(1) }}
               >
-                <img src={`/static/3way1_${degree}degree.jpg`} width='120px' height='120px' />
+                <img src={overview[1]} width='120px' height='120px' />
               </Button>
               <Button
-                onClick={() => { setStatusManual(2) }}
+                onClick={() => { emitPhase(2) }}
               >
-                <img src={`/static/3way2_${degree}degree.jpg`} width='120px' height='120px' />
+                <img src={overview[2]} width='120px' height='120px' />
               </Button>
             </Grid>
             <Grid
               className={classes.imgManual_content}
             >
               <Button
-                onClick={() => { setStatusManual(3) }}
+                onClick={() => { emitPhase(3) }}
               >
-                <img src={`/static/3way3_${degree}degree.jpg`} width='120px' height='120px' />
+                <img src={overview[3]} width='120px' height='120px' />
               </Button>
               <Button
-                onClick={() => { setStatusManual(4) }}
+                onClick={() => { emitPhase(4) }}
               >
-                <img src={`/static/3way4_${degree}degree.jpg`} width='120px' height='120px' />
+                <img src={overview[4]} width='120px' height='120px' />
               </Button>
             </Grid>
           </Grid>}
@@ -983,9 +743,40 @@ const ManualControl = () => {
     }
   }, [statusNewContent])
 
+  const emitPhase = async (phase) => {
+    const socketIO = socket
+    console.log(phase)
+    socketIO.emit('set:phase', { junction_id: junction_id, phase: phase })
+    setStatusManual(phase)
+  }
+  const emitMode = async (mode) => {
+    const socketIO = socket
+    // console.log(mode)
+    var send
+    if (mode == 1) {
+      send = "auto"
+
+    }
+    if (mode == 2) {
+      send = "manual"
+
+    }
+    if (mode == 3) {
+      send = "red"
+    }
+    if (mode == 4) {
+      send = "flashing"
+    }
+    console.log('send : ', send)
+    setStatusMode(mode)
+    socketIO.emit('set:mode', { junction_id: junction_id, mode: send })
+    // setStatusManual(phase)
+  }
   useEffect(() => {
     if (statusManual != null) {
+
       if (statusManual == 1) {
+
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
@@ -1005,31 +796,59 @@ const ManualControl = () => {
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(1) }}
+              onClick={() => { emitPhase(1) }}
               style={{ border: '2px solid #000000' }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((1 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[1]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(2) }}
+              onClick={() => { emitPhase(2) }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((2 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[2]} width='120px' height='120px' />
             </Button>
           </Grid>
           <Grid
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(3) }}
+              onClick={() => { emitPhase(3) }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((3 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[3]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(4) }}
+              onClick={() => { emitPhase(4) }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((4 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[4]} width='120px' height='120px' />
             </Button>
           </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
         </Grid>)
       }
       if (statusManual == 2) {
@@ -1052,32 +871,60 @@ const ManualControl = () => {
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(1) }}
+              onClick={() => { emitPhase(1) }}
 
             >
-              <img src={`/static/Mock-up_4way${(degree + ((1 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[1]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(2) }}
+              onClick={() => { emitPhase(2) }}
               style={{ border: '2px solid #000000' }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((2 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[2]} width='120px' height='120px' />
             </Button>
           </Grid>
           <Grid
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(3) }}
+              onClick={() => { emitPhase(3) }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((3 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[3]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(4) }}
+              onClick={() => { emitPhase(4) }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((4 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[4]} width='120px' height='120px' />
             </Button>
           </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
         </Grid>)
       }
       if (statusManual == 3) {
@@ -1100,33 +947,61 @@ const ManualControl = () => {
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(1) }}
+              onClick={() => { emitPhase(1) }}
 
             >
-              <img src={`/static/Mock-up_4way${(degree + ((1 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[1]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(2) }}
+              onClick={() => { emitPhase(2) }}
 
             >
-              <img src={`/static/Mock-up_4way${(degree + ((2 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[2]} width='120px' height='120px' />
             </Button>
           </Grid>
           <Grid
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(3) }}
+              onClick={() => { emitPhase(3) }}
               style={{ border: '2px solid #000000' }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((3 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[3]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(4) }}
+              onClick={() => { emitPhase(4) }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((4 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[4]} width='120px' height='120px' />
             </Button>
           </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
         </Grid>)
       }
       if (statusManual == 4) {
@@ -1149,34 +1024,384 @@ const ManualControl = () => {
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(1) }}
+              onClick={() => { emitPhase(1) }}
 
             >
-              <img src={`/static/Mock-up_4way${(degree + ((1 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[1]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(2) }}
+              onClick={() => { emitPhase(2) }}
 
             >
-              <img src={`/static/Mock-up_4way${(degree + ((2 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[2]} width='120px' height='120px' />
             </Button>
           </Grid>
           <Grid
             className={classes.imgManual_content}
           >
             <Button
-              onClick={() => { setStatusManual(3) }}
+              onClick={() => { emitPhase(3) }}
 
             >
-              <img src={`/static/Mock-up_4way${(degree + ((3 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[3]} width='120px' height='120px' />
             </Button>
             <Button
-              onClick={() => { setStatusManual(4) }}
+              onClick={() => { emitPhase(4) }}
               style={{ border: '2px solid #000000' }}
             >
-              <img src={`/static/Mock-up_4way${(degree + ((4 - 1) * 90)) % 360}.png`} width='150px' height='150px' />
+              <img src={overview[4]} width='120px' height='120px' />
             </Button>
           </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+        </Grid>)
+      }
+      if (statusManual == 5) {
+        setNewContent_1(<Grid
+          className={classes.newContent_1}
+        >
+          <Button
+            className={classes.comeBackButtonManual_control}
+            onClick={() => { setStatusNewContent(0) }}
+          >
+            <img src='/static/BackconfigManual.png' />
+          </Button>
+          <Grid
+            className={classes.title_mode}
+          >
+            โหมดควบคุม
+          </Grid>
+          <Divider style={{ marginTop: theme.spacing(2), height: '2px', backgroundColor: '#4F4F4F', width: '80%', marginLeft: '10%' }} />
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(1) }}
+
+            >
+              <img src={overview[1]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(2) }}
+
+            >
+              <img src={overview[2]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(3) }}
+
+            >
+              <img src={overview[3]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(4) }}
+
+            >
+              <img src={overview[4]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+              style={{ border: '2px solid #000000' }}
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+        </Grid>)
+      }
+      if (statusManual == 6) {
+        setNewContent_1(<Grid
+          className={classes.newContent_1}
+        >
+          <Button
+            className={classes.comeBackButtonManual_control}
+            onClick={() => { setStatusNewContent(0) }}
+          >
+            <img src='/static/BackconfigManual.png' />
+          </Button>
+          <Grid
+            className={classes.title_mode}
+          >
+            โหมดควบคุม
+          </Grid>
+          <Divider style={{ marginTop: theme.spacing(2), height: '2px', backgroundColor: '#4F4F4F', width: '80%', marginLeft: '10%' }} />
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(1) }}
+
+            >
+              <img src={overview[1]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(2) }}
+
+            >
+              <img src={overview[2]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(3) }}
+
+            >
+              <img src={overview[3]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(4) }}
+
+            >
+              <img src={overview[4]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+              style={{ border: '2px solid #000000' }}
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+        </Grid>)
+      }
+      if (statusManual == 7) {
+        setNewContent_1(<Grid
+          className={classes.newContent_1}
+        >
+          <Button
+            className={classes.comeBackButtonManual_control}
+            onClick={() => { setStatusNewContent(0) }}
+          >
+            <img src='/static/BackconfigManual.png' />
+          </Button>
+          <Grid
+            className={classes.title_mode}
+          >
+            โหมดควบคุม
+          </Grid>
+          <Divider style={{ marginTop: theme.spacing(2), height: '2px', backgroundColor: '#4F4F4F', width: '80%', marginLeft: '10%' }} />
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(1) }}
+
+            >
+              <img src={overview[1]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(2) }}
+
+            >
+              <img src={overview[2]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(3) }}
+
+            >
+              <img src={overview[3]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(4) }}
+
+            >
+              <img src={overview[4]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+              style={{ border: '2px solid #000000' }}
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+        </Grid>)
+      }
+      if (statusManual == 7) {
+        setNewContent_1(<Grid
+          className={classes.newContent_1}
+        >
+          <Button
+            className={classes.comeBackButtonManual_control}
+            onClick={() => { setStatusNewContent(0) }}
+          >
+            <img src='/static/BackconfigManual.png' />
+          </Button>
+          <Grid
+            className={classes.title_mode}
+          >
+            โหมดควบคุม
+          </Grid>
+          <Divider style={{ marginTop: theme.spacing(2), height: '2px', backgroundColor: '#4F4F4F', width: '80%', marginLeft: '10%' }} />
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(1) }}
+
+            >
+              <img src={overview[1]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(2) }}
+
+            >
+              <img src={overview[2]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(3) }}
+
+            >
+              <img src={overview[3]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(4) }}
+
+            >
+              <img src={overview[4]} width='120px' height='120px' />
+            </Button>
+          </Grid>
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(5) }}
+
+            >
+              <img src={overview[5]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(6) }}
+
+            >
+              <img src={overview[6]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
+          {number == 4 && <Grid
+            className={classes.imgManual_content}
+          >
+            <Button
+              onClick={() => { emitPhase(7) }}
+
+            >
+              <img src={overview[7]} width='120px' height='120px' />
+            </Button>
+            <Button
+              onClick={() => { emitPhase(8) }}
+              style={{ border: '2px solid #000000' }}
+            >
+              <img src={overview[8]} width='120px' height='120px' />
+            </Button>
+          </Grid>}
         </Grid>)
       }
     }
@@ -1188,12 +1413,12 @@ const ManualControl = () => {
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
-          <Button
+          {/* <Button
             className={classes.buttonManual_control}
             onClick={() => { setStatusNewContent(1) }}
           >
             <img src='/static/configManual.png' />
-          </Button>
+          </Button> */}
           <Grid
             className={classes.title_mode}
           >
@@ -1204,7 +1429,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.buttonMode_content}
-              onClick={() => { setStatusMode(1) }}
+              onClick={() => { emitMode(1) }}
             >
               อัตโนมัติ
             </Button>
@@ -1214,7 +1439,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(2) }}
+              onClick={() => { emitMode(2) }}
             >
               ควบคุม
             </Button>
@@ -1224,7 +1449,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(3) }}
+              onClick={() => { emitMode(3) }}
             >
               ไฟเเดง
             </Button>
@@ -1234,7 +1459,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(4) }}
+              onClick={() => { emitMode(4) }}
             >
               ไฟกระพริบ
             </Button>
@@ -1265,12 +1490,12 @@ const ManualControl = () => {
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
-          <Button
+          {/* <Button
             className={classes.buttonManual_control}
             onClick={() => { setStatusNewContent(1) }}
           >
             <img src='/static/configManual.png' />
-          </Button>
+          </Button> */}
           <Grid
             className={classes.title_mode}
           >
@@ -1281,7 +1506,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(1) }}
+              onClick={() => { emitMode(1) }}
             >
               อัตโนมัติ
             </Button>
@@ -1291,7 +1516,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.buttonMode_content}
-              onClick={() => { setStatusMode(2) }}
+              onClick={() => { emitMode(2) }}
             >
               ควบคุม
             </Button>
@@ -1301,7 +1526,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(3) }}
+              onClick={() => { emitMode(3) }}
             >
               ไฟเเดง
             </Button>
@@ -1311,7 +1536,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(4) }}
+              onClick={() => { emitMode(4) }}
             >
               ไฟกระพริบ
             </Button>
@@ -1326,7 +1551,7 @@ const ManualControl = () => {
           >
             {planDetail != null && planDetail.name}
           </Grid>
-          <Grid
+          {/* <Grid
             className={classes.title_mode}
           >
             เวลาปัจจุบัน
@@ -1335,19 +1560,19 @@ const ManualControl = () => {
             className={classes.planNewContent}
           >
             {hours < 10 ? `0${hours}` : hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-          </Grid>
+          </Grid> */}
         </Grid>)
       }
       if (statusMode == 3) {
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
-          <Button
+          {/* <Button
             className={classes.buttonManual_control}
             onClick={() => { setStatusNewContent(1) }}
           >
             <img src='/static/configManual.png' />
-          </Button>
+          </Button> */}
           <Grid
             className={classes.title_mode}
           >
@@ -1358,7 +1583,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(1) }}
+              onClick={() => { emitMode(1) }}
             >
               อัตโนมัติ
             </Button>
@@ -1368,7 +1593,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(2) }}
+              onClick={() => { emitMode(2) }}
             >
               ควบคุม
             </Button>
@@ -1378,7 +1603,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.buttonMode_content}
-              onClick={() => { setStatusMode(3) }}
+              onClick={() => { emitMode(3) }}
             >
               ไฟเเดง
             </Button>
@@ -1388,7 +1613,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(4) }}
+              onClick={() => { emitMode(4) }}
             >
               ไฟกระพริบ
             </Button>
@@ -1403,7 +1628,7 @@ const ManualControl = () => {
           >
             {planDetail != null && planDetail.name}
           </Grid>
-          <Grid
+          {/* <Grid
             className={classes.title_mode}
           >
             เวลาปัจจุบัน
@@ -1412,19 +1637,19 @@ const ManualControl = () => {
             className={classes.planNewContent}
           >
             {hours < 10 ? `0${hours}` : hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-          </Grid>
+          </Grid> */}
         </Grid>)
       }
       if (statusMode == 4) {
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
-          <Button
+          {/* <Button
             className={classes.buttonManual_control}
             onClick={() => { setStatusNewContent(1) }}
           >
             <img src='/static/configManual.png' />
-          </Button>
+          </Button> */}
           <Grid
             className={classes.title_mode}
           >
@@ -1435,7 +1660,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(1) }}
+              onClick={() => { emitMode(1) }}
             >
               อัตโนมัติ
             </Button>
@@ -1445,7 +1670,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(2) }}
+              onClick={() => { emitMode(2) }}
             >
               ควบคุม
             </Button>
@@ -1455,7 +1680,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusMode(3) }}
+              onClick={() => { emitMode(3) }}
             >
               ไฟเเดง
             </Button>
@@ -1465,7 +1690,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.buttonMode_content}
-              onClick={() => { setStatusMode(4) }}
+              onClick={() => { emitMode(4) }}
             >
               ไฟกระพริบ
             </Button>
@@ -1480,7 +1705,7 @@ const ManualControl = () => {
           >
             {planDetail != null && planDetail.name}
           </Grid>
-          <Grid
+          {/* <Grid
             className={classes.title_mode}
           >
             เวลาปัจจุบัน
@@ -1489,7 +1714,7 @@ const ManualControl = () => {
             className={classes.planNewContent}
           >
             {hours < 10 ? `0${hours}` : hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-          </Grid>
+          </Grid> */}
         </Grid>)
       }
     }
@@ -1498,68 +1723,61 @@ const ManualControl = () => {
     var img_path = []
     if (data != null) {
       console.log("data : ", data)
-      for (let index = 0; index < data.length; index++) {
+    }
+  }, [data])
 
-        img_path.push(data[index].phase[10])
-      }
-
-      let swap = initHei
-      initHei = initWid
-      initWid = swap
-      console.log(img_path)
-      for (let index = 0; index < img_path.length; index++) {
-        var temp = img_path[index]
-        if (junction.number_channel == 3) {
-          // img_path[index] = { url: `/static/Mock-up_3way${temp}_${degree}degree.png` }
-          img_path[index] = { url: `/static/3way${temp}_${degree}degree.jpg` }
+  useEffect(() => {
+    if (degree != null && number != null) {
+      var img_path = []
+      if (number == 3) {
+        for (let index = 0; index <= 4; index++) {
+          img_path.push(`/static/3way${index}_${degree}degree.jpg`)
         }
-        else if (junction.number_channel == 4) {
-          if (temp >= 1 && temp <= 4) {
-            img_path[index] = { url: `/static/4way${temp}.jpg` }
+        setOverView(img_path)
+      }
+      if (number == 4) {
+        for (let index = 0; index <= 8; index++) {
+          if (index <= 4) {
+            img_path.push(`/static/4way${((degree / 90) + index) % 5}.jpg`)
           }
-          else {
-            if (temp == 5) {
-              if (degree == 90 || degree == 270) {
-                img_path[index] = { url: `/static/4way${temp + 1}.jpg` }
-              }
-              else {
-                img_path[index] = { url: `/static/4way${temp}.jpg` }
-              }
+          if (index == 5) {
+            if (degree == 0 || degree == 180) {
+              img_path.push(`/static/4way5.jpg`)
             }
-            else if (temp == 6) {
-              if (degree == 90 || degree == 270) {
-                img_path[index] = { url: `/static/4way${temp - 1}.jpg` }
-              }
-              else {
-                img_path[index] = { url: `/static/4way${temp}.jpg` }
-              }
-            }
-            else if (temp == 7) {
-              if (degree == 90 || degree == 270) {
-                img_path[index] = { url: `/static/4way${temp + 1}.jpg` }
-              }
-              else {
-                img_path[index] = { url: `/static/4way${temp}.jpg` }
-              }
-            }
-            else if (temp == 8) {
-              if (degree == 90 || degree == 270) {
-                img_path[index] = { url: `/static/4way${temp - 1}.jpg` }
-              }
-              else {
-                img_path[index] = { url: `/static/4way${temp}.jpg` }
-              }
+            else {
+              img_path.push(`/static/4way6.jpg`)
             }
           }
-
+          if (index == 6) {
+            if (degree == 0 || degree == 180) {
+              img_path.push(`/static/4way6.jpg`)
+            }
+            else {
+              img_path.push(`/static/4way5.jpg`)
+            }
+          }
+          if (index == 7) {
+            if (degree == 0 || degree == 180) {
+              img_path.push(`/static/4way7.jpg`)
+            }
+            else {
+              img_path.push(`/static/4way8.jpg`)
+            }
+          }
+          if (index == 5) {
+            if (degree == 0 || degree == 180) {
+              img_path.push(`/static/4way8.jpg`)
+            }
+            else {
+              img_path.push(`/static/4way7.jpg`)
+            }
+          }
         }
+        setOverView(img_path)
       }
-      console.log(img_path)
-      setOverView(img_path)
-
     }
 
-  }, [data])
+  }, [degree, number])
 
   useEffect(() => {
     if (autoTime == null) {
@@ -1575,7 +1793,7 @@ const ManualControl = () => {
   const [dataPhase, setDataPhase] = useState({ "phase": 0 })
   const [dataMode, setDataMode] = useState({ "mode": 0 })
   const [content, setContent] = useState()
-
+  const [timer, setTimer] = useState(0)
 
   const onLongPress = () => {
     console.log('longpress is triggered');
@@ -1620,485 +1838,7 @@ const ManualControl = () => {
       setCountup(<Timer status='toggle' />)
     }
   }, [countup])
-  useEffect(() => {
-    if (content == null) {
-      if (toggle == 0) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              < img src={`/static/Mock-up_3way1_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              {...longPressEvent}
-              onClick={() => {
-                setToggle(0)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 1
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              < img src={`/static/Mock-up_3way2_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(1)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 2
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              < img src={`/static/Mock-up_3way3_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(2)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 3
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-      if (toggle == 1) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              < img src={`/static/Mock-up_3way1_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              {...longPressEvent}
-              onClick={() => {
-                setToggle(0)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 1
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              < img src={`/static/Mock-up_3way2_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(1)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 2
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src={`/static/Mock-up_3way3_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(2)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 3
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-      if (toggle == 2) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              < img src={`/static/Mock-up_3way1_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              {...longPressEvent}
-              onClick={() => {
-                setToggle(0)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 1
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              < img src={`/static/Mock-up_3way2_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(1)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 2
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              < img src={`/static/Mock-up_3way3_${junction.rotate} degree.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(2)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 3
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-      if (toggle == 3) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              <img src={`/static/Mock-up_4way${junction.rotate}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              {...longPressEvent}
-              onClick={() => {
-                setToggle(3)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 5
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(4)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 6
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(5)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 7
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(6)
-                handleSetPhase(8)
-              }}
-            >
-              Phase ที่ 8
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-      if (toggle == 4) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-            >
-              <img src={`/static/Mock-up_4way${junction.rotate}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              {...longPressEvent}
-              onClick={() => {
-                setToggle(3)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 5
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(4)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 6
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(5)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 7
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid>
-              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(6)
-                handleSetPhase(8)
-              }}
-            >
-              Phase ที่ 8
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-      if (toggle == 5) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 0) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              {...longPressEvent}
-              onClick={() => {
-                setToggle(3)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 5
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
 
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(4)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 6
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(5)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 7
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(6)
-                handleSetPhase(8)
-              }}
-            >
-              Phase ที่ 8
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-      if (toggle == 6) {
-        setContent(<Grid
-          className={classes.contentGrid}
-        >
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 0) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              // {...longPressEvent}
-              onClick={() => {
-                setToggle(3)
-                handleSetPhase(5)
-              }}
-            >
-              Phase ที่ 5
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 90) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(4)
-                handleSetPhase(6)
-              }}
-            >
-              Phase ที่ 6
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 180) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(5)
-                handleSetPhase(7)
-              }}
-            >
-              Phase ที่ 7
-            </Button>
-          </Grid>
-          <Grid
-            className={classes.imgPattern}
-          >
-            <Grid
-              className={classes.selectBorder}
-            >
-              <img src={`/static/Mock-up_4way${(junction.rotate + 270) % 360}.png`} width='277px' height='248px' />
-            </Grid>
-            <Button
-              className={classes.buttonPattern}
-              onClick={() => {
-                setToggle(6)
-                handleSetPhase(8)
-              }}
-            >
-              Phase ที่ 8
-            </Button>
-          </Grid>
-        </Grid>)
-      }
-
-    }
-  }, [content])
   useEffect(() => {
     if (menu != "") {
       setDataMode({
@@ -2116,7 +1856,7 @@ const ManualControl = () => {
     setMenu(event.target.value);
   };
   useEffect(() => {
-    manualControlService.setPhase(dataPhase, path).then()
+    // manualControlService.setPhase(dataPhase, path).then()
     // console.log(junction)
   }, [dataPhase])
   // console.log(number)
@@ -2143,7 +1883,7 @@ const ManualControl = () => {
             <Grid
               className={classes.contentInBorder}
             >
-              {data != null && data[index] != undefined && data[index].time}
+              {timer}
             </Grid>
           </Grid>
           <Grid
@@ -2158,7 +1898,7 @@ const ManualControl = () => {
           <Grid
             className={classes.content4_imgOverView}
           >
-            {overview.length != 0 && <div
+            {overview != null && <div
               style={{
                 marginTop: theme.spacing(5),
                 maxWidth: 500,
@@ -2170,8 +1910,8 @@ const ManualControl = () => {
                 position: 'relative'
               }}
             >
-              {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 180 || degree == 0) && junction.number_channel == 3 && <img
-                src={overview[index].url}
+              {overview != null && <img
+                src={overview[index]}
                 style={{
                   height: 500,
                   width: "100%",
@@ -2180,56 +1920,36 @@ const ManualControl = () => {
                   overflow: "hidden",
                 }}
               />}
-              {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && (degree == 90 || degree == 270) && junction.number_channel == 3 && <img
-                src={overview[index].url}
-                style={{
-                  height: 500,
-                  width: "100%",
-                  width: 500,
-                  display: "block",
-                  overflow: "hidden",
 
-                }}
-              />}
-              {data[index].phase != 'เลือกรูปแบบ' && overview[index] != null && junction.number_channel == 4 && <img
-                src={overview[index].url}
-                style={{
-                  height: 500,
-                  width: "100%",
-                  width: 500,
-                  display: "block",
-                  overflow: "hidden",
-                }}
-              />}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
-              {data[index].phase != 'เลือกรูปแบบ' && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
-              <Grid
+              {degree != null && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 0 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 90 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 180 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 270 && junction.number_channel == 3 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 0 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+              {degree != null && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 90 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+              {degree != null && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 180 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+              {degree != null && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '20%', marginLeft: '0%', fontSize: '24px', backgroundColor: 'white', }} > {junction.channel[0].name}</div >}
+              {degree != null && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '-10%', marginLeft: '50%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[1].name}</div>}
+              {degree != null && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '72%', marginLeft: '82%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[2].name}</div>}
+              {degree != null && degree == 270 && junction.number_channel == 4 && <div style={{ position: 'absolute', color: 'black', top: '103%', marginLeft: '30%', fontSize: '24px', backgroundColor: 'white', }} >{junction.channel[3].name}</div>}
+              {/* <Grid
                 className={classes.buttom}
               >
                 <Grid
@@ -2254,7 +1974,7 @@ const ManualControl = () => {
                     Next<KeyboardArrowRight />
                   </Button>
                 </Grid>
-              </Grid>
+              </Grid> */}
             </div>}
           </Grid>
         </Grid>

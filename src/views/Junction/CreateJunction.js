@@ -40,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
         height: '100%',
-        width: '100%',
+        width: '95%',
+        marginLeft: '3%'
         // display: 'flex'
         // paddingBottom: theme.spacing(3),
         // paddingTop: theme.spacing(3)
@@ -501,10 +502,6 @@ const CreateJunction = () => {
         {
             value: 4,
             label: '4 แยก',
-        },
-        {
-            value: 5,
-            label: '5 แยก',
         }
     ];
 

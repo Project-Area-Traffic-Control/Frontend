@@ -25,7 +25,7 @@ import Page from '../../../components/Page';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
@@ -46,6 +46,9 @@ import { controlService } from '../../../services/control.service';
 import { planService } from '../../../services/plan.service';
 import { junctionService } from '../../../services/junction.service';
 import { fixtimeService } from '../../../services/fixtime.service';
+import { apiConstants } from '../../../_constants';
+import socketIOClient from 'socket.io-client';
+
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -396,6 +399,7 @@ const ConfigMode = (props) => {
     const [addRowContent, setAddRowContent] = useState(null)
     const [addRowStatus, setAddRowStatus] = useState(null)
     const [startIndex, setStartIndex] = useState(null)
+    const { junction_id } = useParams();
     const [search, setSearch] = React.useState({
 
         search: "",
@@ -437,10 +441,12 @@ const ConfigMode = (props) => {
                     temp[ind].end = event.target.value
                     console.log(event.target.value)
                     console.log(ind)
-                    setStartIndex({
-                        data: temp[ind].end,
-                        index: ind + 1
-                    })
+                    if (ind != editAble.length - 1) {
+                        setStartIndex({
+                            data: temp[ind].end,
+                            index: ind + 1
+                        })
+                    }
                     // temp_str = temp[ind].start
                 }
                 else if (type == 2) {
@@ -562,9 +568,83 @@ const ConfigMode = (props) => {
         }
         else if (editAble.length != 0) {
             var temp = editAble
-            
+            temp[editAble.length - 1].end = "23:59"
+            setEditAble(temp)
+            if (editAble.length == fixtimeList_id.length) {
+                console.log("เท่ากัน")
+                for (let index = 0; index < editAble.length; index++) {
+                    console.log(parseInt(editAble[index].start), parseInt(editAble[index].end))
+                    const date = new Date()
+                    // const endDate = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    // console.log("start : ", new Date(start).toString(), " end", new Date(end).toString())
+                    await controlService.updateFixtime({
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'junction_id': junctionData.id,
+                        'plan_id': editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                    // console.log(new Date(starDate).toLocaleTimeStringString())
+                    // console.log(new Date(endDate).toLocaleTimeString())
+                    // console.log()
+                }
+            }
+            else if (editAble.length - fixtimeList_id.length > 0) {
+                for (let index = 0; index < fixtimeList_id.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.updateFixtime({
+                        start: new Date(start),
+                        end: new Date(end),
+                        junction_id: junctionData.id,
+                        plan_id: editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                    // console.log(new Date(start))
+                    // console.log(new Date(end))
+                    // console.log()
+                }
+                for (let index = fixtimeList_id.length; index < editAble.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.createFixtime({
+                        start: new Date(start),
+                        end: new Date(end),
+                        junction_id: junctionData.id,
+                        plan_id: editAble[index].plan.id
+                    })
+                }
+            }
+            else if (fixtimeList_id.length - editAble.length > 0) {
+                console.log(fixtimeList_id)
+                for (let index = 0; index < editAble.length; index++) {
+                    const date = new Date()
+                    const start = date.setHours(parseInt(editAble[index].start.slice(0, 2)), parseInt(editAble[index].start.slice(3, 5)))
+                    const end = date.setHours(parseInt(editAble[index].end.slice(0, 2)), parseInt(editAble[index].end.slice(3, 5)))
+                    await controlService.updateFixtime({
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'junction_id': junctionData.id,
+                        'plan_id': editAble[index].plan.id
+                    }, fixtimeList_id[index])
+                }
+                for (let index = editAble.length; index < fixtimeList_id.length; index++) {
+                    await controlService.deleteFixtime(fixtimeList_id[index])
+                    // console.log(fixtimeList_id[index])
+                }
+            }
         }
-
+        const socket = socketIOClient(apiConstants.socketUri, { path: '/socket' });
+        var dataSocket = {
+            junction_id: junction_id,
+            type: "FIXTIME",
+        }
+        socket.on('connect', (socketIO) => {
+            console.log(socketIO)
+            socket.emit("update:setting", dataSocket)
+        })
         setData(editAble)
     }
     const addRow = () => {
@@ -1021,6 +1101,7 @@ const ConfigMode = (props) => {
                                 >
                                     <Button
                                         // className={classes.buttonGrid}
+                                        style={{ border: '2px solid #287298', marginTop: theme.spacing(3) }}
                                         onClick={addRow}
                                     // type='submit'
                                     >

@@ -37,6 +37,8 @@ import { planService } from '../../services/plan.service';
 import { controlService } from '../../services/control.service';
 import theme from '../../theme';
 import { phaseService } from '../../services/phase.service';
+import socketIOClient from 'socket.io-client';
+import { apiConstants } from '../../_constants';
 // import ManagementTable from '../../components/table/manageTable';
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -447,11 +449,11 @@ const ChannelManage = () => {
             setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
         }
         else if (number_channel == 4) {
-            setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width={imgWid} height={imgHei} />)
-            setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width={imgWid} height={imgHei} />)
-            setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width={imgWid} height={imgHei} />)
-            setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width={imgWid} height={imgHei} />)
-            setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
+            setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width="440px" height="440px" />)
+            setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width="440px" height="440px" />)
+            setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width="440px" height="440px" />)
+            setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width="440px" height="440px" />)
+            setImgPath_5(<img src='/static/4way1.png' width={imgWid} height={imgHei} />)
         }
     }, [degree])
 
@@ -735,6 +737,19 @@ const ChannelManage = () => {
             }
 
         }
+
+        console.log(junction_id)
+        const socket = socketIOClient(apiConstants.socketUri, { path: "/socket" });
+        var data = {
+            junction_id: junction_id,
+            type: "CHANNEL",
+        }
+        socket.on('connect', (socketIO) => {
+            console.log(socketIO)
+            socket.emit("update:setting", data)
+        })
+
+        console.log(socket)
         navigate(`/app/junction/${junction_id}`, { replace: true });
     }
     useEffect(() => {
@@ -821,6 +836,12 @@ const ChannelManage = () => {
                 setImgPath_1(<img src={`/static/3way1_${degree}degree.jpg`} width="440px" height="440px" />)
                 setImgPath_2(<img src={`/static/3way2_${degree}degree.jpg`} width="440px" height="440px" />)
                 setImgPath_3(<img src={`/static/3way3_${degree}degree.jpg`} width="440px" height="440px" />)
+            }
+            if (data.length == 4) {
+                setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width="440px" height="440px" />)
+                setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width="440px" height="440px" />)
+                setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width="440px" height="440px" />)
+                setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width="440px" height="440px" />)
             }
         })
         junctionService.getJunctionByID(junction_id).then((data) => {

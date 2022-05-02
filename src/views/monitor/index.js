@@ -11,9 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import socketIOClient from 'socket.io-client';
 import { EditOutlined, ExpandLess, ExpandMore } from '@material-ui/icons';
 import NavItem from '../../layouts/DashboardLayout/NavBar/NavItem';
+import { apiConstants } from '../../../src/_constants'
 
-
-const ENDPOINT = "http://localhost:3000";
+// const ENDPOINT = "http://localhost:3000";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -247,7 +247,7 @@ const Monitor = (props) => {
 
     useEffect(() => {
         // socket.
-        const socket = socketIOClient(ENDPOINT);
+        const socket = socketIOClient(apiConstants.socketUri);
         var socketON = `camera${camID}:send`;
         console.log(socketON)
         if (camID == 1) {

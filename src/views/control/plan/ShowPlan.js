@@ -263,16 +263,22 @@ const ShowPlan = (props) => {
                                             {/* <IconButton>
                                                 <ArrowRightSharp />
                                             </IconButton> */}
-                                            <Button
+                                            {plan.name != 'FLASHING' && plan.name != 'ALLRED' && <Button
                                                 onClick={() => { checkPlan(index) }}
                                             >
                                                 <img src='/static/button/ArrowRight Circle.png' />
-                                            </Button>
-                                            <Typography
+                                            </Button>}
+                                            {plan.name != 'FLASHING' && plan.name != 'ALLRED' && <Typography
                                                 variant='h5'
                                             >
                                                 {plan.name}
-                                            </Typography>
+                                            </Typography>}
+                                            {(plan.name == 'FLASHING' || plan.name == 'ALLRED') && <Typography
+                                                variant='h5'
+                                                style={{ marginLeft: theme.spacing(8) }}
+                                            >
+                                                {plan.name}
+                                            </Typography>}
                                         </Grid>
                                         <Divider className={classes.divider} />
                                     </Grid>
@@ -282,7 +288,7 @@ const ShowPlan = (props) => {
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        </Grid >
     );
 };
 
