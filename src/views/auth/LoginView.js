@@ -157,9 +157,9 @@ const LoginView = () => {
                     error={Boolean(touched.email && errors.email)}
                     fullWidth
                     // helperText={touched.email && errors.email}
-                    label="Email Address"
+                    label="Username"
                     margin="normal"
-                    name="username"
+                    name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     // type="email"
