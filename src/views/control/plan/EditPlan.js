@@ -47,6 +47,7 @@ import { junctionService } from '../../../services/junction.service';
 import { patternService } from '../../../services/pattern.service';
 import { apiConstants } from '../../../_constants';
 import socketIOClient from 'socket.io-client';
+import { userService } from '../../../services';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -2896,11 +2897,26 @@ const EditPlan = (props) => {
         }
     }, [patternOpen])
 
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
+
     useEffect(() => {
         planService.getPlanByID(location.pathname.slice(10, location.pathname.length - 10)).then((data) => {
             setPlan(data.data)
         })
+        setUserData(JSON.parse(localStorage.getItem("user")))
     }, [])
+
+    useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                // console.log(data)
+                setUserPermiss(data.permissions)
+            })
+            // setPathID(location.pathname.slice(14, location.pathname.length))
+        }
+    }, [userData])
+
 
     useEffect(() => {
         if (plan != null) {
@@ -3008,7 +3024,7 @@ const EditPlan = (props) => {
                         <Grid
                             className={classes.textFieldLeft_top}
                         >
-                            {plan != null && <TextField
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && plan != null && <TextField
                                 // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
                                 // helperText={formik.touched.junctionName && formik.errors.junctionName}
                                 className={classes.textField_name}
@@ -3019,6 +3035,20 @@ const EditPlan = (props) => {
                                 onChange={formik.handleChange}
                                 value={formik.values.planName}
                                 margin="normal"
+                            />}
+
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == false && userPermiss[2].view == true && plan != null && <TextField
+                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                className={classes.textField_name}
+                                label="ชื่อรูปแบบ"
+                                variant="outlined"
+                                name="planName"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.planName}
+                                margin="normal"
+                                disabled
                             />}
                             {/* <TextField
                                 className={classes.selectField}
@@ -3037,25 +3067,14 @@ const EditPlan = (props) => {
                                     </MenuItem>
                                 ))}
                             </TextField> */}
-                            <Button
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && plan != null && <Button
                                 className={classes.buttonPattern}
                                 onClick={() => handleClickOpen()}
                             // type='submit'
                             >
                                 เลือกชุดรูปแบบ
-                            </Button>
+                            </Button>}
                         </Grid>
-                        {pattern != 0 && <Grid
-                            className={classes.textFieldLeft_bot}
-                        >
-                            <Grid
-                                className={classes.selectPattern_name}
-                            >
-                                <Typography>
-                                    รูปแบบที่เลือก : {pattern}
-                                </Typography>
-                            </Grid>
-                        </Grid>}
                         {/* <LocationSearchInput /> */}
                     </Grid>
                 </Grid>
@@ -3112,7 +3131,23 @@ const EditPlan = (props) => {
                                                     style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
                                                 >
                                                     {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 3 && <img src={`/static/3way${row.phase.slice(10, row.phase.length)}_${degree}degree.jpg`} width='144px' height='144px' />}
-                                                    {row.phase != 'เลือกรูปแบบ' && row.phase != 'รูปแบบที่ 5' && row.phase != 'รูปแบบที่ 6' && row.phase != 'รูปแบบที่ 7' && row.phase != 'รูปแบบที่ 8' && junction.number_channel == 4 && <img src={`/static/4way${((degree / 90) + (parseInt(row.phase.slice(10, row.phase.length)))) % 5}.jpg`} width='144px' height='144px' />}
+                                                    {/* {row.phase != 'เลือกรูปแบบ' && row.phase != 'รูปแบบที่ 5' && row.phase != 'รูปแบบที่ 6' && row.phase != 'รูปแบบที่ 7' && row.phase != 'รูปแบบที่ 8' && junction.number_channel == 4 && <img src={`/static/4way${((degree / 90) + (parseInt(row.phase.slice(10, row.phase.length)))) % 5}.jpg`} width='144px' height='144px' />} */}
+                                                    {row.phase == 'รูปแบบที่ 1' && degree == 0 && junction.number_channel == 4 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 1' && degree == 90 && junction.number_channel == 4 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 1' && degree == 180 && junction.number_channel == 4 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 1' && degree == 270 && junction.number_channel == 4 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 2' && degree == 0 && junction.number_channel == 4 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 2' && degree == 90 && junction.number_channel == 4 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 2' && degree == 180 && junction.number_channel == 4 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 2' && degree == 270 && junction.number_channel == 4 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 3' && degree == 0 && junction.number_channel == 4 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 3' && degree == 90 && junction.number_channel == 4 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 3' && degree == 180 && junction.number_channel == 4 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 3' && degree == 270 && junction.number_channel == 4 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 4' && degree == 0 && junction.number_channel == 4 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 4' && degree == 90 && junction.number_channel == 4 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 4' && degree == 180 && junction.number_channel == 4 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                    {row.phase == 'รูปแบบที่ 4' && degree == 270 && junction.number_channel == 4 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
                                                     {row.phase == 'รูปแบบที่ 5' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way5.jpg`} width='144px' height='144px' />}
                                                     {row.phase == 'รูปแบบที่ 5' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way6.jpg`} width='144px' height='144px' />}
                                                     {row.phase == 'รูปแบบที่ 6' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way6.jpg`} width='144px' height='144px' />}
@@ -3122,16 +3157,16 @@ const EditPlan = (props) => {
                                                     {row.phase == 'รูปแบบที่ 8' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way8.jpg`} width='144px' height='144px' />}
                                                     {row.phase == 'รูปแบบที่ 8' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way7.jpg`} width='144px' height='144px' />}
                                                 </div>
-                                                <Button
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && plan != null && <Button
                                                     onClick={() => {
                                                         handleClickOpenPattern(row.phase, index)
                                                     }}
                                                 >
                                                     {row.phase}
-                                                </Button>
+                                                </Button>}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                <TextField
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && plan != null && <TextField
                                                     variant="outlined"
                                                     name="time_duration"
                                                     // onBlur={formik.handleBlur}
@@ -3141,10 +3176,23 @@ const EditPlan = (props) => {
                                                     margin="normal"
                                                 >
 
-                                                </TextField>
+                                                </TextField>}
+
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == false && userPermiss[2].view == true && plan != null && <TextField
+                                                    variant="outlined"
+                                                    name="time_duration"
+                                                    // onBlur={formik.handleBlur}
+                                                    onChange={(event) => { handleChangeDuration(event, index) }}
+                                                    defaultValue={row.time}
+                                                    // defaultValue='5'
+                                                    margin="normal"
+                                                    disabled
+                                                >
+
+                                                </TextField>}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                {data.length != 1 && <IconButton
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && plan != null && data.length != 1 && <IconButton
                                                     onClick={() => {
                                                         removeRow(index)
                                                         // goToPrevPicture()
@@ -3160,17 +3208,17 @@ const EditPlan = (props) => {
                             <Grid
                                 className={classes.top_icon}
                             >
-                                <Button
+                                {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && <Button
                                     // className={classes.buttonGrid}
                                     onClick={addRow}
                                 // type='submit'
                                 >
                                     เพิ่มรูปแบบ
-                                </Button>
+                                </Button>}
                             </Grid>
                         </TableContainer>
                         <Grid>
-                            <TextField
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && <TextField
                                 // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
                                 // helperText={formik.touched.junctionName && formik.errors.junctionName}
                                 className={classes.textField_delay}
@@ -3182,10 +3230,24 @@ const EditPlan = (props) => {
                                 value={formik.values.yellow_time}
                                 // defaultValue='5'
                                 margin="normal"
-                            />
+                            />}
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == false && userPermiss[2].view == true && <TextField
+                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                className={classes.textField_delay}
+                                label="ระยะเวลาสัญญาณไฟเหลือง"
+                                variant="outlined"
+                                name="yellow_time"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.yellow_time}
+                                // defaultValue='5'
+                                margin="normal"
+                                disabled
+                            />}
                         </Grid>
                         <Grid>
-                            <TextField
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && <TextField
                                 // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
                                 // helperText={formik.touched.junctionName && formik.errors.junctionName}
                                 className={classes.textField_delay}
@@ -3197,7 +3259,22 @@ const EditPlan = (props) => {
                                 value={formik.values.delay_red_time}
                                 // defaultValue='3'
                                 margin="normal"
-                            />
+                            />}
+
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == false && userPermiss[2].view == true && <TextField
+                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                className={classes.textField_delay}
+                                label="ระยะเวลาหน่วงสัญญาณไฟแดง"
+                                variant="outlined"
+                                name="delay_red_time"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.delay_red_time}
+                                // defaultValue='3'
+                                margin="normal"
+                                disabled
+                            />}
                         </Grid>
                     </Grid>
                 </Grid>
@@ -3532,7 +3609,7 @@ const EditPlan = (props) => {
                     />} */}
             {/* {props.status == "edit" && <ReportTable number_channel={formik.values.number_channel} channel={props.channel} pathID={props.pathID} status={props.status} formik={formik} />} */}
             {/* </Grid> */}
-            <Grid
+            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && <Grid
                 className={classes.top_icon}
             >
                 <Button
@@ -3554,7 +3631,7 @@ const EditPlan = (props) => {
                 >
                     ลบ
                 </Button>
-            </Grid>
+            </Grid>}
             {/* </form> */}
         </Grid>
     );

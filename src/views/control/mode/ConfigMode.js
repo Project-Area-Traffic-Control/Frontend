@@ -48,6 +48,7 @@ import { junctionService } from '../../../services/junction.service';
 import { fixtimeService } from '../../../services/fixtime.service';
 import { apiConstants } from '../../../_constants';
 import socketIOClient from 'socket.io-client';
+import { userService } from '../../../services';
 
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
@@ -784,8 +785,22 @@ const ConfigMode = (props) => {
             // console.log(data)
             setFixtimeList(data)
         })
-
+        setUserData(JSON.parse(localStorage.getItem("user")))
     }, [location.pathname])
+
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
+
+    useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                // console.log(data)
+                setUserPermiss(data.permissions)
+            })
+            
+            // setPathID(location.pathname.slice(14, location.pathname.length))
+        }
+    }, [userData])
 
     useEffect(() => {
         if (menu != null) {
@@ -850,6 +865,17 @@ const ConfigMode = (props) => {
                             </Button>
                         </Grid>
                     </Grid>
+                    {userPermiss != null && (userPermiss.length == 0 || userPermiss[2].view == false) &&
+                        < Grid
+                            style={{ width: '100%', height: '90vh', display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff' }}
+                        >
+                            <Typography
+                                variant='h3'
+                                style={{ marginTop: '20%' }}
+                            >
+                                ไม่สามารถเข้าถึงได้เนื่องจากสิทธิ์ของผู้ใช้
+                            </Typography>
+                        </Grid>}
                 </Grid>)
             }
             else if (menu == 2) {
@@ -1381,61 +1407,6 @@ const ConfigMode = (props) => {
             className={classes.root}
         >
             {/* <form onSubmit={formik.handleSubmit}> */}
-            <Grid
-                className={classes.top}
-            >
-                <Grid
-                    className={classes.topLeft}
-                >
-                    <Grid
-                        className={classes.titleGrid}
-                    >
-                        <Typography
-                            variant='h4'
-                            className={classes.titleLeft}
-                        >
-                            ตั้งค่าโหมดการทำงาน
-                        </Typography>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid
-                        className={classes.textFieldLeft}
-                    >
-
-                        <Grid
-                            className={classes.textFieldLeft_top}
-                        >
-                            <Typography
-                                className={classes.buttonPattern}
-                            // onClick={() => handleClickOpen()}
-                            // type='submit'
-                            >
-                                โหมดการทำงาน Fixtime Mode
-                            </Typography>
-                            {/* <TextField
-                                // error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
-                                // helperText={formik.touched.junctionName && formik.errors.junctionName}
-                                className={classes.textField_name}
-                                label="โหมดที่เลือก"
-                                variant="outlined"
-                                name="junctionName"
-                                // onBlur={formik.handleBlur}
-                                onChange={(event) => { handleChangeManu(event) }}
-                                // value={formik.values.junctionName}
-                                select
-                                margin="normal"
-                            >
-                                {menuList.map((option) => (
-                                    <MenuItem key={option.id} value={option.value} className={classes.menuList}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField> */}
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
-
             {content}
             {/* </form> */}
         </Grid>

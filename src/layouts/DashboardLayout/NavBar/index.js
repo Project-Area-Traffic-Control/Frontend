@@ -84,7 +84,7 @@ const items = [
     title: 'ข้อมูลปริมาณการจราจร'
   },
   {
-    href: '/404',
+    href: '/login',
     icon: ExitToAppIcon,
     title: 'Logout'
   },
@@ -153,6 +153,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const [openJunction, setOpenJunction] = useState([]);
   const [openControl, setOpenControl] = useState([]);
   const [junctionList, setJunctionList] = useState([]);
+  const [userData, setUserData] = useState(null)
   const handleClick = () => {
     setOpen(!open);
   };
@@ -183,6 +184,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     junctionService.getAllJunction().then(data => {
       setJunctionList(data)
     })
+    setUserData(JSON.parse(localStorage.getItem("user")))
   }, [])
   useEffect(() => {
     if (junctionList.length > 0) {
@@ -202,12 +204,19 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+    setUserData(JSON.parse(localStorage.getItem("user")))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (userData != null) {
+      console.log(userData)
+    }
+  }, [userData])
+
   const content = (
     <Box height="100%" display="flex" flexDirection="column" className={clsx(classes.root)} width="100%">
-      <Box
+      {userData != null && <Box
         className={classes.avatarBox}
       >
         <Typography
@@ -215,16 +224,16 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           variant="h5"
           className={classes.avatarTextPrimary}
         >
-          {user.name}
+          Username: {userData.username}
         </Typography>
         <Typography
           color="textSecondary"
           variant="body2"
           className={classes.avatarTextSecond}
         >
-          {user.jobTitle}
+          Role: {userData.role}
         </Typography>
-      </Box>
+      </Box>}
       <Divider />
       <Box p={2}>
         <List>
@@ -241,7 +250,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
               />
 
             </ListItem> */}
-            <ListItem >
+            {userData != null && userData.role == "ADMIN" && <ListItem >
 
               <NavItem
                 href={items[8].href}
@@ -251,7 +260,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
               // onClick={handleClick}
               />
 
-            </ListItem>
+            </ListItem>}
             <ListItem >
               <NavItem
                 href={location.pathname}
@@ -306,14 +315,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                         onClick={() => { handleClickJunction(index, 1) }}
                       />
                       <Collapse in={openJunction[index].control} timeout="auto" unmountOnExit>
-                        <NavItem
+                        {userData != null && userData.role == "ADMIN" && <NavItem
                           href={`/app/junction/${junction.id}`}
                           key={items[2].title}
                           title="ตั้งค่าแยกสัญญาจราจร"
                           className={classes.collapse_2}
                         // icon={items[2].icon}
                         // onClick={handleClick}
-                        />
+                        />}
                         <NavItem
                           href={`/app/channel/${junction.id}`}
                           key={items[2].title}
@@ -368,6 +377,17 @@ const NavBar = ({ onMobileClose, openMobile }) => {
                 ))}
               </List>
             </Collapse>
+            <ListItem >
+
+              <NavItem
+                href={items[7].href}
+                key={items[7].title}
+                title={items[7].title}
+                icon={items[7].icon}
+              // onClick={handleClick}
+              />
+
+            </ListItem>
             {/* <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   <NavItem

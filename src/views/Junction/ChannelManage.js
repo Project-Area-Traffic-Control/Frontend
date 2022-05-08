@@ -39,6 +39,7 @@ import theme from '../../theme';
 import { phaseService } from '../../services/phase.service';
 import socketIOClient from 'socket.io-client';
 import { apiConstants } from '../../_constants';
+import { userService } from '../../services';
 // import ManagementTable from '../../components/table/manageTable';
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -449,11 +450,31 @@ const ChannelManage = () => {
             setImgPath_5(<img src='/static/Mock-up_4way1.png' width={imgWid} height={imgHei} />)
         }
         else if (number_channel == 4) {
-            setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width="440px" height="440px" />)
-            setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width="440px" height="440px" />)
-            setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width="440px" height="440px" />)
-            setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width="440px" height="440px" />)
-            setImgPath_5(<img src='/static/4way1.png' width={imgWid} height={imgHei} />)
+            if (degree == 0) {
+                setImgPath_1(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                setImgPath_2(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                setImgPath_3(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                setImgPath_4(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+            }
+            else if (degree == 90) {
+                setImgPath_1(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                setImgPath_2(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                setImgPath_3(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                setImgPath_4(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+            }
+            else if (degree == 180) {
+                setImgPath_1(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                setImgPath_2(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                setImgPath_3(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                setImgPath_4(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+            }
+            else if (degree == 270) {
+                setImgPath_1(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                setImgPath_2(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                setImgPath_3(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                setImgPath_4(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+            }
+            // setImgPath_5(<img src='/static/4way1.png' width={imgWid} height={imgHei} />)
         }
     }, [degree])
 
@@ -838,10 +859,31 @@ const ChannelManage = () => {
                 setImgPath_3(<img src={`/static/3way3_${degree}degree.jpg`} width="440px" height="440px" />)
             }
             if (data.length == 4) {
-                setImgPath_1(<img src={`/static/Mock-up_4way${degree}.png`} width="440px" height="440px" />)
-                setImgPath_2(<img src={`/static/Mock-up_4way${(degree + 90) % 360}.png`} width="440px" height="440px" />)
-                setImgPath_3(<img src={`/static/Mock-up_4way${(degree + 180) % 360}.png`} width="440px" height="440px" />)
-                setImgPath_4(<img src={`/static/Mock-up_4way${(degree + 270) % 360}.png`} width="440px" height="440px" />)
+                if (degree == 0) {
+                    setImgPath_1(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                    setImgPath_2(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                    setImgPath_3(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                    setImgPath_4(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                }
+                else if (degree == 90) {
+                    setImgPath_1(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                    setImgPath_2(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                    setImgPath_3(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                    setImgPath_4(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                }
+                else if (degree == 180) {
+                    setImgPath_1(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                    setImgPath_2(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                    setImgPath_3(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                    setImgPath_4(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                }
+                else if (degree == 270) {
+                    setImgPath_1(<img src={`/static/4way4.jpg`} width="440px" height="440px" />)
+                    setImgPath_2(<img src={`/static/4way1.jpg`} width="440px" height="440px" />)
+                    setImgPath_3(<img src={`/static/4way2.jpg`} width="440px" height="440px" />)
+                    setImgPath_4(<img src={`/static/4way3.jpg`} width="440px" height="440px" />)
+                }
+
             }
         })
         junctionService.getJunctionByID(junction_id).then((data) => {
@@ -850,9 +892,21 @@ const ChannelManage = () => {
             setJunction(data)
             setDegree(data.rotate)
         })
+        setUserData(JSON.parse(localStorage.getItem("user")))
         // location.pathname.u
         // console.log(junction_id)
     }, [location.pathname])
+
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
+
+    useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                setUserPermiss(data.permissions)
+            })
+        }
+    }, [userData])
     return (
         <Page
             className={classes.root}
@@ -861,7 +915,7 @@ const ChannelManage = () => {
             <Grid
                 className={classes.container}
             >
-                <Grid
+                {userPermiss != null && userPermiss.length != 0 && (userPermiss[0].edit == true || userPermiss[0].view == true) && <Grid
                     className={classes.topGrid}
                 >
 
@@ -896,7 +950,7 @@ const ChannelManage = () => {
                                                 <Grid
                                                     style={{ width: '70%', display: 'flex', justifyContent: 'flex-end', height: '100%', marginTop: theme.spacing(2) }}
                                                 >
-                                                    <Button
+                                                    {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == true && <Button
                                                         onClick={() => {
                                                             setDegree(degree + 90)
                                                         }}
@@ -908,7 +962,7 @@ const ChannelManage = () => {
                                                             หมุนรูปภาพ<RotateRight />
                                                         </Grid>
 
-                                                    </Button>
+                                                    </Button>}
 
                                                 </Grid>
                                             </Grid>
@@ -922,7 +976,7 @@ const ChannelManage = () => {
                                                     {/* <img src='/static/Mock-up_4way0.png' width='440px' height='440px' /> */}
                                                     {imgPath_1}
                                                 </Grid>
-                                                <Grid
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == true && <Grid
                                                     style={{ width: '50%' }}
                                                 >
                                                     <Grid
@@ -969,7 +1023,60 @@ const ChannelManage = () => {
                                                             defaultValue={channel[0]?.phase[1]?.port_number}
                                                         />}
                                                     </Grid>
-                                                </Grid>
+                                                </Grid>}
+
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == false && userPermiss[1].view == true && <Grid
+                                                    style={{ width: '50%' }}
+                                                >
+                                                    <Grid
+                                                        style={{ width: '80%', marginLeft: '10%' }}
+                                                    >
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5) }}
+                                                            fullWidth
+                                                            margin="normal"
+                                                            name="name_1"
+                                                            onChange={channel_Formik.handleChange}
+                                                            variant="outlined"
+                                                            label="ชื่อช่องสัญญาณที่ 1"
+                                                            defaultValue={channel[0].name}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '60%' }}
+                                                            // fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="จำนวนเลน"
+                                                            name="number_lane_1"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[0].number_lane}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%' }}
+                                                            // fullWidth
+                                                            name="port_1_turnright"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port เลี้ยวขวา"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[0]?.phase[0]?.port_number}
+                                                            disabled
+                                                        />
+                                                        {channel.length == 4 && <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%', marginLeft: '2%' }}
+                                                            // fullWidth
+                                                            name="port_1_forward"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port ทางตรง"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[0]?.phase[1]?.port_number}
+                                                            disabled
+                                                        />}
+                                                    </Grid>
+                                                </Grid>}
                                             </Grid>
                                         </Grid>
                                         <Grid
@@ -997,7 +1104,7 @@ const ChannelManage = () => {
                                                     {/* <img src='/static/Mock-up_4way0.png' width='440px' height='440px' /> */}
                                                     {imgPath_2}
                                                 </Grid>
-                                                <Grid
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == true && <Grid
                                                     style={{ width: '50%' }}
                                                 >
                                                     <Grid
@@ -1012,6 +1119,7 @@ const ChannelManage = () => {
                                                             name="name_2"
                                                             onChange={channel_Formik.handleChange}
                                                             defaultValue={channel[1].name}
+
                                                         />
                                                         <TextField
                                                             style={{ marginTop: theme.spacing(5), width: '60%' }}
@@ -1022,6 +1130,7 @@ const ChannelManage = () => {
                                                             onChange={channel_Formik.handleChange}
                                                             label="จำนวนเลน"
                                                             defaultValue={channel[1].number_lane}
+
                                                         />
                                                         <TextField
                                                             style={{ marginTop: theme.spacing(5), width: '49%' }}
@@ -1032,6 +1141,7 @@ const ChannelManage = () => {
                                                             label="ตั้งค่า Port ทางตรง"
                                                             onChange={channel_Formik.handleChange}
                                                             defaultValue={channel[1]?.phase[0]?.port_number}
+
                                                         />
                                                         <TextField
                                                             style={{ marginTop: theme.spacing(5), width: '49%', marginLeft: '2%' }}
@@ -1042,9 +1152,63 @@ const ChannelManage = () => {
                                                             label="ตั้งค่า Port เลี้ยวขวา"
                                                             onChange={channel_Formik.handleChange}
                                                             defaultValue={channel[1]?.phase[1]?.port_number}
+
                                                         />
                                                     </Grid>
-                                                </Grid>
+                                                </Grid>}
+
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == false && userPermiss[1].view == true && <Grid
+                                                    style={{ width: '50%' }}
+                                                >
+                                                    <Grid
+                                                        style={{ width: '80%', marginLeft: '10%' }}
+                                                    >
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5) }}
+                                                            fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ชื่อช่องสัญญาณที่ 2"
+                                                            name="name_2"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[1].name}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '60%' }}
+                                                            // fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            name="number_lane_2"
+                                                            onChange={channel_Formik.handleChange}
+                                                            label="จำนวนเลน"
+                                                            defaultValue={channel[1].number_lane}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%' }}
+                                                            // fullWidth
+                                                            name="port_2_forward"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port ทางตรง"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[1]?.phase[0]?.port_number}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%', marginLeft: '2%' }}
+                                                            // fullWidth
+                                                            name="port_2_turnright"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port เลี้ยวขวา"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[1]?.phase[1]?.port_number}
+                                                            disabled
+                                                        />
+                                                    </Grid>
+                                                </Grid>}
                                             </Grid>
                                         </Grid>
                                         <Grid
@@ -1073,7 +1237,7 @@ const ChannelManage = () => {
                                                     {imgPath_3}
 
                                                 </Grid>
-                                                <Grid
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == true && <Grid
                                                     style={{ width: '50%' }}
                                                 >
                                                     <Grid
@@ -1120,7 +1284,60 @@ const ChannelManage = () => {
                                                             defaultValue={channel[2]?.phase[1]?.port_number}
                                                         />}
                                                     </Grid>
-                                                </Grid>
+                                                </Grid>}
+
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == false && userPermiss[1].view == true && <Grid
+                                                    style={{ width: '50%' }}
+                                                >
+                                                    <Grid
+                                                        style={{ width: '80%', marginLeft: '10%' }}
+                                                    >
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5) }}
+                                                            fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ชื่อช่องสัญญาณที่ 3"
+                                                            name="name_3"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[2].name}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '60%' }}
+                                                            // fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="จำนวนเลน"
+                                                            name="number_lane_3"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[2].number_lane}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%' }}
+                                                            // fullWidth
+                                                            name="port_3_forward"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port ทางตรง"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[2]?.phase[0]?.port_number}
+                                                            disabled
+                                                        />
+                                                        {channel.length == 4 && <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%', marginLeft: '2%' }}
+                                                            // fullWidth
+                                                            name="port_3_turnright"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port เลี้ยวขวา"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[2]?.phase[1]?.port_number}
+                                                            disabled
+                                                        />}
+                                                    </Grid>
+                                                </Grid>}
                                             </Grid>
                                         </Grid>
                                         {channel.length == 4 && <Grid
@@ -1149,7 +1366,7 @@ const ChannelManage = () => {
                                                     {imgPath_4}
 
                                                 </Grid>
-                                                <Grid
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == true && <Grid
                                                     style={{ width: '50%' }}
                                                 >
                                                     <Grid
@@ -1196,19 +1413,71 @@ const ChannelManage = () => {
                                                             defaultValue={channel[3]?.phase[1]?.port_number}
                                                         />}
                                                     </Grid>
-                                                </Grid>
+                                                </Grid>}
+                                                {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == false && userPermiss[1].view == true && <Grid
+                                                    style={{ width: '50%' }}
+                                                >
+                                                    <Grid
+                                                        style={{ width: '80%', marginLeft: '10%' }}
+                                                    >
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5) }}
+                                                            fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ชื่อช่องสัญญาณที่ 3"
+                                                            name="name_4"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[3].name}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '60%' }}
+                                                            // fullWidth
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="จำนวนเลน"
+                                                            name="number_lane_4"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[3].number_lane}
+                                                            disabled
+                                                        />
+                                                        <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%' }}
+                                                            // fullWidth
+                                                            name="port_4_forward"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port ทางตรง"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[3]?.phase[0]?.port_number}
+                                                            disabled
+                                                        />
+                                                        {channel.length == 4 && <TextField
+                                                            style={{ marginTop: theme.spacing(5), width: '49%', marginLeft: '2%' }}
+                                                            // fullWidth
+                                                            name="port_4_turnright"
+                                                            margin="normal"
+                                                            variant="outlined"
+                                                            label="ตั้งค่า Port เลี้ยวขวา"
+                                                            onChange={channel_Formik.handleChange}
+                                                            defaultValue={channel[3]?.phase[1]?.port_number}
+                                                            disabled
+                                                        />}
+                                                    </Grid>
+                                                </Grid>}
                                             </Grid>
                                         </Grid>}
                                         <Grid
                                             style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginTop: theme.spacing(5), marginBottom: theme.spacing(5) }}
                                         >
-                                            <Button
+                                            {userPermiss != null && userPermiss.length != 0 && userPermiss[1].edit == true && <Button
                                                 style={{ width: '110px', height: '43px', backgroundColor: '#287298', color: '#FFFFFF', display: 'flex', justifyContent: 'center', alignContent: 'center', borderRadius: '13px' }}
                                                 // type='submit'
                                                 onClick={handleSubmit}
                                             >
                                                 บันทึก
-                                            </Button>
+                                            </Button>}
                                         </Grid>
                                     </form>
                                     {/* <MyMap setGlobalPosition={setGlobalPosition} globalPosition={globalPosition} pathID={0} /> */}
@@ -1303,7 +1572,18 @@ const ChannelManage = () => {
                         </Grid>
                     </Grid>
 
-                </Grid>
+                </Grid>}
+                {userPermiss != null && (userPermiss.length == 0 || userPermiss[1].view == false) &&
+                    < Grid
+                        style={{ width: '100%', height: '90vh', display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff', color: '#000000' }}
+                    >
+                        <Typography
+                            variant='h3'
+                            style={{ marginTop: '50%' }}
+                        >
+                            ไม่สามารถเข้าถึงได้เนื่องจากสิทธิ์ของผู้ใช้
+                        </Typography>
+                    </Grid>}
             </Grid >
         </Page >
     );

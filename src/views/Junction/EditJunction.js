@@ -29,6 +29,7 @@ import { RotateRight } from '@material-ui/icons';
 import { planService } from '../../services/plan.service';
 import { apiConstants } from '../../_constants';
 import socketIOClient from 'socket.io-client';
+import { userService } from '../../services';
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.dark,
@@ -253,16 +254,27 @@ const EditJunction = () => {
     const [alertOpen, setAlertOpen] = useState(false)
     const [plan, setPlan] = useState(null)
     const location = useLocation();
-
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
     // useEffect(() => {
     //     junctionService.getJunctionByID(pathID).then(data => {
     //         setJunction(data)
     //     })
     // }, [])
     useEffect(() => {
-        setPathID(location.pathname.slice(14, location.pathname.length))
+        setUserData(JSON.parse(localStorage.getItem("user")))
         setContentMap(null)
+
     }, [location.pathname])
+    useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                // console.log(data)
+                setUserPermiss(data.permissions)
+            })
+            setPathID(location.pathname.slice(14, location.pathname.length))
+        }
+    }, [userData])
     useEffect(() => {
         // let tempJ = 
         // console.log(tempJ)
@@ -270,7 +282,7 @@ const EditJunction = () => {
             junctionService.getJunctionByID(pathID).then(data => {
                 setJunction(data)
             })
-            setContentMap(<MyMap setGlobalPosition={setGlobalPosition} globalPosition={globalPosition} pathID={pathID} />)
+
         }
 
         // console.log(junction)
@@ -279,6 +291,12 @@ const EditJunction = () => {
         // console.log(junction.data)
         // console.log(formik.values)
     }, [pathID])
+
+    useEffect(() => {
+        if (userPermiss != null) {
+            setContentMap(<MyMap setGlobalPosition={setGlobalPosition} globalPosition={globalPosition} pathID={pathID} permission={userPermiss} />)
+        }
+    }, [userPermiss])
 
     useEffect(() => {
         // console.log(junction)
@@ -591,7 +609,7 @@ const EditJunction = () => {
             <Grid
                 className={classes.container}
             >
-                <Grid
+                {userPermiss != null && userPermiss.length != 0 && (userPermiss[0].edit == true || userPermiss[0].view == true) && <Grid
                     className={classes.topGrid}
                 >
                     <form onSubmit={formik.handleSubmit}>
@@ -623,7 +641,7 @@ const EditJunction = () => {
                                             </Typography>
                                         </Grid>
                                         <Divider className={classes.divider} />
-                                        <TextField
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && <TextField
                                             error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
                                             helperText={formik.touched.junctionName && formik.errors.junctionName}
                                             className={classes.textField_name}
@@ -634,8 +652,8 @@ const EditJunction = () => {
                                             onChange={formik.handleChange}
                                             value={formik.values.junctionName}
                                             margin="normal"
-                                        />
-                                        <TextField
+                                        />}
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && <TextField
                                             className={classes.selectField}
                                             id="outlined-select-menu"
                                             select
@@ -651,8 +669,8 @@ const EditJunction = () => {
                                                     {option.label}
                                                 </MenuItem>
                                             ))}
-                                        </TextField>
-                                        <TextField
+                                        </TextField>}
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && <TextField
                                             error={Boolean(formik.touched.lat && formik.errors.lat)}
                                             helperText={formik.touched.lat && formik.errors.lat}
                                             className={classes.textField_location}
@@ -663,8 +681,8 @@ const EditJunction = () => {
                                             onChange={formik.handleChange}
                                             value={formik.values.lat}
                                             margin="normal"
-                                        />
-                                        <TextField
+                                        />}
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && <TextField
                                             error={Boolean(formik.touched.lng && formik.errors.lng)}
                                             helperText={formik.touched.lng && formik.errors.lng}
                                             className={classes.textField_location}
@@ -675,7 +693,68 @@ const EditJunction = () => {
                                             onChange={formik.handleChange}
                                             value={formik.values.lng}
                                             margin="normal"
-                                        />
+                                        />}
+
+
+
+
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && userPermiss[0].edit == false && <TextField
+                                            error={Boolean(formik.touched.junctionName && formik.errors.junctionName)}
+                                            helperText={formik.touched.junctionName && formik.errors.junctionName}
+                                            className={classes.textField_name}
+                                            label="จุดควบคุมการจราจร"
+                                            variant="outlined"
+                                            name="junctionName"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.junctionName}
+                                            margin="normal"
+                                            disabled
+                                        />}
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && userPermiss[0].edit == false && <TextField
+                                            className={classes.selectField}
+                                            id="outlined-select-menu"
+                                            select
+                                            name="number_channel"
+                                            label="จำนวนแยก"
+                                            value={formik.values.number_channel}
+                                            onChange={handleChangeManu}
+                                            variant="outlined"
+                                            margin="normal"
+                                            disabled
+                                        >
+                                            {menuList.map((option) => (
+                                                <MenuItem key={option.id} value={option.value} className={classes.menuList}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>}
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && userPermiss[0].edit == false && <TextField
+                                            error={Boolean(formik.touched.lat && formik.errors.lat)}
+                                            helperText={formik.touched.lat && formik.errors.lat}
+                                            className={classes.textField_location}
+                                            label="ตำแหน่งที่ตั้ง (Lattitude)"
+                                            variant="outlined"
+                                            name="lat"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.lat}
+                                            margin="normal"
+                                            disabled
+                                        />}
+                                        {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && userPermiss[0].edit == false && <TextField
+                                            error={Boolean(formik.touched.lng && formik.errors.lng)}
+                                            helperText={formik.touched.lng && formik.errors.lng}
+                                            className={classes.textField_location}
+                                            label="ตำแหน่งที่ตั้ง (Longitude)"
+                                            variant="outlined"
+                                            name="lng"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.lng}
+                                            margin="normal"
+                                            disabled
+                                        />}
                                         {/* <Button
                                             className={classes.buttonConfig}
                                             onClick={() => setOpen(true)}
@@ -687,20 +766,20 @@ const EditJunction = () => {
                                         <Grid
                                             className={classes.top_icon}
                                         >
-                                            <Button
+                                            {userPermiss != null && userPermiss.length != 0 && userPermiss[0].edit == true && <Button
                                                 className={classes.buttonGrid}
                                                 // onClick={() => window.location.reload(false)}
                                                 type='submit'
                                             >
                                                 บันทึกข้อมูล
-                                            </Button>
-                                            <Button
+                                            </Button>}
+                                            {userPermiss != null && userPermiss.length != 0 && userPermiss[0].delet == true && <Button
                                                 className={classes.deleteGrid}
                                                 onClick={() => setAlertOpen(true)}
                                             // type='submit'
                                             >
                                                 ลบข้อมูล
-                                            </Button>
+                                            </Button>}
                                         </Grid>
                                     </Grid>
                                     {/* <MyMap /> */}
@@ -708,7 +787,18 @@ const EditJunction = () => {
                             </Grid>
                         </Grid>
                     </form>
-                </Grid>
+                </Grid>}
+                {userPermiss != null && (userPermiss.length == 0 || userPermiss[0].view == false) &&
+                    < Grid
+                        style={{ width: '100%', height: '90vh', display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff' }}
+                    >
+                        <Typography
+                            variant='h3'
+                            style={{ marginTop: '20%' }}
+                        >
+                            ไม่สามารถเข้าถึงได้เนื่องจากสิทธิ์ของผู้ใช้
+                        </Typography>
+                    </Grid>}
                 <Dialog
                     open={alertOpen}
                     onClose={handleCloseAlert}
@@ -731,7 +821,7 @@ const EditJunction = () => {
                     </DialogActions>
                 </Dialog>
             </Grid>
-        </Page>
+        </Page >
     );
 };
 

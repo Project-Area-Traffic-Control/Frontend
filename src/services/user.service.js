@@ -14,15 +14,15 @@ export const userService = {
 
 axios.defaults.withCredentials = true;
 
-function login(username, password) {
+async function login(username, password) {
     const data = JSON.stringify({ username, password })
-    return axios.post(`${apiConstants.uri}/api/signin`,
+    return axios.post(`${apiConstants.uri}/users/login`,
         data, { headers: { 'Content-Type': 'application/json', crossDomain: true, } },
         { withCredentials: true }
     )
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(user.data.user.result));
 
             return user;
         })

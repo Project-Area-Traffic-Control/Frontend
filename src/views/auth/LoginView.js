@@ -19,6 +19,7 @@ import { userActions } from '../../_actions';
 import { useDispatch, useSelector, } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import { AccountCircle, Lock, Person } from '@material-ui/icons';
+import { userService } from '../../services';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#FFFFFF",
@@ -61,7 +62,7 @@ const LoginView = () => {
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(['name']);
   const [submit, setSubmit] = useState(false);
-
+  const [dataUser, setDataUser] = useState({})
   useEffect(() => {
     dispatch(userActions.logout());
     removeCookie('access_token')
@@ -79,9 +80,12 @@ const LoginView = () => {
   // }, [loggingIn])
 
   useEffect(() => {
-    if (submit == true) {
-      navigate('/app/', { replace: true });
-    }
+    // if (submit == true) {
+    //   userService.login(dataUser.username, dataUser.password).then((data) => {
+    //     console.log(data)
+    //   })
+    //   // navigate('/app/', { replace: true });
+    // }
 
 
   }, [submit])
@@ -103,14 +107,26 @@ const LoginView = () => {
           <Container maxWidth="sm">
             <Formik
               initialValues={{
-                email: 'admin@security.io',
-                password: 'Password123'
+                email: '',
+                password: ''
               }}
               validationSchema={Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                email: Yup.string().max(255).required('Email is required'),
                 password: Yup.string().max(255).required('Password is required')
               })}
               onSubmit={(e) => {
+                setDataUser({
+                  username: e.email,
+                  password: e.password
+                })
+                // console.log(e)
+                userService.login(e.email, e.password).then((user) => {
+                  console.log(user.data.user.result.id)
+                  if (user) {
+                    navigate(`/app/${user.data.user.result.id}`, { replace: true });
+                  }
+
+                })
                 // if (e.email && e.password) {
                 // get return url from location state or default to home page
                 // const { from } = location.state || { from: { pathname: "/app/dashboard" } };
@@ -143,10 +159,10 @@ const LoginView = () => {
                     // helperText={touched.email && errors.email}
                     label="Email Address"
                     margin="normal"
-                    name="email"
+                    name="username"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    type="email"
+                    // type="email"
                     value={values.email}
                     variant="filled"
                     className={classes.TextField}

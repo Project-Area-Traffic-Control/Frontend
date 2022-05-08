@@ -822,7 +822,7 @@ const CreatePlan = (props) => {
                             if (degree == 0 || degree == 180) {
                                 img_path[index] = { url: `/static/4way5.jpg` }
                             }
-                            else{
+                            else {
                                 img_path[index] = { url: `/static/4way6.jpg` }
                             }
                         }
@@ -830,7 +830,7 @@ const CreatePlan = (props) => {
                             if (degree == 0 || degree == 180) {
                                 img_path[index] = { url: `/static/4way6.jpg` }
                             }
-                            else{
+                            else {
                                 img_path[index] = { url: `/static/4way5.jpg` }
                             }
                         }
@@ -838,7 +838,7 @@ const CreatePlan = (props) => {
                             if (degree == 0 || degree == 180) {
                                 img_path[index] = { url: `/static/4way7.jpg` }
                             }
-                            else{
+                            else {
                                 img_path[index] = { url: `/static/4way8.jpg` }
                             }
                         }
@@ -846,7 +846,7 @@ const CreatePlan = (props) => {
                             if (degree == 0 || degree == 180) {
                                 img_path[index] = { url: `/static/4way8.jpg` }
                             }
-                            else{
+                            else {
                                 img_path[index] = { url: `/static/4way7.jpg` }
                             }
                         }
@@ -998,7 +998,7 @@ const CreatePlan = (props) => {
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 1) % 4}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1014,7 +1014,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 2) % 4}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1032,7 +1032,7 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 3) % 4}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1047,7 +1047,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way4.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1274,7 +1274,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 1) % 4}.jpg`} width='280px' height='280px' />
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -1293,7 +1293,7 @@ const CreatePlan = (props) => {
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 2) % 4}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1312,7 +1312,7 @@ const CreatePlan = (props) => {
                             <Grid
                                 className={classes.pattern}
                             >
-                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way4.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1327,7 +1327,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 4) % 4}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1552,7 +1552,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 1) % 4}.jpg`} width='280px' height='280px' />
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -1569,7 +1569,7 @@ const CreatePlan = (props) => {
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way4.jpg`} width='280px' height='280px' />
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -1591,7 +1591,7 @@ const CreatePlan = (props) => {
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 3) % 4}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -1607,7 +1607,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
-                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 4) % 4}.jpg`} width='280px' height='280px' />
                                 <Grid
                                     className={classes.clickPattern}
                                 >
@@ -1831,7 +1831,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way4.jpg`} width='280px' height='280px' />
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -1848,7 +1848,7 @@ const CreatePlan = (props) => {
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 2) % 4}.jpg`} width='280px' height='280px' />
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -1868,7 +1868,7 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                                <img src={`/static/4way${((degree / 90) + 3) % 4}.jpg`} width='280px' height='280px' />
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -1887,7 +1887,7 @@ const CreatePlan = (props) => {
                                 <Grid
                                     className={classes.selectBorder}
                                 >
-                                    <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                    <img src={`/static/4way${((degree / 90) + 4) % 4}.jpg`} width='280px' height='280px' />
                                 </Grid>
                                 <Grid
                                     className={classes.clickPattern}
@@ -2010,7 +2010,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2027,7 +2030,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2047,7 +2053,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2064,7 +2073,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2191,7 +2203,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2208,7 +2223,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2228,7 +2246,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2245,7 +2266,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2371,7 +2395,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2388,7 +2415,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2408,7 +2438,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2425,7 +2458,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2551,7 +2587,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2568,7 +2607,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2588,7 +2630,10 @@ const CreatePlan = (props) => {
                             className={classes.pattern}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2605,7 +2650,10 @@ const CreatePlan = (props) => {
                             style={{ marginLeft: theme.spacing(5) }}
                         >
 
-                            <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                            {degree == 0 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                            {degree == 90 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                            {degree == 180 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                            {degree == 270 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
 
                             <Grid
                                 className={classes.clickPattern}
@@ -2831,7 +2879,10 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 1) % 5}.jpg`} width='280px' height='280px' />
+                                {degree == 0 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                                {degree == 90 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                                {degree == 180 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                                {degree == 270 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -2848,7 +2899,10 @@ const CreatePlan = (props) => {
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 2) % 5}.jpg`} width='280px' height='280px' />
+                                {degree == 0 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                                {degree == 90 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                                {degree == 180 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                                {degree == 270 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -2868,7 +2922,10 @@ const CreatePlan = (props) => {
                                 className={classes.pattern}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 3) % 5}.jpg`} width='280px' height='280px' />
+                                {degree == 0 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
+                                {degree == 90 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                                {degree == 180 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                                {degree == 270 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -2885,7 +2942,10 @@ const CreatePlan = (props) => {
                                 style={{ marginLeft: theme.spacing(5) }}
                             >
 
-                                <img src={`/static/4way${((degree / 90) + 4) % 5}.jpg`} width='280px' height='280px' />
+                                {degree == 0 && <img src={`/static/4way4.jpg`} width='280px' height='280px' />}
+                                {degree == 90 && <img src={`/static/4way1.jpg`} width='280px' height='280px' />}
+                                {degree == 180 && <img src={`/static/4way2.jpg`} width='280px' height='280px' />}
+                                {degree == 270 && <img src={`/static/4way3.jpg`} width='280px' height='280px' />}
 
                                 <Grid
                                     className={classes.clickPattern}
@@ -3083,17 +3143,6 @@ const CreatePlan = (props) => {
                                     เลือกชุดรูปแบบ
                                 </Button>
                             </Grid>
-                            {pattern != 0 && <Grid
-                                className={classes.textFieldLeft_bot}
-                            >
-                                <Grid
-                                    className={classes.selectPattern_name}
-                                >
-                                    <Typography>
-                                        รูปแบบที่เลือก : {pattern}
-                                    </Typography>
-                                </Grid>
-                            </Grid>}
                             {/* <LocationSearchInput /> */}
                         </Grid>
                     </Grid>
@@ -3117,17 +3166,17 @@ const CreatePlan = (props) => {
                                 className={classes.buttomGrid}
                             >
 
-                                {juncID != null && <IconButton
+                                {/* {juncID != null && <IconButton
                                     className={classes.buttomCreate}
                                     onClick={() => { toggleCalculate() }}
                                 >
                                     <Typography
                                         variant='h5'>
                                         คำนวน
-                                    </Typography>
+                                    </Typography> */}
                                     {/* <img src='/static/button/Plus.png' /> */}
-                                    <BarChart style={{ marginLeft: theme.spacing(1) }} />
-                                </IconButton>}
+                                    {/* <BarChart style={{ marginLeft: theme.spacing(1) }} />
+                                </IconButton>} */}
                             </Grid>
                         </Grid>
                         <Divider className={classes.divider} />
@@ -3168,7 +3217,23 @@ const CreatePlan = (props) => {
                                                         style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
                                                     >
                                                         {row.phase != 'เลือกรูปแบบ' && junction.number_channel == 3 && <img src={`/static/3way${row.phase.slice(10, row.phase.length)}_${degree}degree.jpg`} width='144px' height='144px' />}
-                                                        {row.phase != 'เลือกรูปแบบ' && row.phase != 'รูปแบบที่ 5' && row.phase != 'รูปแบบที่ 6' && row.phase != 'รูปแบบที่ 7' && row.phase != 'รูปแบบที่ 8' && junction.number_channel == 4 && <img src={`/static/4way${((degree / 90) + (parseInt(row.phase.slice(10, row.phase.length)))) % 5}.jpg`} width='144px' height='144px' />}
+                                                        {/* {row.phase != 'เลือกรูปแบบ' && row.phase != 'รูปแบบที่ 5' && row.phase != 'รูปแบบที่ 6' && row.phase != 'รูปแบบที่ 7' && row.phase != 'รูปแบบที่ 8' && junction.number_channel == 4 && <img src={`/static/4way${((degree / 90) + (parseInt(row.phase.slice(10, row.phase.length)))) % 5}.jpg`} width='144px' height='144px' />} */}
+                                                        {row.phase == 'รูปแบบที่ 1' && degree == 0 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 1' && degree == 90 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 1' && degree == 180 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 1' && degree == 270 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 2' && degree == 0 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 2' && degree == 90 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 2' && degree == 180 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 2' && degree == 270 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 3' && degree == 0 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 3' && degree == 90 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 3' && degree == 180 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 3' && degree == 270 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 4' && degree == 0 && <img src={`/static/4way4.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 4' && degree == 90 && <img src={`/static/4way1.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 4' && degree == 180 && <img src={`/static/4way2.jpg`} width='144px' height='144px' />}
+                                                        {row.phase == 'รูปแบบที่ 4' && degree == 270 && <img src={`/static/4way3.jpg`} width='144px' height='144px' />}
                                                         {row.phase == 'รูปแบบที่ 5' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way5.jpg`} width='144px' height='144px' />}
                                                         {row.phase == 'รูปแบบที่ 5' && (degree == 90 || degree == 270) && junction.number_channel == 4 && <img src={`/static/4way6.jpg`} width='144px' height='144px' />}
                                                         {row.phase == 'รูปแบบที่ 6' && (degree == 0 || degree == 180) && junction.number_channel == 4 && <img src={`/static/4way6.jpg`} width='144px' height='144px' />}
