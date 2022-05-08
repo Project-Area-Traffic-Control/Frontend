@@ -44,6 +44,7 @@ import ImageSlide from '../ImageSlide';
 import theme from '../../../theme';
 import { planService } from '../../../services/plan.service';
 import { junctionService } from '../../../services/junction.service';
+import { userService } from '../../../services';
 // import {recordservice} from "../../services"
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -182,15 +183,28 @@ const ShowPlan = (props) => {
     const [juncID, setJuncID] = useState(null)
     const initialLength = 21
     const location = useLocation();
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
     useEffect(() => {
         // planService.getAllPlan().then((data) => {
         //     setPlanList(data)
         // })
+        setUserData(JSON.parse(localStorage.getItem("user")))
         setJuncID(location.pathname.slice(14, 15 + (location.pathname.length - initialLength)))
         // else{
 
         // }
     }, [location.pathname])
+
+    useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                // console.log(data)
+                setUserPermiss(data.permissions)
+            })
+            // setPathID(location.pathname.slice(14, location.pathname.length))
+        }
+    }, [userData])
 
     useEffect(() => {
         if (juncID != null) {
@@ -220,7 +234,7 @@ const ShowPlan = (props) => {
             <Grid
                 className={classes.top}
             >
-                <Grid
+                {userPermiss != null && userPermiss.length != 0 && (userPermiss[2].view == true || userPermiss[2].edit == true) && <Grid
                     className={classes.topLeft}
                 >
                     <Grid
@@ -235,7 +249,7 @@ const ShowPlan = (props) => {
                         <Grid
                             className={classes.buttomGrid}
                         >
-                            {juncID != null && <Button
+                            {userPermiss != null && userPermiss.length != 0 && userPermiss[2].edit == true && juncID != null && <Button
                                 className={classes.buttomCreate}
                                 onClick={() => { navigate(`/app/junction/${juncID}/create_plan`, { replace: true }); }}
                             >
@@ -286,7 +300,18 @@ const ShowPlan = (props) => {
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Grid>}
+                {userPermiss != null && (userPermiss.length == 0 || userPermiss[2].view == false) &&
+                    < Grid
+                        style={{ width: '100%', height: '90vh', display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff' }}
+                    >
+                        <Typography
+                            variant='h3'
+                            style={{ marginTop: '20%' }}
+                        >
+                            ไม่สามารถเข้าถึงได้เนื่องจากสิทธิ์ของผู้ใช้
+                        </Typography>
+                    </Grid>}
             </Grid>
         </Grid >
     );

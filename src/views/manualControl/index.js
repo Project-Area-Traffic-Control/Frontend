@@ -330,6 +330,7 @@ const ManualControl = () => {
   const [overview, setOverView] = useState([]);
   const [index, setActiveStep] = React.useState(0);
   const [junctionContent, setJunctionContent] = useState(null)
+  const [connect, setConnect] = useState(false)
   const { junction_id } = useParams();
   const goToNextPicture = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -581,6 +582,7 @@ const ManualControl = () => {
       console.log("socket data: ", data)
       setTimer(data.Timer)
       setActiveStep(data.phase)
+      setConnect(true)
     })
 
     socketIO.on(`update:timer:${junction_id}`, data => {
@@ -588,8 +590,12 @@ const ManualControl = () => {
     })
 
     socketIO.on(`update:phase:${junction_id}`, data => {
+      console.log("status manual: ", statusMode)
       setActiveStep(data)
-      setStatusManual(data)
+      if (statusMode == 2) {
+        setStatusManual(data)
+      }
+      // 
     })
   }, [])
 
@@ -643,7 +649,7 @@ const ManualControl = () => {
           >
             <Button
               className={classes.unSelectButtonMode_content}
-              onClick={() => { setStatusNewContent(1) }}
+              onClick={() => { emitMode(2) }}
             >
               ควบคุม
             </Button>
@@ -692,7 +698,7 @@ const ManualControl = () => {
       }
       if (statusNewContent == 1) {
         // setStatusMode
-        emitMode(2)
+        // emitMode(2)
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
@@ -735,6 +741,64 @@ const ManualControl = () => {
                 onClick={() => { emitPhase(4) }}
               >
                 <img src={overview[4]} width='120px' height='120px' />
+              </Button>
+            </Grid>
+          </Grid>}
+          {junction.number_channel == 4 && <Grid>
+            <Grid
+              className={classes.imgManual_content}
+            >
+              <Button
+                onClick={() => { emitPhase(1) }}
+              >
+                <img src={overview[1]} width='120px' height='120px' />
+              </Button>
+              <Button
+                onClick={() => { emitPhase(2) }}
+              >
+                <img src={overview[2]} width='120px' height='120px' />
+              </Button>
+            </Grid>
+            <Grid
+              className={classes.imgManual_content}
+            >
+              <Button
+                onClick={() => { emitPhase(3) }}
+              >
+                <img src={overview[3]} width='120px' height='120px' />
+              </Button>
+              <Button
+                onClick={() => { emitPhase(4) }}
+              >
+                <img src={overview[4]} width='120px' height='120px' />
+              </Button>
+            </Grid>
+            <Grid
+              className={classes.imgManual_content}
+            >
+              <Button
+                onClick={() => { emitPhase(5) }}
+              >
+                <img src={overview[5]} width='120px' height='120px' />
+              </Button>
+              <Button
+                onClick={() => { emitPhase(6) }}
+              >
+                <img src={overview[6]} width='120px' height='120px' />
+              </Button>
+            </Grid>
+            <Grid
+              className={classes.imgManual_content}
+            >
+              <Button
+                onClick={() => { emitPhase(7) }}
+              >
+                <img src={overview[7]} width='120px' height='120px' />
+              </Button>
+              <Button
+                onClick={() => { emitPhase(8) }}
+              >
+                <img src={overview[8]} width='120px' height='120px' />
               </Button>
             </Grid>
           </Grid>}
@@ -1322,7 +1386,7 @@ const ManualControl = () => {
           </Grid>}
         </Grid>)
       }
-      if (statusManual == 7) {
+      if (statusManual == 8) {
         setNewContent_1(<Grid
           className={classes.newContent_1}
         >
@@ -1409,6 +1473,7 @@ const ManualControl = () => {
 
   useEffect(() => {
     if (statusMode != null) {
+      console.log("mode : ", statusMode, "content : ", statusNewContent)
       if (statusMode == 1) {
         setNewContent_1(<Grid
           className={classes.newContent_1}
@@ -1764,7 +1829,7 @@ const ManualControl = () => {
               img_path.push(`/static/4way8.jpg`)
             }
           }
-          if (index == 5) {
+          if (index == 8) {
             if (degree == 0 || degree == 180) {
               img_path.push(`/static/4way8.jpg`)
             }
@@ -1773,6 +1838,7 @@ const ManualControl = () => {
             }
           }
         }
+        console.log(img_path)
         setOverView(img_path)
       }
     }
@@ -1865,8 +1931,8 @@ const ManualControl = () => {
       className={classes.root}
       title="Manual-Control"
     >
-      {newContent_1 != null && newContent_1}
-      <Grid
+      {connect == true && newContent_1 != null && newContent_1}
+      {connect == true && < Grid
         className={classes.newContent_2}
       >
         <Grid
@@ -1979,8 +2045,19 @@ const ManualControl = () => {
           </Grid>
         </Grid>
         {/* test */}
-      </Grid>
-    </Page>
+      </Grid>}
+      {connect == false &&
+        <Grid
+          style={{ width: '100%', height: '100%', justifyContent: 'center', display: 'flex', backgroundColor: '#ffffff' }}
+        >
+          <Typography
+            style={{ marginTop: '20%' }}
+            variant='h3'
+          >
+            ไม่สามารถเชื่อมต่อกับแยกสัญญาณ
+          </Typography>
+        </Grid>}
+    </Page >
   );
 };
 

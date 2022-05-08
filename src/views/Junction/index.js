@@ -163,6 +163,7 @@ const ReportData = () => {
   const [map, setMap] = useState(null);
   const [open, setOpen] = useState([])
   const [junctionList, setJunctionList] = useState([])
+  const [userData, setUserData] = useState(null)
   const [position, setPosition] = useState({
     lat: 13.722524,
     lng: 100.739945,
@@ -239,6 +240,7 @@ const ReportData = () => {
     junctionService.getAllJunction().then(data => {
       setJunctionList(data)
     })
+    setUserData(JSON.parse(localStorage.getItem("user")))
   }, [])
   useEffect(() => {
     if (pathID != null) {
@@ -382,7 +384,7 @@ const ReportData = () => {
             </Grid>
           ))}
         </List>
-        <Grid
+        {userData != null && userData.role == "ADMIN" && <Grid
           className={classes.top_icon}
         >
           <Button
@@ -391,7 +393,7 @@ const ReportData = () => {
           >
             Create Junction
           </Button>
-        </Grid>
+        </Grid>}
         {/* <Divider /> */}
       </Grid>
 

@@ -12,7 +12,9 @@ import socketIOClient from 'socket.io-client';
 import { EditOutlined, ExpandLess, ExpandMore } from '@material-ui/icons';
 import NavItem from '../../layouts/DashboardLayout/NavBar/NavItem';
 import { apiConstants } from '../../../src/_constants'
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import { userService } from '../../services';
+import { path } from 'react-financial-charts';
 // const ENDPOINT = "http://localhost:3000";
 
 
@@ -244,10 +246,25 @@ const Monitor = (props) => {
     //     }
     //     setOpen(temp)
     // }, [])
+    const location = useLocation();
+    useEffect(() => {
+        setUserData(JSON.parse(localStorage.getItem("user")))
+    }, [location.pathname])
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
 
     useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                // console.log(data)
+                setUserPermiss(data.permissions)
+            })
+            // setPathID(location.pathname.slice(14, location.pathname.length))
+        }
+    }, [userData])
+    useEffect(() => {
         // socket.
-        const socket = socketIOClient(apiConstants.socketUri);
+        const socket = socketIOClient(apiConstants.socketUri, { path: "/socket" });
         var socketON = `camera${camID}:send`;
         console.log(socketON)
         if (camID == 1) {
@@ -334,7 +351,7 @@ const Monitor = (props) => {
         <Grid
             className={classes.root}
         >
-            <Grid
+            {userPermiss != null && userPermiss.length != 0 && userPermiss[5].view == true && <Grid
                 className={classes.container_1}
             >
                 <Grid item className={classes.grid}>
@@ -357,8 +374,8 @@ const Monitor = (props) => {
                 </Grid> */}
 
                 </Grid>
-            </Grid>
-            <Grid
+            </Grid>}
+            {userPermiss != null && userPermiss.length != 0 && userPermiss[5].view == true && <Grid
                 className={classes.container_2}
             >
                 <Grid
@@ -458,7 +475,18 @@ const Monitor = (props) => {
                     </Button>
                 </Grid> */}
                 {/* <Divider /> */}
-            </Grid>
+            </Grid>}
+            {userPermiss != null && (userPermiss.length == 0 || userPermiss[2].view == false) &&
+                < Grid
+                    style={{ width: '100%', height: '90vh', display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff' }}
+                >
+                    <Typography
+                        variant='h3'
+                        style={{ marginTop: '20%' }}
+                    >
+                        ไม่สามารถเข้าถึงได้เนื่องจากสิทธิ์ของผู้ใช้
+                    </Typography>
+                </Grid>}
         </Grid>
 
 

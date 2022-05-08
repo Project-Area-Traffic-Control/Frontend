@@ -13,6 +13,7 @@ import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis, Tooltip, PieChart, 
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryBoxPlot, VictoryTooltip } from 'victory';
 import { useLocation } from 'react-router';
 import { junctionService } from '../../services/junction.service';
+import { userService } from '../../services';
 // import Typography from '../../theme/typography';
 const useStyles = makeStyles(theme => ({
     root: {
@@ -347,7 +348,21 @@ const Statistic = () => {
             setChannel(data.channel)
         })
         setJuncID(location.pathname.slice(5, location.pathname.length - 10))
+        setUserData(JSON.parse(localStorage.getItem("user")))
     }, [location.pathname])
+
+    const [userData, setUserData] = useState(null)
+    const [userPermiss, setUserPermiss] = useState(null)
+
+    useEffect(() => {
+        if (userData != null) {
+            userService.getUserByID(userData.id).then((data) => {
+                // console.log(data)
+                setUserPermiss(data.permissions)
+            })
+            // setPathID(location.pathname.slice(14, location.pathname.length))
+        }
+    }, [userData])
 
     useEffect(() => {
         if (channel != null) {
@@ -877,7 +892,7 @@ const Statistic = () => {
     return (
         <Page className={classes.root} title="Statistic">
             <Container >
-                <Grid container spacing={3} className={classes.gridBox}>
+                {userPermiss != null && userPermiss.length != 0 && userPermiss[6].view == true && <Grid container spacing={3} className={classes.gridBox}>
                     {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
                         <TotalCarThisDay />
                     </Grid>
@@ -1533,7 +1548,18 @@ const Statistic = () => {
                         {/* <DashboardTable /> */}
                     </Grid>
 
-                </Grid>
+                </Grid>}
+                {userPermiss != null && (userPermiss.length == 0 || userPermiss[6].view == false) &&
+                    < Grid
+                        style={{ width: '100%', height: '90vh', display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff' }}
+                    >
+                        <Typography
+                            variant='h3'
+                            style={{ marginTop: '20%' }}
+                        >
+                            ไม่สามารถเข้าถึงได้เนื่องจากสิทธิ์ของผู้ใช้
+                        </Typography>
+                    </Grid>}
             </Container>
         </Page>
     );

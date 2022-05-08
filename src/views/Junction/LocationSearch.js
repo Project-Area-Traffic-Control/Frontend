@@ -25,20 +25,27 @@ function LeafletgeoSearch(props) {
         }, // use custom marker, not working?
     });
     useEffect(() => {
+        console.log("permission: ", props.permission)
+
         map.addControl(searchControl);
         marker.addTo(map)
         marker.on('dragend', function (e) {
-            marker.setLatLng({ "lat": e.target._latlng.lat, "lng": e.target._latlng.lng });
-            // console.log(e.target._latlng)
-            props.setLatLng([e.target._latlng.lat, e.target._latlng.lng])
+            if (props.permission.length != 0 && props.permission[0].edit == true) {
+                marker.setLatLng({ "lat": e.target._latlng.lat, "lng": e.target._latlng.lng });
+                // console.log(e.target._latlng)
+                props.setLatLng([e.target._latlng.lat, e.target._latlng.lng])
+            }
         });
 
         map.on('click', function (e) {
-            marker.setLatLng({ "lat": e.latlng.lat, "lng": e.latlng.lng });
-            // console.log(e.target._latlng)
-            props.setLatLng([e.latlng.lat, e.latlng.lng])
+            if (props.permission.length != 0 && props.permission[0].edit == true) {
+                marker.setLatLng({ "lat": e.latlng.lat, "lng": e.latlng.lng });
+                // console.log(e.target._latlng)
+                props.setLatLng([e.latlng.lat, e.latlng.lng])
+            }
         })
         console.log(props.latLng)
+
     }, []);
 
     var marker = L.marker(new L.LatLng(100000, 100000), {
@@ -123,7 +130,7 @@ const MyMap = (props) => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <LeafletgeoSearch setLatLng={props.setGlobalPosition} latLng={props.globalPosition} pathID={props.pathID} />
+                <LeafletgeoSearch setLatLng={props.setGlobalPosition} latLng={props.globalPosition} pathID={props.pathID} permission={props.permission} />
             </MapContainer>}
         </div >
     );

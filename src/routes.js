@@ -40,6 +40,7 @@ const routes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
+      { path: ':user_id', element: <DashboardLayout /> },
       { path: 'map', element: <MapView /> },
       { path: 'management', element: <ManagementView /> },
       { path: '/channel/:junction_id', element: <ChannelManage /> },
@@ -79,7 +80,7 @@ const routes = [
       { path: '/', element: <Navigate to="/login" /> },
       { path: '404', element: <NotFoundView /> },
       { path: 'register', element: <RegisterView /> },
-      { path: '*', element: <Navigate to="/404" /> }
+      { path: '*', element: <Navigate to="/404" /> },
       // { path: '*', element: <Navigate to="/404" /> }
     ]
   }
